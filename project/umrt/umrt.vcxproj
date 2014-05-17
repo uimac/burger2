@@ -1,0 +1,181 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{098446CD-E308-44DE-BBD8-2B8273FEAE3A}</ProjectGuid>
+    <RootNamespace>umrt</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110_xp</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110_xp</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v110_xp</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v110_xp</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)out/$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)out/$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)out/$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)out/$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)src/umbase;$(SolutionDir)src/umdraw;$(SolutionDir)src/umimage;$(SolutionDir)src/umabc;$(SolutionDir)lib/alembic/include;$(SolutionDir)lib/ilmbase2/include/config.windows;$(SolutionDir)lib/ilmbase2/include/Half;$(SolutionDir)lib/ilmbase2/include/IlmThread;$(SolutionDir)lib/ilmbase2/include/Imath;$(SolutionDir)lib/ilmbase2/include/Iex;$(SolutionDir)lib/ilmbase2/include;$(SolutionDir)lib/opensubdiv/include;$(SolutionDir)lib/opensubdiv/include/osd;$(SolutionDir)lib/opensubdiv/include/hbr;$(SolutionDir)lib/opensubdiv/include/far;$(SolutionDir)lib/opensubdiv/include/osdutil</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)src/umbase;$(SolutionDir)src/umdraw;$(SolutionDir)src/umimage;$(SolutionDir)src/umabc;$(SolutionDir)lib/alembic/include;$(SolutionDir)lib/ilmbase2/include/config.windows;$(SolutionDir)lib/ilmbase2/include/Half;$(SolutionDir)lib/ilmbase2/include/IlmThread;$(SolutionDir)lib/ilmbase2/include/Imath;$(SolutionDir)lib/ilmbase2/include/Iex;$(SolutionDir)lib/ilmbase2/include;$(SolutionDir)lib/opensubdiv/include;$(SolutionDir)lib/opensubdiv/include/osd;$(SolutionDir)lib/opensubdiv/include/hbr;$(SolutionDir)lib/opensubdiv/include/far;$(SolutionDir)lib/opensubdiv/include/osdutil</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;WITH_ALEMBIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)src/umbase;$(SolutionDir)src/umdraw;$(SolutionDir)src/umimage;$(SolutionDir)src/umabc;$(SolutionDir)lib/alembic/include;$(SolutionDir)lib/ilmbase2/include/config.windows;$(SolutionDir)lib/ilmbase2/include/Half;$(SolutionDir)lib/ilmbase2/include/IlmThread;$(SolutionDir)lib/ilmbase2/include/Imath;$(SolutionDir)lib/ilmbase2/include/Iex;$(SolutionDir)lib/ilmbase2/include;$(SolutionDir)lib/opensubdiv/include;$(SolutionDir)lib/opensubdiv/include/osd;$(SolutionDir)lib/opensubdiv/include/hbr;$(SolutionDir)lib/opensubdiv/include/far;$(SolutionDir)lib/opensubdiv/include/osdutil</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)src/umbase;$(SolutionDir)src/umdraw;$(SolutionDir)src/umimage;$(SolutionDir)src/umabc;$(SolutionDir)lib/alembic/include;$(SolutionDir)lib/ilmbase2/include/config.windows;$(SolutionDir)lib/ilmbase2/include/Half;$(SolutionDir)lib/ilmbase2/include/IlmThread;$(SolutionDir)lib/ilmbase2/include/Imath;$(SolutionDir)lib/ilmbase2/include/Iex;$(SolutionDir)lib/ilmbase2/include;$(SolutionDir)lib/opensubdiv/include;$(SolutionDir)lib/opensubdiv/include/osd;$(SolutionDir)lib/opensubdiv/include/hbr;$(SolutionDir)lib/opensubdiv/include/far;$(SolutionDir)lib/opensubdiv/include/osdutil</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <OpenMPSupport>true</OpenMPSupport>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\umrt\UMAreaLight.h" />
+    <ClInclude Include="..\..\src\umrt\UMBvh.h" />
+    <ClInclude Include="..\..\src\umrt\UMPathTracer.h" />
+    <ClInclude Include="..\..\src\umrt\UMPrimitive.h" />
+    <ClInclude Include="..\..\src\umrt\UMRay.h" />
+    <ClInclude Include="..\..\src\umrt\UMRayTracer.h" />
+    <ClInclude Include="..\..\src\umrt\UMRenderer.h" />
+    <ClInclude Include="..\..\src\umrt\UMRenderParameter.h" />
+    <ClInclude Include="..\..\src\umrt\UMRT.h" />
+    <ClInclude Include="..\..\src\umrt\UMSceneAccess.h" />
+    <ClInclude Include="..\..\src\umrt\UMShaderParameter.h" />
+    <ClInclude Include="..\..\src\umrt\UMSubdivision.h" />
+    <ClInclude Include="..\..\src\umrt\UMTriangle.h" />
+    <ClInclude Include="..\..\src\umrt\UMVertexParameter.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\umrt\UMAreaLight.cpp" />
+    <ClCompile Include="..\..\src\umrt\UMBvh.cpp" />
+    <ClCompile Include="..\..\src\umrt\UMPathTracer.cpp" />
+    <ClCompile Include="..\..\src\umrt\UMRayTracer.cpp" />
+    <ClCompile Include="..\..\src\umrt\UMRenderer.cpp" />
+    <ClCompile Include="..\..\src\umrt\UMRT.cpp" />
+    <ClCompile Include="..\..\src\umrt\UMSceneAccess.cpp" />
+    <ClCompile Include="..\..\src\umrt\UMSubdivision.cpp" />
+    <ClCompile Include="..\..\src\umrt\UMTriangle.cpp" />
+    <ClCompile Include="..\..\src\umrt\UMVertexParameter.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\umabc\umabc.vcxproj">
+      <Project>{72ac8405-2ea1-44a9-9474-700791167803}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\umbase\umbase.vcxproj">
+      <Project>{8b753bf7-2ccf-4324-9ac4-28863a3e1422}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\umdraw\umdraw.vcxproj">
+      <Project>{ed1e1177-d7a6-47e1-94d6-d68ace53768c}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

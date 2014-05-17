@@ -1,0 +1,311 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{ED1E1177-D7A6-47E1-94D6-D68ACE53768C}</ProjectGuid>
+    <RootNamespace>umdraw</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110_xp</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110_xp</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v110_xp</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v110_xp</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)out/$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <TargetExt>.lib</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)out/$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <TargetExt>.lib</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)out/$(Platform)\$(Configuration)\</OutDir>
+    <TargetExt>.lib</TargetExt>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)out/$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;$(SolutionDir)lib/glew/include;$(SolutionDir)lib/poly2tri/include;$(SolutionDir)src/umbase;$(SolutionDir)src/umimage;$(SolutionDir)src/umio</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WITH_DIRECTX;WITH_OPENGL;GLEW_STATIC;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;$(SolutionDir)lib/glew/include;$(SolutionDir)lib/poly2tri/include;$(SolutionDir)src/umbase;$(SolutionDir)src/umimage;$(SolutionDir)src/umio</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WITH_DIRECTX;WITH_OPENGL;GLEW_STATIC;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;$(SolutionDir)lib/glew/include;$(SolutionDir)lib/poly2tri/include;$(SolutionDir)src/umbase;$(SolutionDir)src/umimage;$(SolutionDir)src/umio</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WITH_DIRECTX;WITH_OPENGL;GLEW_STATIC;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;$(SolutionDir)lib/glew/include;$(SolutionDir)lib/poly2tri/include;$(SolutionDir)src/umbase;$(SolutionDir)src/umimage;$(SolutionDir)src/umio</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WITH_DIRECTX;WITH_OPENGL;GLEW_STATIC;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\umdraw\UMCamera.h" />
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11.h" />
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11Board.h" />
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11Camera.h" />
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11Curve.h" />
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11DrawParameter.h" />
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11IO.h" />
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11Light.h" />
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11Line.h" />
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11Material.h" />
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11Mesh.h" />
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11MeshGroup.h" />
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11NurbsPatch.h" />
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11Point.h" />
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11Scene.h" />
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11Shader.h" />
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11ShaderManager.h" />
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11Texture.h" />
+    <ClInclude Include="..\..\src\umdraw\UMDraw.h" />
+    <ClInclude Include="..\..\src\umdraw\UMLight.h" />
+    <ClInclude Include="..\..\src\umdraw\UMLine.h" />
+    <ClInclude Include="..\..\src\umdraw\UMMaterial.h" />
+    <ClInclude Include="..\..\src\umdraw\UMMesh.h" />
+    <ClInclude Include="..\..\src\umdraw\UMMeshGroup.h" />
+    <ClInclude Include="..\..\src\umdraw\UMNode.h" />
+    <ClInclude Include="..\..\src\umdraw\UMOpenGL.h" />
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLBoard.h" />
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLCamera.h" />
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLCurve.h" />
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLDrawParameter.h" />
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLIO.h" />
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLLight.h" />
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLLine.h" />
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLMaterial.h" />
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLMesh.h" />
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLMeshGroup.h" />
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLNurbsPatch.h" />
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLPoint.h" />
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLScene.h" />
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLShader.h" />
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLShaderManager.h" />
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLTexture.h" />
+    <ClInclude Include="..\..\src\umdraw\UMPoint.h" />
+    <ClInclude Include="..\..\src\umdraw\UMScene.h" />
+    <ClInclude Include="..\..\src\umdraw\UMShaderEntry.h" />
+    <ClInclude Include="..\..\src\umdraw\UMSoftwareEventType.h" />
+    <ClInclude Include="..\..\src\umdraw\UMSoftwareIO.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\umdraw\UMCamera.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11Board.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11Camera.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11Curve.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11IO.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11Light.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11Line.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11Material.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11Mesh.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11MeshGroup.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11NurbsPatch.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11Point.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11Scene.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11Shader.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11ShaderManager.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11Texture.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMDraw.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMLight.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMLine.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMMaterial.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMMesh.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMOpenGL.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLBoard.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLCamera.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLCurve.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLIO.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLLight.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLLine.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLMaterial.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLMesh.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLMeshGroup.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLNurbsPatch.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLPoint.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLScene.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLShader.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLShaderManager.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLTexture.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMPoint.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMScene.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMShaderEntry.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMSoftwareIO.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\umbase\umbase.vcxproj">
+      <Project>{8b753bf7-2ccf-4324-9ac4-28863a3e1422}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\umimage\umimage.vcxproj">
+      <Project>{85280144-32e7-4ca9-b225-157f1a707748}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\umio\umio.vcxproj">
+      <Project>{fcbf6269-074d-4733-8499-0bddba012e54}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\resource\UMBoardLightPass.fs" />
+    <None Include="..\..\resource\UMBoardLightPass.vs" />
+    <None Include="..\..\resource\UMBoardShader.fs" />
+    <None Include="..\..\resource\UMBoardShader.vs" />
+    <None Include="..\..\resource\UMModelGeometryPass.fs" />
+    <None Include="..\..\resource\UMModelGeometryPass.vs" />
+    <None Include="..\..\resource\UMModelShader.fs">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="..\..\resource\UMModelShader.vs">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="..\..\resource\UMPointShader.fs">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="..\..\resource\UMPointShader.vs">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\resource\common.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
+    </None>
+    <None Include="..\..\resource\model_ps.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
+    </None>
+    <None Include="..\..\resource\model_vs.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
+    </None>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

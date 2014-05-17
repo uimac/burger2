@@ -1,0 +1,336 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="src\directx">
+      <UniqueIdentifier>{1e63662d-4d4b-44fa-bb4b-5eb61a442572}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\opengl">
+      <UniqueIdentifier>{a599cf5a-e193-4728-9a09-c32b544ca12b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\software">
+      <UniqueIdentifier>{90c4029a-a585-4416-ad33-d8b66ba69d43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\opengl\shader">
+      <UniqueIdentifier>{0ea4dec6-9967-4765-b053-4dbaa04a2a96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\directx\shader">
+      <UniqueIdentifier>{8eb126c7-695d-45bb-8811-86c574af5625}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11Board.h">
+      <Filter>src\directx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11Camera.h">
+      <Filter>src\directx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11Light.h">
+      <Filter>src\directx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11Material.h">
+      <Filter>src\directx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11Mesh.h">
+      <Filter>src\directx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11MeshGroup.h">
+      <Filter>src\directx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11Scene.h">
+      <Filter>src\directx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11Shader.h">
+      <Filter>src\directx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11ShaderManager.h">
+      <Filter>src\directx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11Texture.h">
+      <Filter>src\directx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLMaterial.h">
+      <Filter>src\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLTexture.h">
+      <Filter>src\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMMeshGroup.h">
+      <Filter>src\software</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMLight.h">
+      <Filter>src\software</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMMaterial.h">
+      <Filter>src\software</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMMesh.h">
+      <Filter>src\software</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11.h">
+      <Filter>src\directx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMOpenGL.h">
+      <Filter>src\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLScene.h">
+      <Filter>src\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLMesh.h">
+      <Filter>src\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLMeshGroup.h">
+      <Filter>src\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLShaderManager.h">
+      <Filter>src\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLShader.h">
+      <Filter>src\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLLight.h">
+      <Filter>src\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLCamera.h">
+      <Filter>src\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11IO.h">
+      <Filter>src\directx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLIO.h">
+      <Filter>src\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMSoftwareIO.h">
+      <Filter>src\software</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMDraw.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMCamera.h">
+      <Filter>src\software</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMScene.h">
+      <Filter>src\software</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMShaderEntry.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMNode.h">
+      <Filter>src\software</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLPoint.h">
+      <Filter>src\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLCurve.h">
+      <Filter>src\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLNurbsPatch.h">
+      <Filter>src\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11Point.h">
+      <Filter>src\directx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11NurbsPatch.h">
+      <Filter>src\directx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11Curve.h">
+      <Filter>src\directx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLDrawParameter.h">
+      <Filter>src\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMPoint.h">
+      <Filter>src\software</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMLine.h">
+      <Filter>src\software</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11DrawParameter.h">
+      <Filter>src\directx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11Line.h">
+      <Filter>src\directx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLLine.h">
+      <Filter>src\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMSoftwareEventType.h">
+      <Filter>src\software</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLBoard.h">
+      <Filter>src\opengl</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11Board.cpp">
+      <Filter>src\directx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11Camera.cpp">
+      <Filter>src\directx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11Light.cpp">
+      <Filter>src\directx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11Material.cpp">
+      <Filter>src\directx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11Mesh.cpp">
+      <Filter>src\directx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11MeshGroup.cpp">
+      <Filter>src\directx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11Scene.cpp">
+      <Filter>src\directx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11Shader.cpp">
+      <Filter>src\directx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11ShaderManager.cpp">
+      <Filter>src\directx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11Texture.cpp">
+      <Filter>src\directx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLMaterial.cpp">
+      <Filter>src\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLTexture.cpp">
+      <Filter>src\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMLight.cpp">
+      <Filter>src\software</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMMaterial.cpp">
+      <Filter>src\software</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMMesh.cpp">
+      <Filter>src\software</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11.cpp">
+      <Filter>src\directx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMOpenGL.cpp">
+      <Filter>src\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLScene.cpp">
+      <Filter>src\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLMesh.cpp">
+      <Filter>src\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLMeshGroup.cpp">
+      <Filter>src\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLShaderManager.cpp">
+      <Filter>src\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLShader.cpp">
+      <Filter>src\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLLight.cpp">
+      <Filter>src\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLCamera.cpp">
+      <Filter>src\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11IO.cpp">
+      <Filter>src\directx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLIO.cpp">
+      <Filter>src\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMSoftwareIO.cpp">
+      <Filter>src\software</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMDraw.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMCamera.cpp">
+      <Filter>src\software</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMScene.cpp">
+      <Filter>src\software</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMShaderEntry.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLPoint.cpp">
+      <Filter>src\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLCurve.cpp">
+      <Filter>src\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLNurbsPatch.cpp">
+      <Filter>src\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11Point.cpp">
+      <Filter>src\directx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11Curve.cpp">
+      <Filter>src\directx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11NurbsPatch.cpp">
+      <Filter>src\directx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMPoint.cpp">
+      <Filter>src\software</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMLine.cpp">
+      <Filter>src\software</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11Line.cpp">
+      <Filter>src\directx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLLine.cpp">
+      <Filter>src\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLBoard.cpp">
+      <Filter>src\opengl</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\resource\UMModelShader.fs">
+      <Filter>src\opengl\shader</Filter>
+    </None>
+    <None Include="..\..\resource\UMModelShader.vs">
+      <Filter>src\opengl\shader</Filter>
+    </None>
+    <None Include="..\..\resource\UMPointShader.fs">
+      <Filter>src\opengl\shader</Filter>
+    </None>
+    <None Include="..\..\resource\UMPointShader.vs">
+      <Filter>src\opengl\shader</Filter>
+    </None>
+    <None Include="..\..\resource\common.hlsl">
+      <Filter>src\directx\shader</Filter>
+    </None>
+    <None Include="..\..\resource\model_ps.hlsl">
+      <Filter>src\directx\shader</Filter>
+    </None>
+    <None Include="..\..\resource\model_vs.hlsl">
+      <Filter>src\directx\shader</Filter>
+    </None>
+    <None Include="..\..\resource\UMBoardShader.fs">
+      <Filter>src\opengl\shader</Filter>
+    </None>
+    <None Include="..\..\resource\UMBoardShader.vs">
+      <Filter>src\opengl\shader</Filter>
+    </None>
+    <None Include="..\..\resource\UMModelGeometryPass.fs">
+      <Filter>src\opengl\shader</Filter>
+    </None>
+    <None Include="..\..\resource\UMModelGeometryPass.vs">
+      <Filter>src\opengl\shader</Filter>
+    </None>
+    <None Include="..\..\resource\UMBoardLightPass.vs">
+      <Filter>src\opengl\shader</Filter>
+    </None>
+    <None Include="..\..\resource\UMBoardLightPass.fs">
+      <Filter>src\opengl\shader</Filter>
+    </None>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="src\bos">
+      <UniqueIdentifier>{22b980fe-9302-49c6-bba7-b0ad8fbfd7e9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\umio\UMIO.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umio\UMIOSetting.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umio\UMListTypes.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umio\UMMatrix.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umio\UMObject.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umio\UMVector.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umio\UMAnimation.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umio\UMBlendShapeBos.h">
+      <Filter>src\bos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umio\UMBlendShapeChannelBos.h">
+      <Filter>src\bos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umio\UMCameraBos.h">
+      <Filter>src\bos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umio\UMClusterBos.h">
+      <Filter>src\bos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umio\UMDeformerBos.h">
+      <Filter>src\bos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umio\UMIOSettingBos.h">
+      <Filter>src\bos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umio\UMMaterialBos.h">
+      <Filter>src\bos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umio\UMMatrixBos.h">
+      <Filter>src\bos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umio\UMMeshBos.h">
+      <Filter>src\bos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umio\UMNodeBos.h">
+      <Filter>src\bos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umio\UMObjectBos.h">
+      <Filter>src\bos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umio\UMPoseBos.h">
+      <Filter>src\bos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umio\UMShapeBos.h">
+      <Filter>src\bos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umio\UMSkeletonBos.h">
+      <Filter>src\bos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umio\UMTextureBos.h">
+      <Filter>src\bos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umio\UMVector2Bos.h">
+      <Filter>src\bos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umio\UMVector3Bos.h">
+      <Filter>src\bos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umio\UMVector4Bos.h">
+      <Filter>src\bos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umio\UMSkinBos.h">
+      <Filter>src\bos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umio\UMFbx.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\umio\UMIO.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umio\UMObject.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umio\UMPython.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umio\UMFbx2011.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umio\UMFbx2013.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umio\UMFbx.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umio\UMFbx2014.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
