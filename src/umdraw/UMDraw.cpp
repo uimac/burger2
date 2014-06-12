@@ -7,8 +7,6 @@
  * Licensed  under the MIT license. 
  *
  */
-#pragma once
-
 #include "UMDraw.h"
 #include "UMDirectX11.h"
 #include "UMOpenGL.h"

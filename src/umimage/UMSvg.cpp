@@ -31,7 +31,7 @@ public:
 	{
 	}
 	
-	bool load(const std::u16string& filepath)
+	bool load(const umstring& filepath)
 	{
 		//image_ = nsvgParseFromFile(filepath.c_str(), "px", 96.0f);
 		//if (!image_) return false;
@@ -100,7 +100,7 @@ UMSvg::~UMSvg()
 /**
  * load image from file
  */
-UMSvgPtr UMSvg::load(const std::u16string& filepath)
+UMSvgPtr UMSvg::load(const umstring& filepath)
 {
 	UMSvgPtr svg(std::make_shared<UMSvg>());
 	if (svg->impl_->load(filepath))

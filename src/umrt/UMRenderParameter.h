@@ -32,8 +32,8 @@ public:
 	{}
 
 	UMRenderParameter(int width, int height)
-		: super_sampling_count_(2, 2)
-		, sample_count_(4)
+		: super_sampling_count_(1, 1)
+		, sample_count_(2)
 		, output_image_(std::make_shared<UMImage>())
 	{
 		if (UMImagePtr image = output_image())

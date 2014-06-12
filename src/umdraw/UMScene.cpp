@@ -29,6 +29,7 @@ namespace umdraw
 void UMScene::init(int width, int height)
 {
 	camera_change_event_ = std::make_shared<umbase::UMEvent>(eSoftwareEventCameraChaged);
+	foreground_change_event_ = std::make_shared<umbase::UMEvent>(eSoftwareEventForegroundChaged);
 
 	width_ = width;
 	height_ = height;
@@ -40,7 +41,7 @@ void UMScene::init(int width, int height)
 /**
  * load model data
  */
-bool UMScene::load(const std::u16string& absolute_file_path)
+bool UMScene::load(const umstring& absolute_file_path)
 {
 	umio::UMIO io;
 	umio::UMObjectPtr obj;
@@ -77,8 +78,10 @@ bool UMScene::load_from_memory(const std::string& src)
 	umio::UMIOSetting setting = umio::UMIOSetting();
 	setting.set_bl_imp_bool_prop(umio::UMIOSetting::eUMImpTriangulate, true);
 	setting.set_system_unit_type(umio::UMIOSetting::eFbxSystemUnitM);
+	printf("loading model ...\n");
 	obj = io.load_bos_from_memory(src, setting);
 	if (!obj) return false;
+	printf("finish loading model ...\n");
 	
 	// import to umdraw
 	UMMeshGroupPtr mesh_group(std::make_shared<UMMeshGroup>());
@@ -86,7 +89,7 @@ bool UMScene::load_from_memory(const std::string& src)
 		if (!UMSoftwareIO::import_mesh_list(
 			mesh_group->mutable_mesh_list(), 
 			obj,
-			std::u16string()))
+			umstring()))
 		{
 			return false;
 		}
@@ -123,5 +126,28 @@ void UMScene::set_camera(UMCameraPtr camera)
 	camera_change_event_->set_parameter(parameter);
 	camera_change_event_->notify();
 }
+
+/**
+ * get background image
+ */
+void UMScene::set_background_image(UMImagePtr image)
+{
+	background_image_ = image;
+	umbase::UMEvent::Parameter parameter(image);
+	background_change_event_->set_parameter(parameter);
+	background_change_event_->notify();
+}
+
+/**
+	* get foreground image
+	*/ 
+void UMScene::set_foreground_image(UMImagePtr image)
+{
+	foreground_image_ = image;
+	umbase::UMEvent::Parameter parameter(image);
+	foreground_change_event_->set_parameter(parameter);
+	foreground_change_event_->notify();
+}
+
 
 } // umdraw

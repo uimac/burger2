@@ -28,7 +28,7 @@ class UMMaterial;
 typedef std::shared_ptr<UMMaterial> UMMaterialPtr;
 typedef std::weak_ptr<UMMaterial> UMMaterialWeakPtr;
 typedef std::vector<UMMaterialPtr> UMMaterialList;
-typedef std::map<std::u16string, UMMaterialPtr> UMMaterialMap;
+typedef std::map<umstring, UMMaterialPtr> UMMaterialMap;
 
 /**
  * a material
@@ -39,7 +39,7 @@ class UMMaterial : public UMNode
 
 public:
 	typedef std::vector<UMImagePtr> TextureList;
-	typedef std::vector<std::u16string> TexturePathList;
+	typedef std::vector<umstring> TexturePathList;
 
 	UMMaterial() :
 		polygon_count_(0),
@@ -62,7 +62,7 @@ public:
 		return material;
 	}
 
-	const std::u16string& name() const { return name_; }
+	const umstring& name() const { return name_; }
 	const UMVec4d& ambient() const { return ambient_; }
 	const UMVec4d& diffuse() const { return diffuse_; }
 	const UMVec4d& specular() const { return specular_; }
@@ -78,7 +78,7 @@ public:
 	const double ambient_factor() const { return ambient_factor_; }
 	const TextureList& texture_list() const { return texture_list_; }
 
-	void set_name(const std::u16string& name) { name_ = name; }
+	void set_name(const umstring& name) { name_ = name; }
 	void set_ambient(const UMVec4d& ambient) { ambient_ = ambient; }
 	void set_diffuse(const UMVec4d& diffuse) { diffuse_ = diffuse; }
 	void set_specular(const UMVec4d& specular) { specular_ = specular; }
@@ -114,7 +114,7 @@ public:
 	 */
 	void set_polygon_count(int count) { polygon_count_ = count; }
 private:
-	std::u16string name_;
+	umstring name_;
 	UMVec4d ambient_;
 	UMVec4d diffuse_;
 	UMVec4d specular_;

@@ -91,7 +91,7 @@ public:
 	 * @param [in] file_path absolute texture file path
 	 * @retval success or fail
 	 */
-	bool load(const std::u16string& file_path);
+	bool load(const umstring& file_path);
 
 	/**
 	 * convert UMImage to DirectX11 Texture

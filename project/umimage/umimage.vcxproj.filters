@@ -22,6 +22,9 @@
     <ClCompile Include="..\..\src\umimage\UMSvg.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\umimage\UMStbFont.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\umimage\UMImage.h">

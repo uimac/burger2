@@ -145,7 +145,7 @@ public:
 	 */
 	bool load(
 		ID3D11Device *device_pointer,
-		const std::u16string& file_path);
+		const umstring& file_path);
 
 	/**
 	 * convert UMImage to DirectX11 Texture

@@ -23,7 +23,7 @@ namespace umdraw
 
 class UMOpenGLMaterial;
 typedef std::shared_ptr<UMOpenGLMaterial> UMOpenGLMaterialPtr;
-typedef std::map<std::u16string, UMOpenGLMaterialPtr> UMOpenGLMaterialMap;
+typedef std::map<umstring, UMOpenGLMaterialPtr> UMOpenGLMaterialMap;
 typedef std::vector<UMOpenGLMaterialPtr> UMOpenGLMaterialList;
 
 class UMMaterial;
@@ -41,7 +41,7 @@ class UMOpenGLMaterial
 	DISALLOW_COPY_AND_ASSIGN(UMOpenGLMaterial);
 
 public:
-	typedef std::vector<std::u16string> TexturePathList;
+	typedef std::vector<umstring> TexturePathList;
 	
 	/**
 	 * constructor.
@@ -145,12 +145,12 @@ public:
 	/**
 	 * set name
 	 */
-	void set_name(const std::u16string& name);
+	void set_name(const umstring& name);
 
 	/**
 	 * get name
 	 */
-	const std::u16string& name();
+	const umstring& name();
 	
 private:
 	class Impl;

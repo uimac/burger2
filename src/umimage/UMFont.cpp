@@ -15,9 +15,14 @@
 #include <map>
 #include <ft2build.h>
 #include FT_FREETYPE_H
-#include <tchar.h>
 #include <ctype.h>
-#include <Windows.h>
+
+#ifdef WITH_EMSCRIPTEN
+	#include <emscripten.h>
+#else
+	#include <tchar.h>
+	#include <Windows.h>
+#endif // WITH_EMSCRIPTEN
 
 #include "UMImage.h"
 #include "UMPath.h"
@@ -29,17 +34,18 @@ namespace
 {
 	FT_Library  library;
 	// font name, face
-	typedef std::map<std::u16string, FT_Face> FontFaceMap;
+	typedef std::map<umstring, FT_Face> FontFaceMap;
 	FontFaceMap font_face_map;
 
 	typedef std::vector<char> FontBuffer;
 	// font name, buffer
-	typedef std::map<std::u16string, FontBuffer> FontBufferMap;
+	typedef std::map<umstring, FontBuffer> FontBufferMap;
 	FontBufferMap font_buffer_map;
 
 	const int initial_font_size = 32;
 
-	bool load_font_face(void* hWnd, const std::u16string& font_name)
+#if !defined(WITH_EMSCRIPTEN)
+	bool load_font_face(void* hWnd, const umstring& font_name)
 	{
 		if (!hWnd) return false;
 		if (font_face_map.find(font_name) != font_face_map.end()) return true;
@@ -117,7 +123,57 @@ namespace
 		}
 		return true;
 	}
+#endif // !defined(WITH_EMSCRIPTEN)
 	
+	bool load_font_face_from_file(const umstring& file_name)
+	{
+		printf("load font file name %s\n", file_name.c_str());
+		std::string name = umbase::UMStringUtil::utf16_to_utf8(file_name);
+		FT_Face font_face;
+		if (int error = FT_New_Face(
+			library, 
+			name.c_str(),
+			0,
+			&font_face))
+		{
+			return false;
+		}
+		if (int error = FT_Set_Pixel_Sizes(
+			font_face,
+			0,
+			initial_font_size))
+		{
+			return false;
+		}
+		font_face_map[file_name] = font_face;
+			
+		return true;
+	}
+
+	bool load_font_face_from_memory(const umstring& font_name, const std::string& data)
+	{
+		std::string name = umbase::UMStringUtil::utf16_to_utf8(font_name);
+		FT_Face font_face;
+		if (int error = FT_New_Memory_Face(
+			library, 
+			reinterpret_cast<const FT_Byte*>(data.c_str()),
+			data.size(),
+			0,
+			&font_face))
+		{
+			return false;
+		}
+		if (int error = FT_Set_Pixel_Sizes(
+			font_face,
+			0,
+			initial_font_size))
+		{
+			return false;
+		}
+		font_face_map[font_name] = font_face;
+		return true;
+	}
+
 	typedef std::vector<umimage::UMTextureAtlasPtr> AtlasList;
 	AtlasList atlas_list;
 
@@ -175,10 +231,10 @@ const UMFont* UMFont::instance()
 /**
  * font image
  */
-UMImagePtr UMFont::font_image(const std::u16string& font_name, const std::u16string& text, int font_size, int image_width, int image_height) const
+UMImagePtr UMFont::font_image(const umstring& font_name, const umtextstring& text, int font_size, int image_width, int image_height) const
 {
-	if (text.empty()) return false;
-	if (!is_font_loaded(font_name)) return false;
+	if (text.empty()) return UMImagePtr();
+	if (!is_font_loaded(font_name)) return UMImagePtr();
 
 	UMImagePtr image;
 	FontFaceMap::const_iterator it = font_face_map.find(font_name);
@@ -211,7 +267,7 @@ UMImagePtr UMFont::font_image(const std::u16string& font_name, const std::u16str
 		for (int i = 0; i < static_cast<int>(text.size()); ++i)
 		{
 			FT_UInt glyph_index = FT_Get_Char_Index(font_face, text[i]);
-			if (text[i] < 0xFF && isgraph(text[i]))
+			if (static_cast<int>(text[i]) < 0xFF && isgraph(text[i]))
 			{
 				// ascii
 				if (int error = FT_Load_Glyph(font_face, glyph_index, FT_LOAD_NO_BITMAP))
@@ -270,12 +326,40 @@ UMImagePtr UMFont::font_image(const std::u16string& font_name, const std::u16str
 }
 
 /**
- * init font
+ * load font from system
  */
-bool UMFont::load_font(void* hWnd, const std::u16string& font_name) const
+bool UMFont::load_font(void* hWnd, const umstring& font_name) const
 {
 	if (is_font_loaded(font_name)) return true;
+#if !defined(WITH_EMSCRIPTEN)
 	if (load_font_face(hWnd, font_name))
+	{
+		return true;
+	}
+#endif
+	return false;
+}
+
+/**
+ * load font from file
+ */
+bool UMFont::load_font_from_file(const umstring& font_name) const
+{
+	if (is_font_loaded(font_name)) return true;
+	if (load_font_face_from_file(font_name))
+	{
+		return true;
+	}
+	return false;
+}
+
+/**
+ * load font from memory
+ */
+bool UMFont::load_font_from_memory(const umstring& font_name, const std::string& data) const
+{
+	if (is_font_loaded(font_name)) return true;
+	if (load_font_face_from_memory(font_name, data))
 	{
 		return true;
 	}
@@ -285,7 +369,7 @@ bool UMFont::load_font(void* hWnd, const std::u16string& font_name) const
 /**
  * is font loaded
  */
-bool UMFont::is_font_loaded(const std::u16string& font_name) const
+bool UMFont::is_font_loaded(const umstring& font_name) const
 {
 	return (font_face_map.find(font_name) != font_face_map.end());
 }
@@ -293,100 +377,106 @@ bool UMFont::is_font_loaded(const std::u16string& font_name) const
 /**
  * get font image
  */
-UMTextureAtlasPtr UMFont::font_atlas(const std::u16string& font_name, const std::u16string& text, int font_size) const
+UMTextureAtlasPtr UMFont::font_atlas(const umstring& font_name, const umtextstring& text, int font_size) const
 {
-	if (text.empty()) return false;
-	if (!is_font_loaded(font_name)) return false;
+	if (text.empty()) return UMTextureAtlasPtr();
+	bool is_found_font = is_font_loaded(font_name);
+	if (!is_found_font && font_face_map.empty()) return UMTextureAtlasPtr();
 
 	UMTextureAtlasPtr texture_atlas = atlas_list.back();
-
-	FontFaceMap::const_iterator it = font_face_map.find(font_name);
-	if (it != font_face_map.end())
+	
+	FT_Face font_face;
+	
+	if (is_found_font)
 	{
-		const  FT_Face& font_face = it->second;
-		if (int error = FT_Set_Pixel_Sizes(
-			font_face,
-			0,
-			font_size))
+		font_face = font_face_map.find(font_name)->second;
+	}
+	else
+	{
+		font_face = font_face_map.begin()->second;
+	}
+
+	if (int error = FT_Set_Pixel_Sizes(
+		font_face,
+		0,
+		font_size))
+	{
+		return UMTextureAtlasPtr();
+	}
+	for (int i = 0; i < static_cast<int>(text.size()); ++i)
+	{
+		if (texture_atlas->is_exist(text[i]))
 		{
-			return UMTextureAtlasPtr();
+			continue;
 		}
-		for (int i = 0; i < static_cast<int>(text.size()); ++i)
+		FT_UInt glyph_index = FT_Get_Char_Index(font_face, text[i]);
+		if (static_cast<int>(text[i]) < 0xFF && isgraph(text[i]))
 		{
-			if (texture_atlas->is_exist(text[i]))
+			// ascii
+			if (int error = FT_Load_Glyph(font_face, glyph_index, FT_LOAD_NO_BITMAP))
 			{
 				continue;
 			}
-			FT_UInt glyph_index = FT_Get_Char_Index(font_face, text[i]);
-			if (text[i] < 0xFF && isgraph(text[i]))
-			{
-				// ascii
-				if (int error = FT_Load_Glyph(font_face, glyph_index, FT_LOAD_NO_BITMAP))
-				{
-					continue;
-				}
-			}
-			else
-			{
-				if (int error = FT_Load_Glyph(font_face, glyph_index, FT_LOAD_NO_BITMAP | FT_LOAD_NO_HINTING | FT_LOAD_NO_AUTOHINT))
-				{
-					continue;
-				}
-			}
-
-			if (int error = FT_Render_Glyph(font_face->glyph, FT_RENDER_MODE_NORMAL))
+		}
+		else
+		{
+			if (int error = FT_Load_Glyph(font_face, glyph_index, FT_LOAD_NO_BITMAP | FT_LOAD_NO_HINTING | FT_LOAD_NO_AUTOHINT))
 			{
 				continue;
 			}
-				
-			const FT_GlyphSlot slot = font_face->glyph;
-			unsigned char* bitmap_buffer = slot->bitmap.buffer;
-			const int bitmap_w = slot->bitmap.width;
-			const int bitmap_h = slot->bitmap.rows;
-			const int advance_x = static_cast<int>(slot->metrics.horiAdvance/64.0);
-			const int advance_y = static_cast<int>(slot->metrics.vertAdvance/64.0);
-			const int iyoffset = font_size - slot->bitmap_top;
-			const int ixoffset = slot->bitmap_left;
-				
-			// bitmap : base point is left-bottom.
-			int posx = 0;
-			int posy = 0;
-			int imagex = 0;
-			int imagey = 0;
-				
-			const int xsize = posx + bitmap_w;
-			const int ysize = posy + bitmap_h;
+		}
 
-			// create image
-			UMImagePtr image(std::make_shared<UMImage>());
-			image->init(advance_x, ysize + iyoffset);
-			image->fill(umbase::UMVec4d(0));
+		if (int error = FT_Render_Glyph(font_face->glyph, FT_RENDER_MODE_NORMAL))
+		{
+			continue;
+		}
+				
+		const FT_GlyphSlot slot = font_face->glyph;
+		unsigned char* bitmap_buffer = slot->bitmap.buffer;
+		const int bitmap_w = slot->bitmap.width;
+		const int bitmap_h = slot->bitmap.rows;
+		const int advance_x = static_cast<int>(slot->metrics.horiAdvance/64.0);
+		const int advance_y = static_cast<int>(slot->metrics.vertAdvance/64.0);
+		const int iyoffset = font_size - slot->bitmap_top;
+		const int ixoffset = slot->bitmap_left;
+				
+		// bitmap : base point is left-bottom.
+		int posx = 0;
+		int posy = 0;
+		int imagex = 0;
+		int imagey = 0;
+				
+		const int xsize = posx + bitmap_w;
+		const int ysize = posy + bitmap_h;
+		// create image
+		UMImagePtr image(std::make_shared<UMImage>());
+		image->init(advance_x + 2, ysize + iyoffset + 2);
+		image->fill(umbase::UMVec4d(0));
 
-			// image  : base point is left-top.
-			const int image_w = image->width();
-			const int image_h = image->height();
+		// image  : base point is left-top.
+		const int image_w = image->width();
+		const int image_h = image->height();
 
-			for (int y = posy, iy = imagey; y < ysize; ++y, ++iy)
+		for (int y = posy, iy = imagey; y < ysize; ++y, ++iy)
+		{
+			for (int x = posx, ix = imagex; x < xsize; ++x, ++ix)
 			{
-				for (int x = posx, ix = imagex; x < xsize; ++x, ++ix)
-				{
-					const int buffer_pos = bitmap_w * (y - posy) + (x - posx);
-					const int image_pos = image_w * (iy + iyoffset) + (ix + ixoffset);
-					const double alpha = bitmap_buffer[buffer_pos] / static_cast<double>(0xFF);
-					const double inv_alpha = 1.0 - alpha;
-					// for alpha image
-					image->mutable_list().at(image_pos) = umbase::UMVec4d(1, 1, 1, alpha);
-					//image->mutable_list().at(image_pos) = umbase::UMVec4d(inv_alpha, inv_alpha, inv_alpha, 1.0);
-				};
-			}
-			if (!texture_atlas->add_text_image(image, text[i]))
+				const int buffer_pos = bitmap_w * (y - posy) + (x - posx);
+				const int image_pos = image_w * (iy + iyoffset) + (ix + ixoffset);
+				const double alpha = bitmap_buffer[buffer_pos] / static_cast<double>(0xFF);
+				const double inv_alpha = 1.0 - alpha;
+				// for alpha image
+				image->mutable_list().at(image_pos) = umbase::UMVec4d(1, 1, 1, alpha);
+				//image->mutable_list().at(image_pos) = umbase::UMVec4d(inv_alpha, inv_alpha, inv_alpha, 1.0);
+			};
+		}
+		if (!texture_atlas->add_text_image(image, text[i]))
+		{
+			UMTextureAtlasPtr new_atlas = std::make_shared<UMTextureAtlas>(atlas_width, atlas_height);
+			atlas_list.push_back(new_atlas);
+			if (font_atlas(font_name, text, font_size))
 			{
-				UMTextureAtlasPtr new_atlas = std::make_shared<UMTextureAtlas>(atlas_width, atlas_height);
-				atlas_list.push_back(new_atlas);
-				if (font_atlas(font_name, text, font_size))
-				{
-					return new_atlas;
-				}
+				return new_atlas;
 			}
 		}
 	}

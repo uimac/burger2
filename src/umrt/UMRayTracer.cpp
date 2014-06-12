@@ -25,7 +25,21 @@ namespace
 	using namespace umrt;
 	using namespace umdraw;
 	
-	std::uniform_real_distribution<> random_range(0.0, 1.0);
+	unsigned int xor128()
+	{
+		static unsigned int x = 123456789;
+		static unsigned int y = 362436069;
+		static unsigned int z = 521288629;
+		static unsigned int w = 88675123;
+		unsigned int t = x ^ (x << 11);
+		x = y; y = z; z = w;
+		return w = w ^ (w >> 19) ^ t ^ (t >> 8);
+	}
+
+	double xor128d()
+	{
+		return xor128() / 4294967296.0;
+	}
 
 	// definition
 	UMVec3d trace(const UMRay& ray, UMSceneAccessPtr scene_access, UMShaderParameter& parameter);
@@ -40,8 +54,8 @@ namespace
 
 	UMVec3d reflect(const UMRay& ray, const UMVec3d& normal)
 	{
-		UMVec3d in_dir(-ray.direction());
-		return -in_dir + normal * in_dir.dot(normal) * 2.0;
+		UMVec3d origin(ray.origin());
+		return normal * origin.dot(normal) * 2.0 - origin;
 	}
 	
 	class UMIntersection
@@ -77,7 +91,11 @@ namespace
 				}
 			}
 		}
-		return intersection.closest_primitive;
+		if (intersection.closest_primitive)
+		{
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -86,35 +104,37 @@ namespace
 	UMVec3d shade(const UMPrimitivePtr current, const UMRay& ray, UMSceneAccessPtr scene_access, UMShaderParameter& parameter)
 	{
 		umdraw::UMScenePtr scene = scene_access->scene();
-		UMVec3d light_position = scene->light_list().at(0)->position();
-		UMVec3d shadow_dir = -(parameter.intersect_point - light_position ).normalized();
-		UMVec3d normal(parameter.normal);
+		UMVec3d normal(parameter.normal.normalized());
+		UMVec3d radiance(0);
+		UMLightList::const_iterator it = scene->light_list().begin();
+		for (; it != scene->light_list().end(); ++it)
+		{
+			UMVec3d light_position = (*it)->position();
+			UMVec3d L = (light_position - parameter.intersect_point).normalized();
 
-		//// reflection ray
-		//if (parameter.bounce > 0)
-		//{
-		//	--parameter.bounce;
-		//	UMVec3d refrection_dir = reflect(ray, normal);
-		//	UMRay reflection_ray(parameter.intersect_point, refrection_dir);
-		//	UMVec3d original_color(parameter.color);
-		//	UMVec3d color = trace(reflection_ray, scene, parameter);
-		//	UMVec3d nl = parameter.normal.dot(refrection_dir);
-		//	return UMVec3d(
-		//		original_color.x * color.x * nl.x,
-		//		original_color.y * color.y * nl.y,
-		//		original_color.z * color.z * nl.z);
-		//}
-
-		//// shadow ray
-		//UMRay shadow_ray(parameter.intersect_point, shadow_dir);
-		//UMIntersection intersection;
-		//UMShaderParameter shadow_parameter;
-		//if (intersect(shadow_ray, scene, shadow_parameter, intersection))
-		//{
-		//	return UMVec3d(0);
-		//}
-
-		return map_one(parameter.color * (normal.dot(shadow_dir)) * 0.5);
+			// shadow ray
+			UMRay shadow_ray(parameter.intersect_point + parameter.normal * 0.00001, L);
+			UMIntersection intersection;
+			UMShaderParameter shadow_parameter;
+			if (!intersect(shadow_ray, scene_access, shadow_parameter, intersection))
+			{
+				radiance += parameter.color * normal.dot(L);
+			}
+		}
+		// reflection ray
+		if (parameter.bounce > 0)
+		{
+			UMShaderParameter refrect_parameter;
+			parameter.bounce--;
+			refrect_parameter.bounce = parameter.bounce;
+			UMVec3d refrection_dir = reflect(ray, normal).normalized();
+			UMRay reflection_ray(parameter.intersect_point + normal * 0.00001, refrection_dir);
+			UMVec3d color = trace(reflection_ray, scene_access, refrect_parameter);
+			//UMVec3d nl = parameter.normal.dot(refrection_dir);
+			radiance += color;
+		}
+		
+		return map_one(radiance);
 	}
 
 	/**
@@ -124,8 +144,11 @@ namespace
 	{
 		umdraw::UMScenePtr scene = scene_access->scene();
 		UMIntersection intersection;
-		if (!intersect(ray, scene_access, parameter, intersection)){
-			return scene->background_color();
+		if (parameter.bounce == 1)
+		{
+			if (!intersect(ray, scene_access, parameter, intersection)){
+				return scene->background_color();
+			}
 		}
 
 		if (intersection.closest_primitive)
@@ -154,14 +177,14 @@ bool UMRayTracer::render(UMSceneAccessPtr scene_access, UMRenderParameter& param
 
 	UMImage::ImageBuffer& dst_buffer = parameter.output_image()->mutable_list();
 	
-	std::random_device random_device;
-	std::vector<unsigned int> seed(2 * height_);
-	std::generate(seed.begin(), seed.end(), std::ref(random_device));
+	//std::random_device random_device;
+	//std::vector<unsigned int> seed(2 * height_);
+	//std::generate(seed.begin(), seed.end(), std::ref(random_device));
 	
-#pragma omp parallel for schedule(dynamic, 1) num_threads(8)
+//#pragma omp parallel for schedule(dynamic, 1) num_threads(8)
 	for (int y = 0; y < height_; ++y)
 	{
-		std::mt19937 mt(std::seed_seq(seed.begin() + 2 * y, seed.begin() +  2 * (y + 1)));
+		//std::mt19937 mt(std::seed_seq(seed.begin() + 2 * y, seed.begin() +  2 * (y + 1)));
 
 		if (sample_count > 1)
 		{
@@ -170,7 +193,7 @@ bool UMRayTracer::render(UMSceneAccessPtr scene_access, UMRenderParameter& param
 				const int pos = width_ * y + x;
 				for (int s = 0; s < sample_count; ++s)
 				{
-					UMVec2d sample_point(random_range(mt), random_range(mt));
+					UMVec2d sample_point(xor128d(), xor128d());
 					sample_point.x += x;
 					sample_point.y += y;
 					scene_access->generate_ray(ray_, sample_point);
@@ -191,7 +214,6 @@ bool UMRayTracer::render(UMSceneAccessPtr scene_access, UMRenderParameter& param
 			}
 		}
 	}
-	
 	return true;
 }
 
@@ -210,23 +232,23 @@ bool UMRayTracer::progress_render(UMSceneAccessPtr scene_access, UMRenderParamet
 	const int sample_count = parameter.super_sampling_count().x * parameter.super_sampling_count().y;
 	const double inv_sample_count = 1.0 / sample_count;
 	
-	std::random_device random_device;
-	std::vector<unsigned int> seed(2 * height_);
-	std::generate(seed.begin(), seed.end(), std::ref(random_device));
+	//std::random_device random_device;
+	//std::vector<unsigned int> seed(2 * height_);
+	//std::generate(seed.begin(), seed.end(), std::ref(random_device));
 	
 	for (int& y = current_y_, rows = (y + ystep); y < rows; ++y)
 	{
 		// end
 		if (y == height_) { return false; }
 		
-		std::mt19937 mt(std::seed_seq(seed.begin() + 2 * y, seed.begin() +  2 * (y + 1)));
+		//std::mt19937 mt(std::seed_seq(seed.begin() + 2 * y, seed.begin() +  2 * (y + 1)));
 
 		for (int x = 0; x < width_; ++x)
 		{
 			const int pos = width_ * y + x;
 			for (int s = 0; s < sample_count; ++s)
 			{
-				UMVec2d sample_point(random_range(mt), random_range(mt));
+				UMVec2d sample_point(xor128d(), xor128d());
 				sample_point.x += x;
 				sample_point.y += y;
 				scene_access->generate_ray(ray_, sample_point);

@@ -111,18 +111,38 @@ public:
 	 * get background color
 	 */
 	UMVec3d background_color() const { return UMVec3d(0.1, 0.1, 0.1); }
+	
+	/**
+	 * get background image
+	 */
+	void set_background_image(UMImagePtr image);
+
+	/**
+	 * get foreground image
+	 */ 
+	void set_foreground_image(UMImagePtr image);
+
+	/**
+	 * get background image
+	 */
+	UMImagePtr background_image() { return background_image_; }
+
+	/**
+	 * get foreground image
+	 */ 
+	UMImagePtr foreground_image() { return foreground_image_; }
 
 	/**
 	 * load model data
 	 * @param [in] file_path source file path
 	 */
-	bool load(const std::u16string& file_path);
+	bool load(const umstring& file_path);
 	
 	/**
 	 * load model data from memory
 	 * @param [in] src string as char array
 	 */
-	bool UMScene::load_from_memory(const std::string& src);
+	bool load_from_memory(const std::string& src);
 
 	/**
 	 * get total polygons
@@ -133,6 +153,16 @@ public:
 	 * get camera change event
 	 */
 	umbase::UMEventPtr camera_change_event() { return camera_change_event_; }
+	
+	/**
+	 * get background change event
+	 */
+	umbase::UMEventPtr background_change_event() { return background_change_event_; }
+	
+	/**
+	 * get foreground change event
+	 */
+	umbase::UMEventPtr foreground_change_event() { return foreground_change_event_; }
 
 private:
 
@@ -144,8 +174,12 @@ private:
 
 	UMMeshGroupList mesh_group_list_;
 	UMLineList line_list_;
+	UMImagePtr background_image_;
+	UMImagePtr foreground_image_;
 
 	umbase::UMEventPtr camera_change_event_;
+	umbase::UMEventPtr background_change_event_;
+	umbase::UMEventPtr foreground_change_event_;
 };
 
 } // umdraw

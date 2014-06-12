@@ -1,9 +1,8 @@
-#version 140
-in vec3 a_position;
-in vec3 a_normal;
-in vec2 a_uv;
+#version 100
+attribute vec3 a_position;
+attribute vec2 a_uv;
 uniform mat4 view_projection_matrix;
-out vec2 uv;
+varying vec2 uv;
 void main()
 {
 	vec4 pos = view_projection_matrix * vec4(a_position, 1.0);

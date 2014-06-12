@@ -47,6 +47,9 @@ public:
 	, mat_flags_location_(-1)
 	, sampler_location_(-1)
 	, resolution_location_(-1)
+	, position_attr_(-1)
+	, normal_attr_(-1)
+	, uv_attr_(-1)
 	, is_frag_color_binded_(false)
 	{}
 
@@ -121,6 +124,9 @@ private:
 	unsigned int normal_vbo_;
 	unsigned int uv_vbo_;
 
+	int position_attr_;
+	int normal_attr_;
+	int uv_attr_;
 	int view_projection_location_;
 	int light_position_location_;
 	int light_color_location_;
@@ -152,32 +158,53 @@ bool UMOpenGLMesh::Impl::init_vbo(UMOpenGLShaderPtr shader)
 	// bind vbo to vao
 	if (is_valid_vertex_vbo())
 	{
-		unsigned int offset = 0;//sizeof(UMVec3f) * index_offset;
-
+		unsigned int offset = 0;
 		glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo());
 		GLuint position_attr = glGetAttribLocation(shader->program_object(), "a_position" );
-		glEnableVertexAttribArray(position_attr);
-		glVertexAttribPointer(position_attr, 3, GL_FLOAT, GL_FALSE, 0, (const void*)offset);
+		if (static_cast<int>(position_attr) >= 0)
+		{
+			glEnableVertexAttribArray(position_attr);
+			glVertexAttribPointer(position_attr, 3, GL_FLOAT, GL_FALSE, 0, (const void*)offset);
+		}
+	}
+	else
+	{
+		GLuint position_attr = glGetAttribLocation(shader->program_object(), "a_position" );
+		glDisableVertexAttribArray(position_attr);
 	}
 
 	if (is_valid_normal_vbo())
 	{
-		unsigned int offset = 0;//sizeof(UMVec3f) * index_offset;
-
+		unsigned int offset = 0;
 		glBindBuffer(GL_ARRAY_BUFFER, normal_vbo());
 		GLuint normal_attr = glGetAttribLocation(shader->program_object(), "a_normal" );
-		glEnableVertexAttribArray(normal_attr);
-		glVertexAttribPointer(normal_attr, 3, GL_FLOAT, GL_FALSE, 0, (const void*)offset);
+		if (static_cast<int>(normal_attr ) >= 0)
+		{
+			glEnableVertexAttribArray(normal_attr);
+			glVertexAttribPointer(normal_attr, 3, GL_FLOAT, GL_FALSE, 0, (const void*)offset);
+		}
 	}
-		
+	else
+	{
+		GLuint normal_attr = glGetAttribLocation(shader->program_object(), "a_normal" );
+		glDisableVertexAttribArray(normal_attr);
+	}
+
 	if (is_valid_uv_vbo())
 	{
-		unsigned int offset = 0;//sizeof(UMVec2f) * index_offset;
-
+		unsigned int offset = 0;
 		glBindBuffer(GL_ARRAY_BUFFER, uv_vbo());
 		GLuint uv_attr = glGetAttribLocation(shader->program_object(), "a_uv" );
-		glEnableVertexAttribArray(uv_attr);
-		glVertexAttribPointer(uv_attr, 2, GL_FLOAT, GL_FALSE, 0, (const void*)offset);
+		if (static_cast<int>(uv_attr) >= 0)
+		{
+			glEnableVertexAttribArray(uv_attr);
+			glVertexAttribPointer(uv_attr, 2, GL_FLOAT, GL_FALSE, 0, (const void*)offset);
+		}
+	}
+	else
+	{
+		GLuint uv_attr = glGetAttribLocation(shader->program_object(), "a_uv" );
+		glDisableVertexAttribArray(uv_attr);
 	}
 	return true;
 }
@@ -193,7 +220,8 @@ bool UMOpenGLMesh::Impl::init_vao(UMOpenGLShaderPtr shader)
 	{
 		UMOpenGLMaterialPtr material = *mt;
 		if (!material) continue;
-
+		
+#if !defined(WITH_EMSCRIPTEN)
 		unsigned int vao = mutable_vao_map()[material];
 		if (vao > 0) continue;
 	
@@ -202,17 +230,14 @@ bool UMOpenGLMesh::Impl::init_vao(UMOpenGLShaderPtr shader)
 		glBindVertexArray(vao);
 		init_vbo(shader);
 		glBindVertexArray(0);
-
 		mutable_vao_map()[material] = vao;
-
-		GLuint position_attr = glGetAttribLocation(shader->program_object(), "a_position" );
-		glDisableVertexAttribArray(position_attr);
-		GLuint normal_attr = glGetAttribLocation(shader->program_object(), "a_normal" );
-		glDisableVertexAttribArray(normal_attr);
-		GLuint uv_attr = glGetAttribLocation(shader->program_object(), "a_uv" );
-		glDisableVertexAttribArray(uv_attr);
+#endif
 	}
+#if !defined(WITH_EMSCRIPTEN)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+#else
+	init_vbo(shader);
+#endif
 	return true;
 }
 
@@ -296,11 +321,11 @@ void UMOpenGLMesh::Impl::draw(UMOpenGLDrawParameterPtr parameter)
 		resolution_location_ = glGetUniformLocation(shader->program_object(), "resolution");
 		if (resolution_location_ < 0) { resolution_location_ = -2; }
 	}
-	if (!is_frag_color_binded_)
-	{
-		glBindFragDataLocation(shader->program_object(), 0, "frag_color");
-		is_frag_color_binded_ = true;
-	}
+	//if (!is_frag_color_binded_)
+	//{
+	//	glBindFragDataLocation(shader->program_object(), 0, "frag_color");
+	//	is_frag_color_binded_ = true;
+	//}
 
 	glUseProgram(shader->program_object());
 	init_vao(shader);
@@ -360,9 +385,11 @@ void UMOpenGLMesh::Impl::draw(UMOpenGLDrawParameterPtr parameter)
 	{
 		UMOpenGLMaterialPtr material = *mt;
 		if (!material) continue;
-
+		
+#if !defined(WITH_EMSCRIPTEN)
 		unsigned int& vao = mutable_vao_map()[material];
 		if (vao == 0) continue;
+#endif
 	
 		// put material to glsl
 		// don't use ubo because intel/amd issue
@@ -405,7 +432,9 @@ void UMOpenGLMesh::Impl::draw(UMOpenGLDrawParameterPtr parameter)
 
 		unsigned int index_count = material->polygon_count() * 3;
 		
+#if !defined(WITH_EMSCRIPTEN)
 		glBindVertexArray(vao);
+#endif
 		if (is_valid_vertex_index_vbo())
 		{
 			//unsigned int offset = sizeof(GLuint) * index_offset;
@@ -429,7 +458,9 @@ void UMOpenGLMesh::Impl::draw(UMOpenGLDrawParameterPtr parameter)
 		
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
+#if !defined(WITH_EMSCRIPTEN)
 	glBindVertexArray(0);
+#endif
 	glUseProgram(0);
 }
 

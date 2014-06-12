@@ -7,13 +7,17 @@
  * Licensed  under the MIT license. 
  *
  */
-#include <crtdbg.h>
+#if !defined(WITH_EMSCRIPTEN)
+	#include <crtdbg.h>
+#endif
 
 #include "UMWindow.h"
 
 // main
-int main()
+int main(int argc, char** argv)
 {
+#if !defined(WITH_EMSCRIPTEN)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	return test_viewer::UMWindow::instance().main();
+#endif
+	return test_viewer::UMWindow::instance().main(argc, argv);
 }

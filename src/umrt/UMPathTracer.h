@@ -84,8 +84,7 @@ private:
 	UMVec3d trace(
 		const UMRay& ray, 
 		UMSceneAccessPtr scene_access, 
-		UMShaderParameter& parameter, 
-		std::mt19937& mt);
+		UMShaderParameter& parameter);
 
 	/**
 	 * direct lighting
@@ -94,8 +93,7 @@ private:
 		const UMRay& ray, 
 		UMSceneAccessPtr scene_access, 
 		const UMIntersection& intersection, 
-		UMShaderParameter& parameter,
-		std::mt19937& mt);
+		UMShaderParameter& parameter);
 
 	/**
 	 * indirect lighting
@@ -104,8 +102,7 @@ private:
 		const UMRay& ray, 
 		UMSceneAccessPtr scene_access, 
 		const UMIntersection& intersection, 
-		UMShaderParameter& parameter, 
-		std::mt19937& mt);
+		UMShaderParameter& parameter);
 	
 
 	// for progress render

@@ -1,10 +1,10 @@
-#version 140
+#version 100
 #ifdef GL_ES
 precision mediump float;
 #endif
 #define M_PI 3.14159265358979323846
-out vec4 frag_color;
-in vec2 uv;
+//out vec4 frag_color;
+varying vec2 uv;
 uniform vec2 resolution;
 
 void hsv_to_rgb(out vec3 rgb, in vec3 hsv)
@@ -51,10 +51,10 @@ void main()
 		hsv.y = sqrt( distance ) / radius;
 		hsv.z = 1.0;
 		hsv_to_rgb(rgb, hsv);
-		frag_color = vec4(rgb, 1.0);
+		gl_FragColor = vec4(rgb, 1.0);
 	}
 	else
 	{
-		frag_color = vec4(0.0, 0.0, 0.0, 0.0);
+		gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
 	}
 }

@@ -36,7 +36,7 @@ class UMDirectX11Material
 	DISALLOW_COPY_AND_ASSIGN(UMDirectX11Material);
 
 public:
-	typedef std::vector<std::u16string> TexturePathList;
+	typedef std::vector<umstring> TexturePathList;
 	
 	/**
 	 * constructor.

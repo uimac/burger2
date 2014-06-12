@@ -23,7 +23,7 @@
 
 using namespace umbase;
 
-static std::u16string resource_path(const std::string& file_name)
+static umstring resource_path(const std::string& file_name)
 {
 	return UMPath::resource_absolute_path(UMStringUtil::utf8_to_utf16(file_name));
 }
@@ -31,7 +31,7 @@ static std::u16string resource_path(const std::string& file_name)
 // main
 int main()
 {
-	typedef std::vector<std::u16string> FileList;
+	typedef std::vector<umstring> FileList;
 	FileList files;
 	
 	files.push_back(resource_path("common.hlsl"));
@@ -55,13 +55,22 @@ int main()
 	files.push_back(resource_path("icon/piyo.png"));
 	files.push_back(resource_path("icon/round_rect.png"));
 
+	files.push_back(resource_path("test.jpg"));
+	files.push_back(resource_path("license/GLFW-LICENSE.txt"));
+	files.push_back(resource_path("license/tinyobjloader-LICENSE.txt"));
+	files.push_back(resource_path("license/snappy-LICENSE.txt"));
+	//files.push_back(resource_path("KodomoRounded.otf"));
+	//files.push_back(resource_path("KodomoRounded.ttf"));
+	files.push_back(resource_path("mplus-1c-medium-sub.ttf"));
+
+
 	//files.push_back(resource_path("out2/alembic_file.abc"));
 	//files.push_back(resource_path("particle1.abc"));
 	//files.push_back(resource_path("miku_alegro.bos"));
 	//files.push_back(resource_path("cornellbox_nolight.bos"));
 	//files.push_back(resource_path("bunny.bos"));
 	
-	std::u16string out_file = resource_path("cabbage_resource.pack");
+	umstring out_file = resource_path("cabbage_resource.pack");
 
 	umresource::UMResource::instance().pack(out_file, files);
 

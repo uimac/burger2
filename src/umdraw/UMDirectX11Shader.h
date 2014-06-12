@@ -58,7 +58,7 @@ public:
 	 */
 	bool create_shader_from_file(
 		ID3D11Device *device_pointer,
-		const std::u16string& file_path,
+		const umstring& file_path,
 		const std::string& entry_point_str,
 		const ShaderType type);
 

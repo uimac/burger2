@@ -18,7 +18,7 @@
 
 namespace 
 {
-	bool compress(const std::u16string& file_name, std::istream &in, std::ostream &out) 
+	bool compress(const umstring& file_name, std::istream &in, std::ostream &out) 
 	{
 		// header
 		{
@@ -30,7 +30,7 @@ namespace
 			out.write(reinterpret_cast<char* >(&version), 4); 
 		}
 
-		std::u16string name = file_name;
+		umstring name = file_name;
 		unsigned int name_size = static_cast<unsigned int>(name.size() * 2);
 		{
 			// write name size
@@ -107,14 +107,27 @@ namespace
 			}
 			if (version < 1) return false;
 
-			std::u16string file_name;
+			umstring file_name;
 			unsigned int name_size = 0;
 			{
 				// read name size
 				in.read(reinterpret_cast<char* >(&name_size), 4); 
+				//printf("name size %d\n", name_size);
+#ifdef WITH_EMSCRIPTEN
+				// read name
+				file_name.resize(name_size / 2);
+				std::vector<char> buffer(name_size);
+				in.read(&buffer[0], name_size);
+				int name_pos = 0;
+				for (int i = 0; i < name_size; i += 2, ++name_pos)
+				{
+					file_name[name_pos] = buffer[i];
+				}
+#else
 				// read name
 				file_name.resize(name_size / 2);
 				in.read(reinterpret_cast<char* >(const_cast<char16_t*>(file_name.c_str())), name_size);
+#endif
 			}
 
 			if (std::find(unpacked_name_list.begin(), unpacked_name_list.end(), file_name) != unpacked_name_list.end())
@@ -177,7 +190,7 @@ UMResource::UMResource()
 /**
  * get default resource path
  */
-std::u16string UMResource::default_resource_path()
+umstring UMResource::default_resource_path()
 {
 	return umbase::UMPath::resource_absolute_path(umbase::UMStringUtil::utf8_to_utf16("cabbage_resource.pack"));
 }
@@ -185,7 +198,7 @@ std::u16string UMResource::default_resource_path()
 /**
  * pack files to dst file
  */
-bool UMResource::pack(const std::u16string& dst_absolute_path, const FilePathList& src_absolute_path_list)
+bool UMResource::pack(const umstring& dst_absolute_path, const FilePathList& src_absolute_path_list)
 {
 	try
 	{
@@ -194,11 +207,11 @@ bool UMResource::pack(const std::u16string& dst_absolute_path, const FilePathLis
 		FilePathList::const_iterator it = src_absolute_path_list.begin();
 		for (; it != src_absolute_path_list.end(); ++it)
 		{
-			const std::u16string& path = *it;
+			const umstring& path = *it;
 			std::ifstream in(path.c_str(), std::ios::binary);
 			if (!in) { assert(0); return false; }
 
-			const std::u16string file_name = umbase::UMPath::get_file_name(path);
+			const umstring file_name = umbase::UMPath::get_file_name(path);
 			if (!compress(file_name, in, out))
 			{
 				assert(0);
@@ -216,7 +229,7 @@ bool UMResource::pack(const std::u16string& dst_absolute_path, const FilePathLis
 /**
  * unpack files to dst directory
  */
-bool UMResource::unpack(const std::u16string& dst_absolute_path, const std::u16string& src_absolute_path)
+bool UMResource::unpack(const umstring& dst_absolute_path, const umstring& src_absolute_path)
 {
 	return false;
 }
@@ -224,7 +237,7 @@ bool UMResource::unpack(const std::u16string& dst_absolute_path, const std::u16s
 /**
  * unpack files to memory
  */
-bool UMResource::unpack_to_memory(const std::u16string& src_absolute_path)
+bool UMResource::unpack_to_memory(const umstring& src_absolute_path)
 {
 	try
 	{
@@ -246,8 +259,9 @@ const std::string& UMResource::find_resource_data(UMResource& resource, const st
 {
 	UMResource::UnpackedNameList& name_list = resource.unpacked_name_list();
 	UMResource::UnpackedDataList& data_list = resource.unpacked_data_list();
-	UMResource::UnpackedNameList::iterator it = std::find(name_list.begin(), name_list.end(), 
-		umbase::UMStringUtil::utf8_to_utf16(name));
+	umstring hoge = umbase::UMStringUtil::utf8_to_utf16(name);
+	UMResource::UnpackedNameList::iterator it = std::find(name_list.begin(), name_list.end(), hoge);
+
 	if (it != name_list.end())
 	{
 		size_t pos = std::distance(name_list.begin(), it);

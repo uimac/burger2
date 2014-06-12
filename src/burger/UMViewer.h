@@ -12,6 +12,7 @@
 #include "UMMacro.h"
 #include "UMDraw.h"
 #include "UMAbc.h"
+#include "UMGUI.h"
 #include "UMScene.h"
 
 struct GLFWwindow;
@@ -48,7 +49,8 @@ public:
 		GLFWwindow* window,
 		GLFWwindow* sub_window, 
 		umdraw::UMScenePtr scene, 
-		umabc::UMAbcSceneList& abc_scene_list, 
+		umgui::UMGUIScenePtr gui_scene,
+		//umabc::UMAbcSceneList& abc_scene_list, 
 		umdraw::UMDraw::DrawType type, 
 		int width, 
 		int height);
@@ -61,27 +63,27 @@ public:
 	/**
 	 * key event callback
 	 */
-	static void key_callback(GLFWwindow * window,int key, int scancode, int action, int mods);
+	static void key_callback(int key, int action);
 	
 	/**
 	 * mouse event callback
 	 */
-	static void mouse_button_callback(GLFWwindow * window, int button, int action, int mods);
+	static void mouse_button_callback(int button, int action);
 	
 	/**
 	 * mouse position event callback
 	 */
-	static void cursor_pos_callback(GLFWwindow * window, double x, double y);
+	static void cursor_pos_callback(int x, int y);
 	
 	/**
 	 * window size event callback
 	 */
-	static void window_size_callback(GLFWwindow * window, int width, int height);
+	static void window_size_callback(int width, int height);
 	
 	/**
 	 * window close event callback
 	 */
-	static void window_close_callback(GLFWwindow * window);
+	static int window_close_callback();
 
 	/**
 	 * drop file callback
@@ -104,13 +106,14 @@ protected:
 		GLFWwindow* window,
 		GLFWwindow* sub_window, 
 		umdraw::UMScenePtr scene,
-		umabc::UMAbcSceneList& abc_scene_list, 
+		umgui::UMGUIScenePtr gui_scene,
+		//umabc::UMAbcSceneList& abc_scene_list, 
 		umdraw::UMDraw::DrawType type);
 
 	/**
 	 * constructor
 	 */
-	explicit UMViewer(umdraw::UMDrawPtr drawer, umabc::UMAbcPtr abc);
+	explicit UMViewer(umdraw::UMDrawPtr drawer, umgui::UMGUIPtr gui);
 
 	/**
 	 * refresh frame
@@ -151,9 +154,11 @@ private:
 	static int width_;
 	static int height_;
 	static bool is_disable_update_;
+	static bool is_gui_drawing_;
 	static umdraw::UMScenePtr scene_;
 	static umdraw::UMCameraPtr temporary_camera_;
-	static umabc::UMAbcSceneList abc_scene_list_;
+	static umgui::UMGUIScenePtr gui_scene_;
+	//static umabc::UMAbcSceneList abc_scene_list_;
 	static UMViewerPtr viewer_;
 	static GLFWwindow* sub_window_;
 
@@ -171,9 +176,10 @@ private:
 	bool is_middle_button_down_;
 	bool is_alt_down_;
 	umdraw::UMDrawPtr drawer_;
-	umabc::UMAbcPtr abc_;
+	//umabc::UMAbcPtr abc_;
+	umgui::UMGUIPtr gui_;
 	umrt::UMRTPtr rays_;
-	umpaint::UMPaintPtr paint_;
+	//umpaint::UMPaintPtr paint_;
 };
 
 } // test_viewer

@@ -19,12 +19,15 @@
 #include "UMBvh.h"
 #include "UMPrimitive.h"
 #include "UMTriangle.h"
-#include "UMAbcScene.h"
 #include "UMBvh.h"
-#include "UMAbcObject.h"
-#include "UMAbcMesh.h"
-#include "UMAbcIO.h"
 #include "UMSubdivision.h"
+
+#ifdef WITH_ALEMBIC
+	#include "UMAbcScene.h"
+	#include "UMAbcObject.h"
+	#include "UMAbcMesh.h"
+	#include "UMAbcIO.h"
+#endif //WITH_ALEMBIC
 
 namespace
 {
@@ -84,7 +87,8 @@ namespace
 			}
 		}
 	}
-
+	
+#ifdef WITH_ALMBIC
 	void create_triangle_and_vertex_from_abc_mesh(
 		UMPrimitiveList& primitive_list, 
 		UMVertexParameterList& vertex_parameter_list,
@@ -164,6 +168,7 @@ namespace
 				*it);
 		}
 	}
+#endif // WITH_ALEMBIC
 
 	bool subdivide_mesh(umdraw::UMMeshPtr mesh)
 	{
@@ -227,6 +232,7 @@ void UMSceneAccess::add_scene(umdraw::UMScenePtr scene)
  */
 void UMSceneAccess::add_abc_scene(umabc::UMAbcScenePtr scene)
 {
+#ifdef WITH_ALEMBIC
 	if (!scene) return;
 	if (UMAbcObjectPtr root = scene->root_object())
 	{
@@ -238,6 +244,7 @@ void UMSceneAccess::add_abc_scene(umabc::UMAbcScenePtr scene)
 	}
 	abc_scene_ = scene;
 	bool added = true;
+#endif
 }
 
 /**

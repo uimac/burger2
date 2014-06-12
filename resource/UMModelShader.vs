@@ -1,11 +1,10 @@
-#version 140
-invariant gl_Position;
-in vec3 a_position;
-in vec3 a_normal;
-in vec2 a_uv;
-out vec3 normal;
-out vec2 uv;
-out vec4 light_direction;
+#version 100
+attribute vec3 a_position;
+attribute vec3 a_normal;
+attribute vec2 a_uv;
+varying vec3 normal;
+varying vec2 uv;
+varying vec4 light_direction;
 uniform mat4 view_projection_matrix;
 uniform vec4 light_position;
 

@@ -22,7 +22,7 @@ namespace umrt
 class UMShaderParameter
 {
 public:
-	UMShaderParameter() : emissive(0), bounce(-1), depth(32), max_depth(32) {}
+	UMShaderParameter() : emissive(5), bounce(1), depth(16), max_depth(32) {}
 	~UMShaderParameter() {}
 	
 	/**

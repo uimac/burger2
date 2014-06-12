@@ -145,7 +145,8 @@ bool UMTriangle::intersects(
  */
 bool UMTriangle::intersects(const UMRay& ray, UMShaderParameter& parameter) const
 {
-	if (UMMeshPtr me = mesh())
+	UMMeshPtr me = mesh();
+	if (me)
 	{
 		// 3 points
 		const UMVec3d& v0 = me->vertex_list()[vertex_index_.x];

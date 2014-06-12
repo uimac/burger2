@@ -37,19 +37,19 @@ public:
 	{
 		if (type == eConstants)
 		{
-			uniform_buffer_list_.resize(2);
-			{
-				unsigned int light_ubo = 0;
-				glGenBuffers(1, &light_ubo);
-				glBindBuffer(GL_UNIFORM_BUFFER, light_ubo);
-				uniform_buffer_list_[0] = light_ubo;
-			}
-			{
-				unsigned int material_ubo = 0;
-				glGenBuffers(1, &material_ubo);
-				glBindBuffer(GL_UNIFORM_BUFFER, material_ubo);
-				uniform_buffer_list_[1] = material_ubo;
-			}
+			//uniform_buffer_list_.resize(2);
+			//{
+			//	unsigned int light_ubo = 0;
+			//	glGenBuffers(1, &light_ubo);
+			//	glBindBuffer(GL_UNIFORM_BUFFER, light_ubo);
+			//	uniform_buffer_list_[0] = light_ubo;
+			//}
+			//{
+			//	unsigned int material_ubo = 0;
+			//	glGenBuffers(1, &material_ubo);
+			//	glBindBuffer(GL_UNIFORM_BUFFER, material_ubo);
+			//	uniform_buffer_list_[1] = material_ubo;
+			//}
 		}
 		else if (type == eModel)
 		{
@@ -67,8 +67,8 @@ public:
 	#endif // not _DEBUG
 			{
 				// shader from resource directory (for debug)
-				std::u16string vs_path = umbase::UMPath::resource_absolute_path(umbase::UMStringUtil::utf8_to_utf16("UMModelShader.vs"));
-				std::u16string fs_path = umbase::UMPath::resource_absolute_path(umbase::UMStringUtil::utf8_to_utf16("UMModelShader.fs"));
+				umstring vs_path = umbase::UMPath::resource_absolute_path(umbase::UMStringUtil::utf8_to_utf16("UMModelShader.vs"));
+				umstring fs_path = umbase::UMPath::resource_absolute_path(umbase::UMStringUtil::utf8_to_utf16("UMModelShader.fs"));
 
 				if (shader->create_shader_from_file(
 					vs_path,
@@ -95,8 +95,8 @@ public:
 	#endif // not _DEBUG
 			{
 				// shader from resource directory (for debug)
-				std::u16string vs_path = umbase::UMPath::resource_absolute_path(umbase::UMStringUtil::utf8_to_utf16("UMPointShader.vs"));
-				std::u16string fs_path = umbase::UMPath::resource_absolute_path(umbase::UMStringUtil::utf8_to_utf16("UMPointShader.fs"));
+				umstring vs_path = umbase::UMPath::resource_absolute_path(umbase::UMStringUtil::utf8_to_utf16("UMPointShader.vs"));
+				umstring fs_path = umbase::UMPath::resource_absolute_path(umbase::UMStringUtil::utf8_to_utf16("UMPointShader.fs"));
 
 				if (shader->create_shader_from_file(
 					vs_path,
@@ -129,8 +129,8 @@ public:
 		#endif // not _DEBUG
 				{
 					// shader from resource directory (for debug)
-					std::u16string vs_path = umbase::UMPath::resource_absolute_path(umbase::UMStringUtil::utf8_to_utf16("UMBoardShader.vs"));
-					std::u16string fs_path = umbase::UMPath::resource_absolute_path(umbase::UMStringUtil::utf8_to_utf16("UMBoardShader.fs"));
+					umstring vs_path = umbase::UMPath::resource_absolute_path(umbase::UMStringUtil::utf8_to_utf16("UMBoardShader.vs"));
+					umstring fs_path = umbase::UMPath::resource_absolute_path(umbase::UMStringUtil::utf8_to_utf16("UMBoardShader.fs"));
 
 					if (shader->create_shader_from_file(
 						vs_path,
@@ -160,8 +160,8 @@ public:
 		#endif // not _DEBUG
 				{
 					// shader from resource directory (for debug)
-					std::u16string vs_path = umbase::UMPath::resource_absolute_path(umbase::UMStringUtil::utf8_to_utf16("UMBoardLightPass.vs"));
-					std::u16string fs_path = umbase::UMPath::resource_absolute_path(umbase::UMStringUtil::utf8_to_utf16("UMBoardLightPass.fs"));
+					umstring vs_path = umbase::UMPath::resource_absolute_path(umbase::UMStringUtil::utf8_to_utf16("UMBoardLightPass.vs"));
+					umstring fs_path = umbase::UMPath::resource_absolute_path(umbase::UMStringUtil::utf8_to_utf16("UMBoardLightPass.fs"));
 
 					if (shader->create_shader_from_file(
 						vs_path,
@@ -191,8 +191,8 @@ public:
 		#endif // not _DEBUG
 				{
 					// shader from resource directory (for debug)
-					std::u16string vs_path = umbase::UMPath::resource_absolute_path(umbase::UMStringUtil::utf8_to_utf16("UMModelGeometryPass.vs"));
-					std::u16string fs_path = umbase::UMPath::resource_absolute_path(umbase::UMStringUtil::utf8_to_utf16("UMModelGeometryPass.fs"));
+					umstring vs_path = umbase::UMPath::resource_absolute_path(umbase::UMStringUtil::utf8_to_utf16("UMModelGeometryPass.vs"));
+					umstring fs_path = umbase::UMPath::resource_absolute_path(umbase::UMStringUtil::utf8_to_utf16("UMModelGeometryPass.fs"));
 
 					if (shader->create_shader_from_file(
 						vs_path,

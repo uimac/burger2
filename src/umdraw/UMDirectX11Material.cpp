@@ -62,7 +62,7 @@ bool UMDirectX11Material::init(ID3D11Device *device_pointer)
 		UMMaterial::TexturePathList::const_iterator it = material->texture_path_list().begin();
 		for (; it != material->texture_path_list().end(); ++it)
 		{
-			const std::u16string& path = *it;
+			const umstring& path = *it;
 			if (diffuse_texture_->load(device_pointer, path))
 			{
 				set_shader_flags(UMVec4f(1.0f, 0.0f, 0.0f, 0.0f));

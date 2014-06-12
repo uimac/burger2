@@ -37,7 +37,7 @@ public:
 	
 	// getter
 	unsigned int id() const { return id_; }
-	const std::u16string& name() const { return name_; }
+	const umstring& name() const { return name_; }
 	const UMMat44d& local_transform() const { return local_transform_; }
 	const UMMat44d& global_transform() const { return global_transform_; }
 
@@ -45,7 +45,7 @@ public:
 	UMShaderEntryPtr shader_entry() const { return shader_entry_; }
 
 	// setter
-	void set_name(const std::u16string& name) { name_ = name; }
+	void set_name(const umstring& name) { name_ = name; }
 	UMMat44d& mutable_local_transform() { return local_transform_; }
 	UMMat44d& mutable_global_transform() { return global_transform_; }
 
@@ -53,7 +53,7 @@ public:
 
 private:
 	unsigned int id_;
-	std::u16string name_;
+	umstring name_;
 
 	// evaluated transform
 	UMMat44d local_transform_;

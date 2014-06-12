@@ -53,7 +53,7 @@ public:
 			UMMaterial::TexturePathList::const_iterator it = material->texture_path_list().begin();
 			for (; it != material->texture_path_list().end(); ++it)
 			{
-				const std::u16string& path = *it;
+				const umstring& path = *it;
 				if (diffuse_texture_->load(path))
 				{
 					if (UMImagePtr image = diffuse_texture_->convert_to_image())
@@ -116,9 +116,9 @@ public:
 	
 	UMMaterialPtr ummaterial() const { return ummaterial_.lock(); }
 
-	void set_name(const std::u16string& name) { name_ = name; }
+	void set_name(const umstring& name) { name_ = name; }
 
-	const std::u16string& name() { return name_; }
+	const umstring& name() { return name_; }
 
 private:
 	UMVec4f diffuse_;
@@ -127,7 +127,7 @@ private:
 	UMVec4f ambient_;
 	UMVec4f shader_flags_;
 	
-	std::u16string name_;
+	umstring name_;
 	UMOpenGLTexturePtr diffuse_texture_;
 	
 	int polygon_count_;
@@ -299,7 +299,7 @@ UMMaterialPtr UMOpenGLMaterial::ummaterial() const
 /**
  * set name
  */
-void UMOpenGLMaterial::set_name(const std::u16string& name)
+void UMOpenGLMaterial::set_name(const umstring& name)
 {
 	impl_->set_name(name);
 }
@@ -307,7 +307,7 @@ void UMOpenGLMaterial::set_name(const std::u16string& name)
 /**
  * get name
  */
-const std::u16string& UMOpenGLMaterial::name()
+const umstring& UMOpenGLMaterial::name()
 {
 	return impl_->name();
 }

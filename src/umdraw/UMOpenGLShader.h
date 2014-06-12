@@ -43,8 +43,8 @@ public:
 	 * create shader from file
 	 */
 	bool create_shader_from_file(
-		const std::u16string& vertex_shader_file_path,
-		const std::u16string& fragment_shader_file_path);
+		const umstring& vertex_shader_file_path,
+		const umstring& fragment_shader_file_path);
 
 	/**
 	 * get program object

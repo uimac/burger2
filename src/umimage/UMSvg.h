@@ -39,7 +39,7 @@ public:
 	/**
 	 * load image from file
 	 */
-	static UMSvgPtr load(const std::u16string& filepath);
+	static UMSvgPtr load(const umstring& filepath);
 	
 	/**
 	 * load image from memory

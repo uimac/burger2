@@ -8,6 +8,7 @@
  *
  */
 #include "UMSubdivision.h"
+
 #include <string>
 
 #include "UMStringUtil.h"
@@ -15,26 +16,30 @@
 #include "UMMesh.h"
 #include "UMSceneAccess.h"
 
-#define and &&
-#define and_eq &=
-#define bitand &
-#define bitor |
-#define compl ~
-#define not !
-#define not_eq !=
-#define or ||
-#define or_eq |=
-#define xor ^
-#define xor_eq ^=
+#ifdef WITH_OSL
+	#define and &&
+	#define and_eq &=
+	#define bitand &
+	#define bitor |
+	#define compl ~
+	#define not !
+	#define not_eq !=
+	#define or ||
+	#define or_eq |=
+	#define xor ^
+	#define xor_eq ^=
 
-#include <far/meshFactory.h>
-#include <osd/mesh.h>
-#include <osd/cpuComputeController.h>
-#include <osd/cpuComputeContext.h>
-#include <osd/cpuVertexBuffer.h>
+	#include <far/meshFactory.h>
+	#include <osd/mesh.h>
+	#include <osd/cpuComputeController.h>
+	#include <osd/cpuComputeContext.h>
+	#include <osd/cpuVertexBuffer.h>
+#endif // WITH_OSL
 
 namespace umrt
 {
+	
+#ifdef WITH_OSL
 
 namespace
 {
@@ -259,6 +264,19 @@ private:
 		return result;
 	}
 };
+#else
+
+/**
+ * subdivision implementation
+ */
+class UMSubdivision::SudivImpl
+{
+public:
+	SudivImpl(umdraw::UMMeshPtr mesh){}
+	~SudivImpl() {}
+};
+
+#endif // WITH_OSL
 
 /**
  * constructor
@@ -280,7 +298,11 @@ UMSubdivision::~UMSubdivision()
  */
 umdraw::UMMeshPtr UMSubdivision::subdivided_mesh(unsigned int level)
 {
+#ifdef WITH_OSL
 	return impl_->create_subdivided_mesh(level);
+#else
+	return umdraw::UMMeshPtr();
+#endif
 }
 
 } // umrt

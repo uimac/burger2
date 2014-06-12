@@ -30,8 +30,6 @@
 #include "UMMathTypes.h"
 #include "UMMatrix.h"
 
-#include <tchar.h>
-#include <shlwapi.h>
 #include <GL/glew.h>
 #include "UMIO.h"
 
@@ -63,9 +61,25 @@ public:
 		draw_parameter_->set_light(light);
 		draw_parameter_->set_camera(camera);
 
+		UMOpenGLShaderManagerPtr board_shader_manager = std::make_shared<UMOpenGLShaderManager>();
+		if (board_shader_manager->init(UMOpenGLShaderManager::eBoard))
+		{
+			board_draw_parameter_ = std::make_shared<UMOpenGLDrawParameter>();
+			board_draw_parameter_->set_light(light);
+			board_draw_parameter_->set_shader_manager(board_shader_manager);
+		}
+
 		// shader
 		create_shaders_for_forward_render(scene, light, camera);
 		//create_shaders_for_deferred_render(scene, light, camera);
+		
+		// create board for texture drawing
+		{
+			foreground_board_ = std::make_shared<UMOpenGLBoard>(
+				UMVec2f(-1.0f, 1.0f),
+				UMVec2f( 1.0f, -1.0f),
+				-0.5f);
+		}
 		return true;
 	}
 
@@ -128,6 +142,11 @@ public:
 				(*it)->update();
 			}
 		}
+		// update foreground
+		if (foreground_board_ && foreground_board_->texture())
+		{
+			foreground_board_->update();
+		}
 		// update boards
 		{
 			UMOpenGLBoardList::iterator it = gl_board_list_.begin();
@@ -144,6 +163,7 @@ public:
 		if (!shader_manager_) return false;
 		
 		// deferred
+#if !defined(WITH_EMSCRIPTEN)
 		if (shader_manager_->is_deferred() && frame_buffer_)
 		{
 			/// pass1
@@ -171,27 +191,38 @@ public:
 			}
 		}
 		else
+#endif // !defined(WITH_EMSCRIPTEN)
 		{
-			// draw lines
 			{
-				UMOpenGLLineList::iterator it = gl_line_list_.begin();
-				for (; it != gl_line_list_.end(); ++it)
+				// draw lines
 				{
-					draw_parameter_->set_shader_manager((*it)->shader_manager());
-					(*it)->draw(draw_parameter_);
+					UMOpenGLLineList::iterator it = gl_line_list_.begin();
+					for (; it != gl_line_list_.end(); ++it)
+					{
+						draw_parameter_->set_shader_manager((*it)->shader_manager());
+						(*it)->draw(draw_parameter_);
+					}
 				}
-			}
-			// draw models
-			{
-				UMOpenGLMeshGroupList::iterator it = gl_mesh_group_list_.begin();
-				for (; it != gl_mesh_group_list_.end(); ++it)
+				// draw models
 				{
-					draw_parameter_->set_shader_manager(UMOpenGLShaderManagerPtr());
-					(*it)->draw(draw_parameter_);
+					UMOpenGLMeshGroupList::iterator it = gl_mesh_group_list_.begin();
+					for (; it != gl_mesh_group_list_.end(); ++it)
+					{
+						draw_parameter_->set_shader_manager(UMOpenGLShaderManagerPtr());
+						(*it)->draw(draw_parameter_);
+					}
+				}
+				// draw foreground
+				if (foreground_board_ && foreground_board_->texture())
+				{
+					glDepthMask(GL_FALSE);
+					foreground_board_->draw(board_draw_parameter_);
+					glDepthMask(GL_TRUE);
 				}
 			}
 		}
-
+		
+#if !defined(WITH_EMSCRIPTEN)
 		// deferred
 		if (shader_manager_->is_deferred())
 		{
@@ -211,6 +242,7 @@ public:
 			}
 			glDepthMask(GL_TRUE);
 		}
+#endif // !defined(WITH_EMSCRIPTEN)
 
 		return true;
 	}
@@ -259,88 +291,94 @@ public:
 				draw_parameter_->set_camera(camera);
 			}
 		}
+		else if (event_type == eSoftwareEventForegroundChaged)
+		{
+			if (scene_ && draw_parameter_)
+			{
+				UMImagePtr image = umbase::any_cast<UMImagePtr>(parameter);
+				UMOpenGLTexturePtr texture = std::make_shared<UMOpenGLTexture>(false);
+				if (image)
+				{
+					texture->convert_from_image(*image);
+					foreground_board_->set_texture(texture);
+				}
+			}
+		}
 	}
 
 private:
 	
-	void create_shaders_for_deferred_render(UMScenePtr scene, UMOpenGLLightPtr light, UMOpenGLCameraPtr camera)
-	{
-		shader_manager_  = std::make_shared<UMOpenGLShaderManager>();
-		if (shader_manager_->init(UMOpenGLShaderManager::eBoardForDeferred))
-		{
-			deferred_board_draw_parameter_ = std::make_shared<UMOpenGLDrawParameter>();
-			deferred_board_draw_parameter_->set_light(light);
-			deferred_board_draw_parameter_->set_shader_manager(shader_manager_);
+	//void create_shaders_for_deferred_render(UMScenePtr scene, UMOpenGLLightPtr light, UMOpenGLCameraPtr camera)
+	//{
+	//	shader_manager_  = std::make_shared<UMOpenGLShaderManager>();
+	//	if (shader_manager_->init(UMOpenGLShaderManager::eBoardForDeferred))
+	//	{
+	//		deferred_board_draw_parameter_ = std::make_shared<UMOpenGLDrawParameter>();
+	//		deferred_board_draw_parameter_->set_light(light);
+	//		deferred_board_draw_parameter_->set_shader_manager(shader_manager_);
 
-			UMOpenGLShaderManagerPtr board_shader_manager = std::make_shared<UMOpenGLShaderManager>();
-			if (board_shader_manager->init(UMOpenGLShaderManager::eBoard))
-			{
-				board_draw_parameter_ = std::make_shared<UMOpenGLDrawParameter>();
-				board_draw_parameter_->set_light(light);
-				board_draw_parameter_->set_shader_manager(board_shader_manager);
-			}
+	//		UMOpenGLShaderManagerPtr mesh_geo_shader_manager = std::make_shared<UMOpenGLShaderManager>();
+	//		if (mesh_geo_shader_manager->init(UMOpenGLShaderManager::eModelDeferredGeo))
+	//		{
+	//			deferred_mesh_geo_parameter_ = std::make_shared<UMOpenGLDrawParameter>();
+	//			deferred_mesh_geo_parameter_->set_light(light);
+	//			deferred_mesh_geo_parameter_->set_camera(camera);
+	//			deferred_mesh_geo_parameter_->set_shader_manager(mesh_geo_shader_manager);
+	//		}
 
-			UMOpenGLShaderManagerPtr mesh_geo_shader_manager = std::make_shared<UMOpenGLShaderManager>();
-			if (mesh_geo_shader_manager->init(UMOpenGLShaderManager::eModelDeferredGeo))
-			{
-				deferred_mesh_geo_parameter_ = std::make_shared<UMOpenGLDrawParameter>();
-				deferred_mesh_geo_parameter_->set_light(light);
-				deferred_mesh_geo_parameter_->set_camera(camera);
-				deferred_mesh_geo_parameter_->set_shader_manager(mesh_geo_shader_manager);
-			}
-
-			const int width = scene->width();
-			const int height = scene->height();
-			if (render_buffer_ = UMOpenGLTexture::create_render_buffer(width, height))
-			{
-				UMOpenGLTexture::Format format;
-				format.internal_format = GL_RGBA32F;
-				for (int i = 0; i < 4; ++i)
-				{
-					if (UMOpenGLTexturePtr texture = UMOpenGLTexture::create_texture(width, height, format))
-					{
-						frame_buffer_textures_.push_back(texture);
-					}
-				}
-				// create board for texture drawing
-				{
-					UMOpenGLBoardPtr board = std::make_shared<UMOpenGLBoard>(
-						UMVec2f(-1.0f, 1.0f),
-						UMVec2f( 1.0f, -1.0f),
-						-0.5f);
-					board->set_color_attachments(frame_buffer_textures_);
-					gl_board_list_.push_back(board);
-				}
-				// create board for debug drawing
-				{
-					UMOpenGLBoardPtr board = std::make_shared<UMOpenGLBoard>(
-						UMVec2f(-0.2f + 0.6f, 0.2f + 0.6f),
-						UMVec2f( 0.2f + 0.6f, -0.2f + 0.6f),
-						-0.2f);
-					board->set_texture(frame_buffer_textures_.at(0));
-					gl_board_list_.push_back(board);
-				}
-				{
-					UMOpenGLBoardPtr board = std::make_shared<UMOpenGLBoard>(
-						UMVec2f(-0.2f + 0.6f, 0.2f + 0.2f),
-						UMVec2f( 0.2f + 0.6f, -0.2f + 0.2f),
-						-0.2f);
-					board->set_texture(frame_buffer_textures_.at(1));
-					gl_board_list_.push_back(board);
-				}
-				{
-					UMOpenGLBoardPtr board = std::make_shared<UMOpenGLBoard>(
-						UMVec2f(-0.2f + 0.6f, 0.2f - 0.2f),
-						UMVec2f( 0.2f + 0.6f, -0.2f - 0.2f),
-						-0.2f);
-					board->set_texture(frame_buffer_textures_.at(2));
-					gl_board_list_.push_back(board);
-				}
-				frame_buffer_ = UMOpenGLTexture::create_frame_buffer(frame_buffer_textures_, render_buffer_);
-			}
-		}
-	}
-	
+	//		const int width = scene->width();
+	//		const int height = scene->height();
+	//		render_buffer_ = UMOpenGLTexture::create_render_buffer(width, height);
+	//		if (render_buffer_)
+	//		{
+	//			UMOpenGLTexture::Format format;
+	//			format.internal_format = GL_RGBA32F;
+	//			for (int i = 0; i < 4; ++i)
+	//			{
+	//				if (UMOpenGLTexturePtr texture = UMOpenGLTexture::create_texture(width, height, format))
+	//				{
+	//					frame_buffer_textures_.push_back(texture);
+	//				}
+	//			}
+	//			// create board for texture drawing
+	//			{
+	//				UMOpenGLBoardPtr board = std::make_shared<UMOpenGLBoard>(
+	//					UMVec2f(-1.0f, 1.0f),
+	//					UMVec2f( 1.0f, -1.0f),
+	//					-0.5f);
+	//				board->set_color_attachments(frame_buffer_textures_);
+	//				gl_board_list_.push_back(board);
+	//			}
+	//			// create board for debug drawing
+	//			{
+	//				UMOpenGLBoardPtr board = std::make_shared<UMOpenGLBoard>(
+	//					UMVec2f(-0.2f + 0.6f, 0.2f + 0.6f),
+	//					UMVec2f( 0.2f + 0.6f, -0.2f + 0.6f),
+	//					-0.2f);
+	//				board->set_texture(frame_buffer_textures_.at(0));
+	//				gl_board_list_.push_back(board);
+	//			}
+	//			{
+	//				UMOpenGLBoardPtr board = std::make_shared<UMOpenGLBoard>(
+	//					UMVec2f(-0.2f + 0.6f, 0.2f + 0.2f),
+	//					UMVec2f( 0.2f + 0.6f, -0.2f + 0.2f),
+	//					-0.2f);
+	//				board->set_texture(frame_buffer_textures_.at(1));
+	//				gl_board_list_.push_back(board);
+	//			}
+	//			{
+	//				UMOpenGLBoardPtr board = std::make_shared<UMOpenGLBoard>(
+	//					UMVec2f(-0.2f + 0.6f, 0.2f - 0.2f),
+	//					UMVec2f( 0.2f + 0.6f, -0.2f - 0.2f),
+	//					-0.2f);
+	//				board->set_texture(frame_buffer_textures_.at(2));
+	//				gl_board_list_.push_back(board);
+	//			}
+	//			frame_buffer_ = UMOpenGLTexture::create_frame_buffer(frame_buffer_textures_, render_buffer_);
+	//		}
+	//	}
+	//}
+	//
 	void create_shaders_for_forward_render(UMScenePtr scene, UMOpenGLLightPtr light, UMOpenGLCameraPtr camera)
 	{
 		shader_manager_  = std::make_shared<UMOpenGLShaderManager>();
@@ -357,6 +395,8 @@ private:
 	UMOpenGLMeshGroupList gl_mesh_group_list_;
 	UMOpenGLLineList gl_line_list_;
 	UMOpenGLBoardList gl_board_list_;
+	UMOpenGLBoardPtr foreground_board_;
+	UMOpenGLBoardPtr background_board_;
 
 	UMOpenGLDrawParameterPtr draw_parameter_;
 	UMOpenGLDrawParameterPtr deferred_board_draw_parameter_;

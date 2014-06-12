@@ -224,7 +224,7 @@ namespace umdraw
 /** 
  * import umdraw mesh list
  */
-bool UMDirectX11IO::import_mesh_list(UMMeshList& dst, const umio::UMObjectPtr src, const std::u16string& absolute_file_path)
+bool UMDirectX11IO::import_mesh_list(UMMeshList& dst, const umio::UMObjectPtr src, const umstring& absolute_file_path)
 {
 	return UMSoftwareIO::import_mesh_list(dst, src, absolute_file_path);
 }

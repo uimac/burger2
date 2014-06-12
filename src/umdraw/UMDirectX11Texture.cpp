@@ -30,10 +30,10 @@ namespace
 		ID3D11SamplerState* sampler_state_pointer;
 		ID3D11Texture2D* texture_2d;
 	};
-	typedef std::map<std::u16string, DirectX11TextureResource > UMDirectX11TexturePool;
+	typedef std::map<umstring, DirectX11TextureResource > UMDirectX11TexturePool;
 	UMDirectX11TexturePool texture_pool;
 
-	typedef std::map<std::u16string, umimage::UMImagePtr> UMDirectX11TextureImagePool;
+	typedef std::map<umstring, umimage::UMImagePtr> UMDirectX11TextureImagePool;
 	UMDirectX11TextureImagePool texture_image_pool;
 };
 
@@ -109,7 +109,7 @@ public:
 		}
 	}
 
-	bool load(ID3D11Device *device_pointer, const std::u16string& file_path)
+	bool load(ID3D11Device *device_pointer, const umstring& file_path)
 	{
 		if (!device_pointer) return false;
 		if (sampler_state_pointer_) return false;
@@ -188,7 +188,7 @@ public:
 		if (!image.is_valid()) return false;
 	
 		// find texture from pool
-		std::u16string id = 
+		umstring id = 
 			umbase::UMStringUtil::utf8_to_utf16(umbase::UMStringUtil::number_to_string(image.id()));
 		if (texture_pool.find(id) != texture_pool.end())
 		{
@@ -446,7 +446,7 @@ public:
 		++image_id;
 
 		// find texture from pool
-		std::u16string id = umbase::UMStringUtil::utf8_to_utf16(
+		umstring id = umbase::UMStringUtil::utf8_to_utf16(
 			umbase::UMStringUtil::number_to_string(image_id));
 
 		// find texture from pool
@@ -520,7 +520,7 @@ public:
 		++image_id;
 
 		// find texture from pool
-		std::u16string id = umbase::UMStringUtil::utf8_to_utf16(
+		umstring id = umbase::UMStringUtil::utf8_to_utf16(
 			umbase::UMStringUtil::number_to_string(image_id));
 
 		// find texture from pool
@@ -599,7 +599,7 @@ public:
 		++image_id;
 
 		// find texture from pool
-		std::u16string id = umbase::UMStringUtil::utf8_to_utf16(
+		umstring id = umbase::UMStringUtil::utf8_to_utf16(
 			umbase::UMStringUtil::number_to_string(image_id));
 
 		// find texture from pool
@@ -688,7 +688,7 @@ public:
 		++image_id;
 
 		// find texture from pool
-		std::u16string id = umbase::UMStringUtil::utf8_to_utf16(
+		umstring id = umbase::UMStringUtil::utf8_to_utf16(
 			umbase::UMStringUtil::number_to_string(image_id));
 
 		// find texture from pool
@@ -776,7 +776,7 @@ public:
 		++image_id;
 
 		// find texture from pool
-		std::u16string id = umbase::UMStringUtil::utf8_to_utf16(
+		umstring id = umbase::UMStringUtil::utf8_to_utf16(
 			umbase::UMStringUtil::number_to_string(image_id));
 
 		// find texture from pool
@@ -935,7 +935,7 @@ private:
 	ID3D11SamplerState * sampler_state_pointer_;
 	ID3D11Texture2D * texture_2d_;
 	bool is_valid_texture_;
-	std::u16string id_;
+	umstring id_;
 };
 
 /**
@@ -1039,7 +1039,7 @@ UMDirectX11Texture::~UMDirectX11Texture()
  */
 bool UMDirectX11Texture::load(
 		ID3D11Device *device_pointer,
-		const std::u16string& file_path)
+		const umstring& file_path)
 {
 	return impl_->load(device_pointer, file_path);
 }

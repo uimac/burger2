@@ -73,6 +73,7 @@ namespace
 		{
 			const umio::DoubleList& vertex = ummesh.vertex_list().at(i);
 			UMVec3d umvertex( vertex.at(0), vertex.at(1), vertex.at(2) );
+			//printf("v %f %f %f.\n", umvertex.x, umvertex.y, umvertex.z);
 			mesh->mutable_vertex_list().at(i) = umvertex * import_scale_for_debug;
 		}
 	}
@@ -88,6 +89,7 @@ namespace
 		{
 			const umio::DoubleList& normal = ummesh.normal_list().at(i);
 			UMVec3d umnormal( normal.at(0), normal.at(1), normal.at(2) );
+			//printf("n %f %f %f.\n", umnormal.x, umnormal.y, umnormal.z);
 			mesh->mutable_normal_list().at(i) = umnormal;
 		}
 	}
@@ -103,6 +105,7 @@ namespace
 		{
 			const umio::DoubleList& uv = ummesh.uv_list().at(i);
 			UMVec2d umuv( uv.at(0), uv.at(1) );
+			//printf("uv %f %f.\n", umuv.x, umuv.y);
 			mesh->mutable_uv_list().at(i) = umuv;
 		}
 	}
@@ -110,11 +113,12 @@ namespace
 	/**
 	 * load material from umio to umdraw
 	 */
-	void load_material(const std::u16string& absolute_file_path, UMMeshPtr mesh, const umio::UMMesh& ummesh)
+	void load_material(const umstring& absolute_file_path, UMMeshPtr mesh, const umio::UMMesh& ummesh)
 	{
 		const int size = static_cast<int>(ummesh.material_list().size());
 		mesh->mutable_material_list().resize(size);
-
+		
+		//printf("material size  %d .\n", size);
 		for (int i = 0; i < size; ++i)
 		{
 			const umio::UMMaterial& material = ummesh.material_list().at(i);
@@ -135,14 +139,21 @@ namespace
 			
 			// load texture path
 			const int texture_count = static_cast<int>(material.texture_list().size());
+			//printf("texture_count %d\n", texture_count);
 			for (int k = 0; k < texture_count; ++k)
 			{
 				const umio::UMTexture& texture = material.texture_list().at(k);
 				const std::string& absolute_or_relative_file_name = texture.file_name();
-				std::u16string str = umbase::UMStringUtil::utf8_to_utf16(absolute_or_relative_file_name);
-				std::u16string file_name = umbase::UMPath::get_file_name(str);
-				std::u16string path = umbase::UMPath::get_absolute_path(absolute_file_path, file_name);
+#ifdef WITH_EMSCRIPTEN
+				umstring path = umbase::UMPath::resource_absolute_path(absolute_or_relative_file_name);
 				ummaterial->mutable_texture_path_list().push_back(path);
+				//printf("texture %s .\n", path.c_str());
+#else
+				umstring str = umbase::UMStringUtil::utf8_to_utf16(absolute_or_relative_file_name);
+				umstring file_name = umbase::UMPath::get_file_name(str);
+				umstring path = umbase::UMPath::get_absolute_path(absolute_file_path, file_name);
+				ummaterial->mutable_texture_path_list().push_back(path);
+#endif
 			}
 
 			const int polygon_count = static_cast<int>(std::count(
@@ -199,6 +210,7 @@ namespace
 		}
 
 		bool is_vertex_sized_normal = src_mesh.vertex_list().size() == src_mesh.normal_list().size();
+		bool is_vetrtex_sized_uv = src_mesh.vertex_list().size() == src_mesh.uv_list().size();
 		
 		// store vertex index and material index by material order
 		umio::IntListVec sorted_vertex_index;
@@ -215,13 +227,25 @@ namespace
 		{
 			sorted_normal.resize(index_size * 3);
 		}
+		if (!is_vetrtex_sized_uv)
+		{
+			sorted_uv.resize(index_size * 3);
+		}
 
 		for (size_t i = 0; i < index_size; ++i)
 		{
 			IndexPair& pair = index_pair_list[i];
 			sorted_material_index[i] = pair.first;
 			sorted_vertex_index[i] = src_mesh.vertex_index_list().at(pair.second);
-			if (!src_mesh.uv_list().empty())
+			if (is_vetrtex_sized_uv && !src_mesh.uv_list().empty())
+			{
+				for (int k = 0; k < 3; ++k)
+				{
+					int h = sorted_vertex_index[i][k];
+					sorted_uv[i * 3 + k] = src_mesh.uv_list().at(sorted_vertex_index[i][k]);
+				}
+			}
+			else if (!src_mesh.uv_list().empty())
 			{
 				for (int k = 0; k < 3; ++k)
 				{
@@ -236,9 +260,11 @@ namespace
 				}
 			}
 		}
+
 		src_mesh.mutable_vertex_index_list().swap(sorted_vertex_index);
 		src_mesh.mutable_material_index().swap(sorted_material_index);
-		if (!src_mesh.uv_list().empty())
+
+		if (!is_vetrtex_sized_uv && !src_mesh.uv_list().empty())
 		{
 			src_mesh.mutable_uv_list().swap(sorted_uv);
 		}
@@ -282,7 +308,7 @@ namespace umdraw
 /** 
  * import umdraw mesh list
  */
-bool UMSoftwareIO::import_mesh_list(UMMeshList& dst, const umio::UMObjectPtr src, const std::u16string& absolute_file_path)
+bool UMSoftwareIO::import_mesh_list(UMMeshList& dst, const umio::UMObjectPtr src, const umstring& absolute_file_path)
 {
 	if (!src) return false;
 

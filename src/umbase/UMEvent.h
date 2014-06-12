@@ -10,6 +10,7 @@
  */
 #pragma once
 
+#include <memory>
 #include <vector>
 #include "UMMacro.h"
 #include "UMListener.h"

@@ -14,6 +14,7 @@
 #include <imageio.h>
 #endif
 
+#include <memory>
 #include "UMImage.h"
 #include "UMVector.h"
 #include "UMPath.h"
@@ -31,7 +32,7 @@ namespace
 #ifdef WITH_OIIO
 	OIIO_NAMESPACE_USING
 
-	UMImagePtr load_image_by_oiio(const std::u16string& filepath)
+	UMImagePtr load_image_by_oiio(const umstring& filepath)
 	{
 		const std::string filename = umbase::UMStringUtil::utf16_to_utf8(filepath);
 
@@ -84,7 +85,7 @@ namespace
 	}
 #endif
 
-	UMImagePtr load_image_by_soil(const std::u16string& filepath)
+	UMImagePtr load_image_by_soil(const umstring& filepath)
 	{
 		const std::string filename = umbase::UMStringUtil::utf16_to_utf8(filepath);
 		int width = 0;
@@ -134,7 +135,7 @@ UMImage::UMImage()
 	: width_(0)
 	, height_(0)
 	, id_(global_id_counter++)
-	, image_change_event_(std::make_shared<umbase::UMEvent>(eImageEventImageChaged))
+	, image_change_event_(new umbase::UMEvent(eImageEventImageChaged))
 {
 }
 
@@ -148,7 +149,7 @@ UMImage::~UMImage()
 /**
  * load image from file
  */
-UMImagePtr UMImage::load(const std::u16string& filepath)
+UMImagePtr UMImage::load(const umstring& filepath)
 {
 	#ifdef WITH_OIIO
 		return load_image_by_oiio(filepath);
@@ -207,7 +208,7 @@ UMImagePtr UMImage::load_from_memory(const std::string& data)
 	return image;
 }
 
-bool UMImage::save(const std::u16string& filepath, UMImagePtr src, ImageType type)
+bool UMImage::save(const umstring& filepath, UMImagePtr src, ImageType type)
 {
 	if (!src) return false;
 	if (!src->is_valid()) return false;
@@ -269,18 +270,17 @@ bool UMImage::init(int width, int height)
  */
 void UMImage::create_r8g8b8a8_buffer(UMImage::R8G8B8A8Buffer& img) const 
 {
-	const double inv_gamma = 1.0;// / 2.2;
 	img.resize(width() * height() * 4);
 	for (int y = 0; y < height(); ++y)
 	{
 		for (int x = 0; x < width(); ++x)
 		{
-			int pos = width() * y + x;
-			const UMVec4d col = list().at(pos);
-			img[pos * 4 + 0] = static_cast<int>(pow(col.x, inv_gamma) * 0xFF + 0.5);
-			img[pos * 4 + 1] = static_cast<int>(pow(col.y, inv_gamma) * 0xFF + 0.5);
-			img[pos * 4 + 2] = static_cast<int>(pow(col.z, inv_gamma) * 0xFF + 0.5);
-			img[pos * 4 + 3] = static_cast<int>(pow(col.w, inv_gamma) * 0xFF + 0.5);
+			const int pos = width() * y + x;
+			const UMVec4d& col = list().at(pos);
+			img[pos * 4 + 0] = static_cast<int>(col.x * 255.0 + 0.5);
+			img[pos * 4 + 1] = static_cast<int>(col.y * 255.0 + 0.5);
+			img[pos * 4 + 2] = static_cast<int>(col.z * 255.0 + 0.5);
+			img[pos * 4 + 3] = static_cast<int>(col.w * 255.0 + 0.5);
 		}
 	}
 }

@@ -59,8 +59,8 @@ bool UMDirectX11ShaderManager::init(ID3D11Device *device_pointer, ShaderType typ
 
 	feature_level_ = device_pointer->GetFeatureLevel();
 
-	std::u16string vs_path;
-	std::u16string ps_path;
+	umstring vs_path;
+	umstring ps_path;
 	
 	if (type == eConstants)
 	{

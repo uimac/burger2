@@ -72,6 +72,11 @@ bool UMOpenGLLine::init_vbo(UMOpenGLShaderPtr shader)
 		glEnableVertexAttribArray(position_attr);
 		glVertexAttribPointer(position_attr, 3, GL_FLOAT, GL_FALSE, 0, (const void*)offset);
 	}
+
+	GLuint normal_attr = glGetAttribLocation(shader->program_object(), "a_normal" );
+	glDisableVertexAttribArray(normal_attr);
+	GLuint uv_attr = glGetAttribLocation(shader->program_object(), "a_uv" );
+	glDisableVertexAttribArray(uv_attr);
 	return true;
 }
 
@@ -86,7 +91,8 @@ bool UMOpenGLLine::init_vao(UMOpenGLShaderPtr shader)
 	{
 		UMOpenGLMaterialPtr material = *mt;
 		if (!material) continue;
-
+		
+#if !defined(WITH_EMSCRIPTEN)
 		unsigned int vao = mutable_vao_map()[material];
 		if (vao > 0) continue;
 		
@@ -95,12 +101,14 @@ bool UMOpenGLLine::init_vao(UMOpenGLShaderPtr shader)
 		glBindVertexArray(vao);
 		init_vbo(shader);
 		glBindVertexArray(0);
-	
-		GLuint position_attr = glGetAttribLocation(shader->program_object(), "a_position" );
-		glDisableVertexAttribArray(position_attr);
-		
 		mutable_vao_map()[material] = vao;
+#endif
 	}
+#if !defined(WITH_EMSCRIPTEN)
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+#else
+	init_vbo(shader);
+#endif
 	return true;
 }
 
@@ -168,13 +176,13 @@ void UMOpenGLLine::draw(UMOpenGLDrawParameterPtr parameter)
 	{
 		UMOpenGLMaterialPtr material = *mt;
 		if (!material) continue;
+		unsigned int index_count = material->polygon_count() * 2;
 	
+#if !defined(WITH_EMSCRIPTEN)
 		unsigned int& vao = mutable_vao_map()[material];
 		if (vao == 0) continue;
-
-		unsigned int index_count = material->polygon_count() * 2;
-		
 		glBindVertexArray(vao);
+#endif
 		// put material to glsl
 		// don't use ubo because intel/amd issue
 		{
@@ -199,7 +207,9 @@ void UMOpenGLLine::draw(UMOpenGLDrawParameterPtr parameter)
 		index_offset += index_count;
 	}
 	
+#if !defined(WITH_EMSCRIPTEN)
 	glBindVertexArray(0);
+#endif
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glUseProgram(0);
 }

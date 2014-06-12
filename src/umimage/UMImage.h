@@ -60,7 +60,7 @@ public:
 	/**
 	 * load image from file
 	 */
-	static UMImagePtr load(const std::u16string& filepath);
+	static UMImagePtr load(const umstring& filepath);
 	
 	/**
 	 * load image from memory
@@ -70,7 +70,7 @@ public:
 	/**
 	 * save image to file
 	 */
-	static bool save(const std::u16string& filepath, UMImagePtr src, ImageType type);
+	static bool save(const umstring& filepath, UMImagePtr src, ImageType type);
 
 	/**
 	 * init image

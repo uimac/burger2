@@ -35,7 +35,7 @@ public:
 	static bool import_mesh_list(
 		UMMeshList& dst, 
 		const umio::UMObjectPtr src,
-		const std::u16string& absolute_file_path);
+		const umstring& absolute_file_path);
 
 };
 

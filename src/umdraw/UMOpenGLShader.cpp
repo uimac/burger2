@@ -16,7 +16,11 @@
 #include <string>
 #include <iterator>
 #include <iostream>
-#include <tchar.h>
+
+#if !defined(WITH_EMSCRIPTEN)
+	#include <tchar.h>
+#endif
+
 #include <GL/glew.h>
 
 #include "UMMacro.h"
@@ -31,13 +35,18 @@ namespace
 		shader = glCreateShader( type );
 		glShaderSource( shader, 1, &src, NULL );
 		glCompileShader( shader );
+		printf("shader loading success!\n");
 		return shader;
 	}
 
-	GLuint load_shader_from_resource( GLenum type, const std::u16string& file_path)
+	GLuint load_shader_from_resource( GLenum type, const umstring& file_path)
 	{
+		printf("load shader - %s \n", file_path.c_str());
 		std::ifstream ifs( file_path.c_str());
-		if (!ifs.good()) return 0;
+		if (!ifs.good()) {
+			printf("shader loading failed \n");
+			return 0;
+		}
 		std::string str( (std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
 		const char* cstr = str.c_str();
 		
@@ -45,6 +54,7 @@ namespace
 		shader = glCreateShader( type );
 		glShaderSource( shader, 1, &cstr, NULL );
 		glCompileShader( shader );
+		printf("shader loading success\n");
 		return shader;
 	}
 
@@ -52,8 +62,8 @@ namespace
 		unsigned int& program_object,
 		unsigned int& vertex_shader,
 		unsigned int& fragment_shader,
-		const std::u16string& vertex_shader_path,
-		const std::u16string& fragment_shader_path)
+		const umstring& vertex_shader_path,
+		const umstring& fragment_shader_path)
 	{
 		vertex_shader = load_shader_from_resource( GL_VERTEX_SHADER, vertex_shader_path );
 		fragment_shader = load_shader_from_resource( GL_FRAGMENT_SHADER, fragment_shader_path );
@@ -124,11 +134,15 @@ public:
 		vertex_shader_ = load_shader(GL_VERTEX_SHADER, vertex_shader.c_str());
 		fragment_shader_ = load_shader(GL_FRAGMENT_SHADER, fragment_shader.c_str());
 	
+		printf("vertex_shader %d\n", vertex_shader_);
+		printf("fragment_shader %d\n", fragment_shader_);
+
 		program_object_ = glCreateProgram();
+		printf("program_object_ %d\n", program_object_);
 		glAttachShader( program_object_, vertex_shader_ );
 		glAttachShader( program_object_, fragment_shader_ );
 		glLinkProgram( program_object_ );
-		glUseProgram( program_object_ );
+
 		GLenum error = glGetError();
 		if (error != GL_NO_ERROR)
 		{
@@ -138,8 +152,8 @@ public:
 	}
 
 	bool create_shader_from_file(
-		const std::u16string& veretx_shader_path, 
-		const std::u16string& fragment_shader_path)
+		const umstring& veretx_shader_path, 
+		const umstring& fragment_shader_path)
 	{
 		initialize(
 			program_object_,
@@ -198,8 +212,8 @@ bool UMOpenGLShader::create_shader_from_memory(
  * create shader from file
  */
 bool UMOpenGLShader::create_shader_from_file(
-	const std::u16string& veretx_shader_path, 
-	const std::u16string& fragment_shader_path)
+	const umstring& veretx_shader_path, 
+	const umstring& fragment_shader_path)
 {
 	return impl_->create_shader_from_file(veretx_shader_path, fragment_shader_path);
 }

@@ -7,7 +7,7 @@
  * Licensed  under the MIT license. 
  *
  */
-#ifdef WITH_DIRECTX
+#ifdef WITH_OPENGL
 
 #include "UMOpenGLBoard.h"
 
@@ -69,7 +69,7 @@ public:
 
 		return true;
 	}
-
+	
 	bool init_vbo(UMOpenGLShaderPtr shader)
 	{
 		// create vertex buffer
@@ -96,7 +96,7 @@ public:
 			glEnableVertexAttribArray(position_attr);
 			glVertexAttribPointer(position_attr, 3, GL_FLOAT, GL_FALSE, 0, (const void*)offset);
 		}
-
+		
 		// create uv buffer
 		{
 			unsigned int uv_vbo = uv_vbo_;
@@ -126,6 +126,7 @@ public:
 
 	bool init_vao(UMOpenGLShaderPtr shader)
 	{
+#if !defined(WITH_EMSCRIPTEN)
 		if (vao_ <= 0)
 		{
 			// create vao
@@ -133,13 +134,11 @@ public:
 			glBindVertexArray(vao_);
 			init_vbo(shader);
 			glBindVertexArray(0);
-
-			GLuint position_attr = glGetAttribLocation(shader->program_object(), "a_position" );
-			glDisableVertexAttribArray(position_attr);
-			GLuint uv_attr = glGetAttribLocation(shader->program_object(), "a_uv" );
-			glDisableVertexAttribArray(uv_attr);
 		}
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
+#else
+		init_vbo(shader);
+#endif
 		return true;
 	}
 
@@ -166,11 +165,11 @@ public:
 	
 		UMOpenGLShaderPtr shader = shaders[0];
 
-		if (!is_frag_color_binded_)
-		{
-			glBindFragDataLocation(shader->program_object(), 0, "frag_color");
-			is_frag_color_binded_ = true;
-		}
+		//if (!is_frag_color_binded_)
+		//{
+		//	glBindFragDataLocation(shader->program_object(), 0, "frag_color");
+		//	is_frag_color_binded_ = true;
+		//}
 		if (sampler_location_  == -1)
 		{
 			sampler_location_ = glGetUniformLocation(shader->program_object(), "s_texture");
@@ -217,9 +216,12 @@ public:
 		// has textue ?
 		if (texture_)
 		{
-			glActiveTexture(GL_TEXTURE8);
+			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, texture_->texture_id());
-			glUniform1i(sampler_location_ , 8);
+			if (sampler_location_ >= 0)
+			{
+				glUniform1i(sampler_location_ , 0);
+			}
 		}
 		if (!attachments_.empty())
 		{
@@ -250,12 +252,16 @@ public:
 			}
 		}
 		
+#if !defined(WITH_EMSCRIPTEN)
 		glBindVertexArray(vao_);
+#endif
 		glDrawArrays(
 			GL_TRIANGLE_STRIP,
 			0,
 			4);
+#if !defined(WITH_EMSCRIPTEN)
 		glBindVertexArray(0);
+#endif
 		glUseProgram(0);
 	}
 	
@@ -369,4 +375,4 @@ UMOpenGLTexturePtr UMOpenGLBoard::texture() const
 
 } // umdraw
 
-#endif // WITH_DIRECTX
+#endif // WITH_OPENGL

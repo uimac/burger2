@@ -22,8 +22,6 @@
 #include "UMTime.h"
 #include "UMImage.h"
 
-#include <tchar.h>
-#include <shlwapi.h>
 #include <GL/glew.h>
 #include "UMIO.h"
 
@@ -74,7 +72,6 @@ public:
 	}
 
 private:
-	HWND handle_;
 	UMOpenGLScenePtr gl_scene;
 };
 
@@ -85,7 +82,7 @@ bool UMOpenGLImpl::init(UMScenePtr scene)
 {
 	glEnable( GL_DEPTH_TEST );
 	//glDepthMask(GL_TRUE);
-	//glDepthFunc( GL_LESS );
+	glDepthFunc( GL_LESS );
 	glClearColor(0.21f, 0.21f, 0.21f, 1.0f);
 	glEnable( GL_CULL_FACE );
 	//glClearDepth(1.0f);
@@ -101,6 +98,7 @@ bool UMOpenGLImpl::init(UMScenePtr scene)
 		if (gl_scene->load(scene))
 		{
 			mutable_event_list().push_back(scene->camera_change_event());
+			mutable_event_list().push_back(scene->foreground_change_event());
 			connect(gl_scene);
 			return true;
 		}

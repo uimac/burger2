@@ -16,7 +16,9 @@ namespace umdraw
 {
 
 enum {
-	eSoftwareEventCameraChaged = 1
+	eSoftwareEventCameraChaged = 1,
+	eSoftwareEventForegroundChaged,
+	eSoftwareEventBackgroundChaged,
 };
 
 } // umdraw

@@ -90,21 +90,21 @@ UMImagePtr UMRT::render()
 {
 	if (!scene_access_) return UMImagePtr();
 	
-	UMRenderParameter param(1280, 720);
+	UMRenderParameter param(1024, 1024);
 	{
 		UMPathTracer path_tracer;
-		path_tracer.set_width(1280);
-		path_tracer.set_height(720);
+		path_tracer.set_width(1024);
+		path_tracer.set_height(1024);
 		int total = param.super_sampling_count().x * param.super_sampling_count().y * param.sample_count();
 		for (int i = 0; i < total; ++i)
 		{
-			path_tracer.progress_render(scene_access_, param);
+			path_tracer.render(scene_access_, param);
 		}
 	}
 	//{
 	//	UMRayTracer rat_tracer;
-	//	rat_tracer.set_width(1280);
-	//	rat_tracer.set_height(720);
+	//	rat_tracer.set_width(1024);
+	//	rat_tracer.set_height(1024);
 	//	rat_tracer.render(scene_access_, param);
 	//}
 	return param.output_image();

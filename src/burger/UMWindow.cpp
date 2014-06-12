@@ -8,8 +8,10 @@
  *
  */
 #ifdef WITH_EMSCRIPTEN
-	#include <GLES2/gl2.h>
-	#include <EGL/egl.h>
+	#include <GL/glew.h>
+	//#include <GLES2/gl2.h>
+	//#include <EGL/egl.h>
+	#include <emscripten/emscripten.h>
 #else
 	#include <GL/glew.h>
 #endif
@@ -18,6 +20,7 @@
 #include "UMViewer.h"
 #include "UMTime.h"
 #include "UMScene.h"
+#include "UMGUIScene.h"
 #include "UMPath.h"
 #include "UMStringUtil.h"
 #include "UMResource.h"
@@ -29,9 +32,7 @@
 #include "UMStringUtil.h"
 #include "UMTga.h"
 #include "UMSvg.h"
-#include <GL/glfw3.h>
-#include <GL/glfw3native.h>
-
+#include <GL/glfw.h>
 
 namespace test_viewer
 {
@@ -40,7 +41,7 @@ namespace test_viewer
 /**
  * create initial scene
  */
-static umdraw::UMScenePtr create_initial_scene(int width, int height)
+static umdraw::UMScenePtr create_initial_scene(int width, int height, const umstring& initial_file)
 {
 	// create scene
 	umdraw::UMScenePtr scene = (std::make_shared<umdraw::UMScene>());
@@ -111,11 +112,18 @@ static umdraw::UMScenePtr create_initial_scene(int width, int height)
 	scene->mutable_line_list().push_back(line);
 	
 	UMResource& resource = UMResource::instance();
-	if (resource.unpack_to_memory(UMResource::default_resource_path()))
+	const umstring& resource_path = UMResource::default_resource_path();
+	printf("resource path : %s\n", resource_path.c_str());
+	if (resource.unpack_to_memory(resource_path))
 	{
+		printf("resource load sucess \n");
 		UMResource::UnpackedNameList& name_list = resource.unpacked_name_list();
+		//printf("name list success \n");
 		UMResource::UnpackedDataList& data_list = resource.unpacked_data_list();
-
+		//printf("data list success \n");
+		
+		//printf("hoge1");
+		//printf("hoge2");
 		// load shader
 		{
 			umdraw::UMShaderEntry& entry = umdraw::UMShaderEntry::instance();
@@ -126,71 +134,128 @@ static umdraw::UMScenePtr create_initial_scene(int width, int height)
 			entry.set_gl_board_vertex_shader(UMResource::find_resource_data(resource, ("UMBoardShader.vs")));
 			entry.set_gl_board_fragment_shader(UMResource::find_resource_data(resource, ("UMBoardShader.fs")));
 
-			entry.set_gl_board_light_pass_vertex_shader(UMResource::find_resource_data(resource, ("UMBoardLightPass.vs")));
-			entry.set_gl_board_light_pass_fragment_shader(UMResource::find_resource_data(resource, ("UMBoardLightPass.fs")));
-			entry.set_gl_vertex_geo_shader(UMResource::find_resource_data(resource, ("UMModelGeometryPass.vs")));
-			entry.set_gl_fragment_geo_shader(UMResource::find_resource_data(resource, ("UMModelGeometryPass.fs")));
+			//entry.set_gl_board_light_pass_vertex_shader(UMResource::find_resource_data(resource, ("UMBoardLightPass.vs")));
+			//entry.set_gl_board_light_pass_fragment_shader(UMResource::find_resource_data(resource, ("UMBoardLightPass.fs")));
+			//entry.set_gl_vertex_geo_shader(UMResource::find_resource_data(resource, ("UMModelGeometryPass.vs")));
+			//entry.set_gl_fragment_geo_shader(UMResource::find_resource_data(resource, ("UMModelGeometryPass.fs")));
 
-			entry.set_dx_include_shader(UMResource::find_resource_data(resource, ("common.hlsl")));
-			entry.set_dx_vertex_shader(UMResource::find_resource_data(resource, ("model_vs.hlsl")));
-			entry.set_dx_pixel_shader(UMResource::find_resource_data(resource, ("model_ps.hlsl")));
+			//entry.set_dx_include_shader(UMResource::find_resource_data(resource, ("common.hlsl")));
+			//entry.set_dx_vertex_shader(UMResource::find_resource_data(resource, ("model_vs.hlsl")));
+			//entry.set_dx_pixel_shader(UMResource::find_resource_data(resource, ("model_ps.hlsl")));
+
+			std::cout << "This program used external libraries below." << std::endl;
+			std::cout << "---\"GLFW\" LICENSE-----------------------------------------------" << std::endl;
+			std::cout << UMResource::find_resource_data(resource, ("GLFW-LICENSE.txt")).c_str() << std::endl;
+			std::cout << "---\"tinyobjloader\" LICENSE--------------------------------------" << std::endl;
+			std::cout << UMResource::find_resource_data(resource, ("tinyobjloader-LICENSE.txt")).c_str() << std::endl;
+			std::cout << "---\"snappy\" LICENSE---------------------------------------------" << std::endl;
+			std::cout << UMResource::find_resource_data(resource, ("snappy-LICENSE.txt")).c_str() << std::endl;
 		}
+		
+		if (const umimage::UMFont* font = umimage::UMFont::instance())
+		{
+			if (font->load_font_from_memory(
+				umbase::UMStringUtil::utf8_to_utf16("KodomoRounded"), 
+				UMResource::find_resource_data(resource, ("mplus-1c-medium-sub.ttf"))))
+			{
+				std::cout << "font load success!" << std::endl;
+			}
+		}
+		//umstring kimura = umbase::UMPath::resource_absolute_path(umbase::UMStringUtil::utf8_to_utf16("kimura.obj"));
+		//scene->load(kimura);
+		//umstring kimura2 = umbase::UMPath::resource_absolute_path(umbase::UMStringUtil::utf8_to_utf16("kimura2.obj"));
+		//scene->load(kimura2);
+		//umstring kimura4 = umbase::UMPath::resource_absolute_path(umbase::UMStringUtil::utf8_to_utf16("kimura4.obj"));
+		//scene->load(kimura4);
+		umstring box = umbase::UMPath::resource_absolute_path(umbase::UMStringUtil::utf8_to_utf16("box.obj"));
+		scene->load(box);
+		umstring board = umbase::UMPath::resource_absolute_path(umbase::UMStringUtil::utf8_to_utf16("board.obj"));
+		scene->load(board);
+		//if (!initial_file.empty())
+		//{
+		//	scene->load(initial_file);
+		//}
 	}
 	return scene;
 }
 
-static bool create_initial_abc_scene_list(
-	umabc::UMAbcSceneList& scene_list, 
-	umdraw::UMScenePtr draw_scene)
+//static bool create_initial_abc_scene_list(
+//	umabc::UMAbcSceneList& scene_list, 
+//	umdraw::UMScenePtr draw_scene)
+//{
+//	umabc::UMAbcIO abcio;
+//	umstring filename(umbase::UMStringUtil::wstring_to_utf16(_T("out2\\alembic_file.abc")));
+//	//umstring filename(umbase::UMStringUtil::wstring_to_utf16(_T("particle1.abc")));
+//	umstring absolute_path = umbase::UMPath::resource_absolute_path(filename);
+//	umabc::UMAbcSetting setting;
+//	setting.set_reference_scene(draw_scene);
+//	if (umabc::UMAbcScenePtr abc_scene = abcio.load(
+//			absolute_path,
+//			setting))
+//	{
+//		scene_list.push_back(abc_scene);
+//		return true;
+//	}
+//	return false;
+//}
+
+static umgui::UMGUIScenePtr create_initial_gui_scene(
+	umdraw::UMScenePtr draw_scene,
+	int width, 
+	int height)
 {
-	umabc::UMAbcIO abcio;
-	std::u16string filename(umbase::UMStringUtil::wstring_to_utf16(_T("out2\\alembic_file.abc")));
-	//std::u16string filename(umbase::UMStringUtil::wstring_to_utf16(_T("particle1.abc")));
-	std::u16string absolute_path = umbase::UMPath::resource_absolute_path(filename);
-	umabc::UMAbcSetting setting;
-	setting.set_reference_scene(draw_scene);
-	if (umabc::UMAbcScenePtr abc_scene = abcio.load(
-			absolute_path,
-			setting))
+	umgui::UMGUIScenePtr gui_scene = std::make_shared<umgui::UMGUIScene>();
+	if (gui_scene->init(width, height))
 	{
-		scene_list.push_back(abc_scene);
-		return true;
+		gui_scene->set_umdraw_scene(draw_scene);
+		return gui_scene;
 	}
-	return false;
+	return umgui::UMGUIScenePtr();
+}
+
+void main_loop()
+{
+	// draw
+	UMViewer::call_paint();
+
+	if (UMViewer::draw_type() == umdraw::UMDraw::eOpenGL)
+	{
+		glfwSwapBuffers();
+	}
+	glfwPollEvents();
 }
 
 /**
  * main
  */
-int UMWindow::main()
+int UMWindow::main(int argc, char** argv)
 {
 	//FreeConsole();
 	if (!glfwInit()) {
 		exit( EXIT_FAILURE );
 	}
 
-	//glfwDefaultWindowHints();
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-
+	////glfwDefaultWindowHints();
+	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	////glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 
 	// create main window
-	GLFWwindow* window = glfwCreateWindow(width_, height_, "burger", NULL, NULL);
-	if (!window) {
+	if (glfwOpenWindow(width_, height_, 8, 8, 8, 8, 24, 8, GLFW_WINDOW) != GL_TRUE)
+	{
 		glfwTerminate();
 		exit( EXIT_FAILURE );
 	}
 	// create hide window
-	GLFWwindow* sub_window = glfwCreateWindow(1, 1, "Resource Loader", NULL, window);
-	if (!sub_window) {
-		glfwTerminate();
-		exit( EXIT_FAILURE );
-	}
-	glfwHideWindow(sub_window);
+	//GLFWwindow* sub_window = glfwCreateWindow(1, 1, "Resource Loader", NULL, window);
+	//if (!sub_window) {
+	//	glfwTerminate();
+	//	exit( EXIT_FAILURE );
+	//}
+	//glfwHideWindow(sub_window);
 
-	glfwMakeContextCurrent(window);
+	//glfwMakeContextCurrent(window);
 	// print environment
 	printf("context renderer string: \"%s\"\n", glGetString(GL_RENDERER));
 	printf("context vendor string: \"%s\"\n", glGetString(GL_VENDOR));
@@ -201,45 +266,56 @@ int UMWindow::main()
 	glewInit();
 #endif
 	
-	// init font
-	HWND hwnd = glfwGetWin32Window(window);
-	if (const umimage::UMFont* font = umimage::UMFont::instance())
-	{
-		std::u16string font_name = umbase::UMStringUtil::wstring_to_utf16(_T("メイリオ"));
-		font->load_font(hwnd, font_name);
-	}
+	//// init font
+	//HWND hwnd = glfwGetWin32Window(window);
+	//	umstring font_name = umbase::UMStringUtil::wstring_to_utf16(_T("メイリオ"));
+	//	font->load_font(hwnd, font_name);
+	//}
 
 	// create umio scene
-	if (umdraw::UMScenePtr scene = create_initial_scene(width_, height_))
+	umstring initial_file;
+	if (argc > 1) {
+		initial_file = umbase::UMStringUtil::utf8_to_utf16(argv[1]);
+		if (!umbase::UMPath::exists(initial_file))
+		{
+			initial_file.clear();
+		}
+	}
+	if (umdraw::UMScenePtr scene = create_initial_scene(width_, height_, initial_file))
 	{
+		if (umgui::UMGUIScenePtr gui_scene = create_initial_gui_scene(scene, width_, height_))
 		{
 			// create alembic scene
-			umabc::UMAbcSceneList abc_scene_list;
+			//umabc::UMAbcSceneList abc_scene_list;
 			//create_initial_abc_scene_list(abc_scene_list, scene);
 			{
 				// init viewer
 				if (UMViewer::init(
-					window,
-					sub_window,
+					NULL,
+					NULL,
 					scene, 
-					abc_scene_list, 
+					gui_scene, 
+					//abc_scene_list, 
 					umdraw::UMDraw::eOpenGL, 
 					width_, 
 					height_))
 				{
 					// set callback to viewer
-					glfwSetKeyCallback(window, UMViewer::key_callback);
-					glfwSetMouseButtonCallback(window, UMViewer::mouse_button_callback);
-					glfwSetCursorPosCallback(window, UMViewer::cursor_pos_callback);
-					glfwSetWindowSizeCallback(window, UMViewer::window_size_callback );
-					glfwSetWindowCloseCallback(window, UMViewer::window_close_callback );
-					glfwSetDropfilesCallback(window, UMViewer::drop_files_callback);
+					glfwSetKeyCallback(UMViewer::key_callback);
+					glfwSetMouseButtonCallback(UMViewer::mouse_button_callback);
+					glfwSetMousePosCallback(UMViewer::cursor_pos_callback);
+					glfwSetWindowSizeCallback(UMViewer::window_size_callback );
+					glfwSetWindowCloseCallback(UMViewer::window_close_callback );
+					//glfwSetDropfilesCallback(UMViewer::drop_files_callback);
 				}
 			}
 		}
 	}
 	glfwSwapInterval(1);
 
+#ifdef WITH_EMSCRIPTEN
+	emscripten_set_main_loop (main_loop, 0, 1);
+#else
 	// main loop
 	for (;;) 
 	{
@@ -248,21 +324,23 @@ int UMWindow::main()
 
 		if (UMViewer::draw_type() == umdraw::UMDraw::eOpenGL)
 		{
-			glfwSwapBuffers(window);
+			glfwSwapBuffers();
 		}
 		glfwPollEvents();
-		if (glfwGetKey(window, GLFW_KEY_ESCAPE))
+		if (glfwGetKey(GLFW_KEY_ESC))
 			break;
-		if (glfwWindowShouldClose(window))
+		if (!glfwGetWindowParam(GLFW_OPENED))
 			break;
 	}
+#endif
 	// call window close callback to delete resources.
-	UMViewer::window_close_callback(window);
-	glfwDestroyWindow(sub_window);
-	glfwDestroyWindow(window);
+	UMViewer::window_close_callback();
+	//glfwDestroyWindow(sub_window);
+	//glfwDestroyWindow(window);
 	glfwTerminate();
 	exit( EXIT_SUCCESS );
 	return true;
 }
+
 
 } // test_viewer

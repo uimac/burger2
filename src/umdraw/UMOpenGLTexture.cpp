@@ -11,10 +11,13 @@
 #ifdef WITH_OPENGL
 
 #ifdef WITH_EMSCRIPTEN
-	#include <GLES2/gl2.h>
-	#include <EGL/egl.h>
+	#include <GL/glew.h>
+	#include <GL/glu.h>
+	//#include <GLES2/gl2.h>
+	//#include <EGL/egl.h>
 #else
 	#include <GL/glew.h>
+	#include <GL/glu.h>
 #endif
 
 #include "UMOpenGLTexture.h"
@@ -29,17 +32,18 @@
 
 namespace
 {
-	typedef std::map<std::u16string, unsigned int> UMOpenGLTexturePool;
+	typedef std::map<umstring, unsigned int> UMOpenGLTexturePool;
 	UMOpenGLTexturePool texture_pool;
 	UMOpenGLTexturePool fbo_pool;
 	UMOpenGLTexturePool rb_pool;
 
-	typedef std::map<std::u16string, umimage::UMImagePtr> UMOpenGLTextureImagePool;
+	typedef std::map<umstring, umimage::UMImagePtr> UMOpenGLTextureImagePool;
 	UMOpenGLTextureImagePool texture_image_pool;
 
 	
 	int color_attachments[] = {
 		GL_COLOR_ATTACHMENT0,
+#if !defined(WITH_EMSCRIPTEN)
 		GL_COLOR_ATTACHMENT1,
 		GL_COLOR_ATTACHMENT2,
 		GL_COLOR_ATTACHMENT3,
@@ -55,6 +59,7 @@ namespace
 		GL_COLOR_ATTACHMENT13,
 		GL_COLOR_ATTACHMENT14,
 		GL_COLOR_ATTACHMENT15,
+#endif //  !defined(WITH_EMSCRIPTEN)
 	};
 	int color_attachments_size = static_cast<int>(sizeof(color_attachments) / sizeof(color_attachments[0]));
 };
@@ -111,7 +116,7 @@ public:
 			if (!buffer_.empty())
 			{
 				glBindTexture(GL_TEXTURE_2D, id_);
-				printf("a %d %d %d %d\n", x, y, w, h);
+				//printf("a %d %d %d %d\n", x, y, w, h);
 				glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, w, h, GL_RGBA, GL_UNSIGNED_BYTE, &(*buffer_.begin()));
 				//glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 128, 128, GL_RGBA, GL_UNSIGNED_BYTE, &(*buffer_.begin()));
 				glBindTexture(GL_TEXTURE_2D, 0);
@@ -189,7 +194,7 @@ public:
 		}
 	}
 
-	bool load(const std::u16string& file_path)
+	bool load(const umstring& file_path)
 	{
 		// find texture from pool
 		if (texture_pool.find(file_path) != texture_pool.end())
@@ -221,11 +226,16 @@ public:
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+#ifdef WITH_EMSCRIPTEN
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &(*buffer.begin()));
+#else
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		gluBuild2DMipmaps(
 			GL_TEXTURE_2D, GL_RGBA, width, height,
 			GL_RGBA, GL_UNSIGNED_BYTE, &(*buffer.begin())
 		);
+#endif
 		glBindTexture(GL_TEXTURE_2D, 0);
 		
 		connect_event();
@@ -256,7 +266,7 @@ public:
 		if (!image.is_valid()) return false;
 	
 		// find texture from pool
-		std::u16string id = 
+		umstring id = 
 			umbase::UMStringUtil::utf8_to_utf16(umbase::UMStringUtil::number_to_string(image.id()));
 		// find texture from pool
 		if (texture_pool.find(id) != texture_pool.end())
@@ -283,11 +293,16 @@ public:
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+#ifdef WITH_EMSCRIPTEN
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &(*buffer.begin()));
+#else
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		gluBuild2DMipmaps(
 			GL_TEXTURE_2D, GL_RGBA, width, height,
 			GL_RGBA, GL_UNSIGNED_BYTE, &(*buffer.begin())
 		);
+#endif
 		glBindTexture(GL_TEXTURE_2D, 0);
 	
 		connect_event();
@@ -305,7 +320,7 @@ public:
 		++image_id;
 
 		// find texture from pool
-		std::u16string id = umbase::UMStringUtil::utf8_to_utf16(
+		umstring id = umbase::UMStringUtil::utf8_to_utf16(
 			umbase::UMStringUtil::number_to_string(image_id));
 
 		// find texture from pool
@@ -351,7 +366,7 @@ public:
 		++image_id;
 
 		// find texture from pool
-		std::u16string id = umbase::UMStringUtil::utf8_to_utf16(
+		umstring id = umbase::UMStringUtil::utf8_to_utf16(
 			umbase::UMStringUtil::number_to_string(image_id));
 
 		// find texture from pool
@@ -387,7 +402,7 @@ public:
 		++image_id;
 
 		// find texture from pool
-		std::u16string id = umbase::UMStringUtil::utf8_to_utf16(
+		umstring id = umbase::UMStringUtil::utf8_to_utf16(
 			umbase::UMStringUtil::number_to_string(image_id));
 
 		// find texture from pool
@@ -486,7 +501,7 @@ private:
 	unsigned int id_;
 	unsigned int render_buffer_id_;
 	unsigned int frame_buffer_id_;
-	std::u16string file_path_;
+	umstring file_path_;
 	umimage::UMImagePtr image_;
 	std::vector<unsigned int> frame_buffer_attachments_;
 };
@@ -558,7 +573,7 @@ UMOpenGLTexturePtr UMOpenGLTexture::create_frame_buffer(
  * load an image file as a directx texture
  * @param [in] file_path absolute texture file path
  */
-bool UMOpenGLTexture::load(const std::u16string& file_path)
+bool UMOpenGLTexture::load(const umstring& file_path)
 {
 	return impl_->load(file_path);
 }

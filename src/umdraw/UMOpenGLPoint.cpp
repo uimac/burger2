@@ -98,9 +98,6 @@ public:
 
 		glDrawArrays(GL_POINTS, 0, vertex_count_);
 
-		GLuint position_attr = glGetAttribLocation(shader->program_object(), "a_position" );
-		glDisableVertexAttribArray(position_attr);
-	
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glUseProgram(0);
 	}
