@@ -1,6 +1,6 @@
 /**
  * @file sample3.cpp
- * @brief imathサンプル.
+ * @brief tinyobjloaderサンプル.
  * @author tori31001 at gmail.com
  * Licensed  under Public Domain.
  *
