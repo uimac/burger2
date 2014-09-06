@@ -13,6 +13,12 @@
     <ClInclude Include="..\..\src\burger\UMViewer.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\burger\UMBurgerGUI.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\burger\UM30min.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\burger\UMMain.cpp">
@@ -22,6 +28,12 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\burger\UMWindow.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\burger\UMBurgerGUI.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\burger\UM30min.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

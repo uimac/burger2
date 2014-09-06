@@ -34,7 +34,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v110_xp</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Emscripten'" Label="Configuration">
@@ -46,13 +46,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v110_xp</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v110_xp</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -66,7 +66,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v110_xp</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -121,13 +121,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)src/umbase/;$(SolutionDir)src/umimage/;$(SolutionDir)src/umdraw/;$(SolutionDir)src/umgui/;$(SolutionDir)src/umabc/;$(SolutionDir)src/umresource/;$(SolutionDir)src/umrt/;$(SolutionDir)lib/glfw2/include;$(SolutionDir)lib/glew/include;$(SolutionDir)lib/umio/include;$(SolutionDir)lib/websocket/include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;GLEW_STATIC;GLFW_EXPOSE_NATIVE_WIN32;GLFW_EXPOSE_NATIVE_WGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)src/umbase/;$(SolutionDir)src/umimage/;$(SolutionDir)src/umdraw/;$(SolutionDir)src/umgui/;$(SolutionDir)src/umabc/;$(SolutionDir)src/umresource/;$(SolutionDir)src/umrt/;$(SolutionDir)src/umwsio/;$(SolutionDir)lib/glfw/include;$(SolutionDir)lib/glew/include;$(SolutionDir)lib/umio/include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;GLEW_STATIC;GLFW_EXPOSE_NATIVE_WIN32;GLFW_EXPOSE_NATIVE_WGL;WITH_ALEMBIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib/$(PlatformTarget)/;$(SolutionDir)lib/umio/$(Platform)/$(Configuration)/;$(SolutionDir)lib/snappy/$(Platform)/$(Configuration)/;$(SolutionDir)lib/glfw2/$(Platform)/$(Configuration)/;$(SolutionDir)lib/glew/$(Platform)/$(Configuration)/;$(SolutionDir)lib/soil/$(Platform)/$(Configuration)/;$(SolutionDir)lib/fbxsdk/$(Platform)/$(Configuration)/;$(SolutionDir)lib/freetype/$(Platform)/$(Configuration)/;$(SolutionDir)lib/msgpack/$(Platform)/$(Configuration)/;$(SolutionDir)lib/tinyobjloader/$(Platform)/$(Configuration)/</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;d3d11.lib;d3dx11.lib;d3dcompiler.lib;glew32.lib;glfw.lib;shlwapi.lib;winmm.lib;soil.lib;snappy.lib;msgpack.lib;libfbxsdk-md.lib;umio_obj.lib;tinyobjloader.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib/$(PlatformTarget)/;$(SolutionDir)lib/umio/$(Platform)/$(Configuration)/;$(SolutionDir)lib/snappy/$(Platform)/$(Configuration)/;$(SolutionDir)lib/glfw/$(Platform)/$(Configuration)/;$(SolutionDir)lib/glew/$(Platform)/$(Configuration)/;$(SolutionDir)lib/fbxsdk/$(Platform)/$(Configuration)/;$(SolutionDir)lib/freetype/$(Platform)/$(Configuration)/;$(SolutionDir)lib/msgpack/$(Platform)/$(Configuration)/;$(SolutionDir)lib/boost/$(Platform)/$(Configuration)/;$(SolutionDir)lib/ilmbase2/$(Platform)/$(Configuration)/;$(SolutionDir)lib/zlib/$(Platform)/$(Configuration)/;$(SolutionDir)lib/alembic/$(Platform)/$(Configuration)/;$(SolutionDir)lib/hdf5/$(Platform)/$(Configuration)/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;d3d11.lib;d3dx11.lib;d3dcompiler.lib;glew32.lib;glfw3.lib;shlwapi.lib;winmm.lib;snappy.lib;msgpack.lib;libfbxsdk-md.lib;umio_fbx2014.lib;Ws2_32.lib;psapi.lib;Half.lib;Iex.lib;Imath.lib;IlmThread.lib;zlib.lib;AlembicAbc.lib;AlembicAbcCollection.lib;AlembicAbcCoreAbstract.lib;AlembicAbcCoreFactory.lib;AlembicAbcCoreHDF5.lib;AlembicAbcCoreOgawa.lib;AlembicAbcGeom.lib;AlembicAbcMaterial.lib;AlembicOgawa.lib;AlembicUtil.lib;libhdf5.lib;libhdf5_hl.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Emscripten'">
@@ -153,13 +154,15 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)src/umbase/;$(SolutionDir)src/umimage/;$(SolutionDir)src/umdraw/;$(SolutionDir)src/umgui/;$(SolutionDir)src/umabc/;$(SolutionDir)src/umresource/;$(SolutionDir)src/umrt/;$(SolutionDir)lib/glfw2/include;$(SolutionDir)lib/glew/include;$(SolutionDir)lib/umio/include;$(SolutionDir)lib/websocket/include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;GLEW_STATIC;GLFW_EXPOSE_NATIVE_WIN32;GLFW_EXPOSE_NATIVE_WGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)src/umbase/;$(SolutionDir)src/umimage/;$(SolutionDir)src/umdraw/;$(SolutionDir)src/umgui/;$(SolutionDir)src/umabc/;$(SolutionDir)src/umresource/;$(SolutionDir)src/umrt/;$(SolutionDir)src/umwsio/;$(SolutionDir)lib/glfw/include;$(SolutionDir)lib/glew/include;$(SolutionDir)lib/umio/include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;GLEW_STATIC;GLFW_EXPOSE_NATIVE_WIN32;GLFW_EXPOSE_NATIVE_WGL;WITH_ALEMBIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib/$(PlatformTarget)/;$(SolutionDir)lib/umio/$(Platform)/$(Configuration)/;$(SolutionDir)lib/snappy/$(Platform)/$(Configuration)/;$(SolutionDir)lib/glfw2/$(Platform)/$(Configuration)/;$(SolutionDir)lib/glew/$(Platform)/$(Configuration)/;$(SolutionDir)lib/soil/$(Platform)/$(Configuration)/;$(SolutionDir)lib/fbxsdk/$(Platform)/$(Configuration)/;$(SolutionDir)lib/freetype/$(Platform)/$(Configuration)/;$(SolutionDir)lib/msgpack/$(Platform)/$(Configuration)/;$(SolutionDir)lib/tinyobjloader/$(Platform)/$(Configuration)/</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;d3d11.lib;d3dx11.lib;d3dcompiler.lib;glew32.lib;glfw.lib;shlwapi.lib;winmm.lib;soil.lib;snappy.lib;msgpack.lib;libfbxsdk-md.lib;umio_obj.lib;tinyobjloader.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib/$(PlatformTarget)/;$(SolutionDir)lib/umio/$(Platform)/$(Configuration)/;$(SolutionDir)lib/snappy/$(Platform)/$(Configuration)/;$(SolutionDir)lib/glfw/$(Platform)/$(Configuration)/;$(SolutionDir)lib/glew/$(Platform)/$(Configuration)/;$(SolutionDir)lib/fbxsdk/$(Platform)/$(Configuration)/;$(SolutionDir)lib/freetype/$(Platform)/$(Configuration)/;$(SolutionDir)lib/msgpack/$(Platform)/$(Configuration)/;$(SolutionDir)lib/boost/$(Platform)/$(Configuration)/;$(SolutionDir)lib/ilmbase2/$(Platform)/$(Configuration)/;$(SolutionDir)lib/zlib/$(Platform)/$(Configuration)/;$(SolutionDir)lib/alembic/$(Platform)/$(Configuration)/;$(SolutionDir)lib/hdf5/$(Platform)/$(Configuration)/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;d3d11.lib;d3dx11.lib;d3dcompiler.lib;glew32.lib;glfw3.lib;shlwapi.lib;winmm.lib;snappy.lib;msgpack.lib;libfbxsdk-md.lib;umio_fbx2014.lib;Ws2_32.lib;psapi.lib;Half.lib;Iex.lib;Imath.lib;IlmThread.lib;zlib.lib;AlembicAbc.lib;AlembicAbcCollection.lib;AlembicAbcCoreAbstract.lib;AlembicAbcCoreFactory.lib;AlembicAbcCoreHDF5.lib;AlembicAbcCoreOgawa.lib;AlembicAbcGeom.lib;AlembicAbcMaterial.lib;AlembicOgawa.lib;AlembicUtil.lib;libhdf5.lib;libhdf5_hl.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -169,15 +172,21 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)src/umbase/;$(SolutionDir)src/umimage/;$(SolutionDir)src/umdraw/;$(SolutionDir)src/umgui/;$(SolutionDir)src/umabc/;$(SolutionDir)src/umresource/;$(SolutionDir)src/umrt/;$(SolutionDir)lib/glfw2/include;$(SolutionDir)lib/glew/include;$(SolutionDir)lib/umio/include;$(SolutionDir)lib/websocket/include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;GLEW_STATIC;GLFW_EXPOSE_NATIVE_WIN32;GLFW_EXPOSE_NATIVE_WGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)src/umbase/;$(SolutionDir)src/umimage/;$(SolutionDir)src/umdraw/;$(SolutionDir)src/umgui/;$(SolutionDir)src/umabc/;$(SolutionDir)src/umresource/;$(SolutionDir)src/umrt/;$(SolutionDir)src/umwsio/;$(SolutionDir)lib/glfw/include;$(SolutionDir)lib/glew/include;$(SolutionDir)lib/umio/include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;GLEW_STATIC;GLFW_EXPOSE_NATIVE_WIN32;GLFW_EXPOSE_NATIVE_WGL;WITH_ALEMBIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib/$(PlatformTarget)/;$(SolutionDir)lib/umio/$(Platform)/$(Configuration)/;$(SolutionDir)lib/snappy/$(Platform)/$(Configuration)/;$(SolutionDir)lib/glfw2/$(Platform)/$(Configuration)/;$(SolutionDir)lib/glew/$(Platform)/$(Configuration)/;$(SolutionDir)lib/soil/$(Platform)/$(Configuration)/;$(SolutionDir)lib/fbxsdk/$(Platform)/$(Configuration)/;$(SolutionDir)lib/freetype/$(Platform)/$(Configuration)/;$(SolutionDir)lib/msgpack/$(Platform)/$(Configuration)/;$(SolutionDir)lib/tinyobjloader/$(Platform)/$(Configuration)/</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;d3d11.lib;d3dx11.lib;d3dcompiler.lib;glew32.lib;glfw.lib;shlwapi.lib;winmm.lib;soil.lib;snappy.lib;msgpack.lib;libfbxsdk-md.lib;umio_obj.lib;tinyobjloader.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib/$(PlatformTarget)/;$(SolutionDir)lib/umio/$(Platform)/$(Configuration)/;$(SolutionDir)lib/snappy/$(Platform)/$(Configuration)/;$(SolutionDir)lib/glfw/$(Platform)/$(Configuration)/;$(SolutionDir)lib/glew/$(Platform)/$(Configuration)/;$(SolutionDir)lib/fbxsdk/$(Platform)/$(Configuration)/;$(SolutionDir)lib/freetype/$(Platform)/$(Configuration)/;$(SolutionDir)lib/msgpack/$(Platform)/$(Configuration)/;$(SolutionDir)lib/boost/$(Platform)/$(Configuration)/;$(SolutionDir)lib/ilmbase2/$(Platform)/$(Configuration)/;$(SolutionDir)lib/zlib/$(Platform)/$(Configuration)/;$(SolutionDir)lib/alembic/$(Platform)/$(Configuration)/;$(SolutionDir)lib/hdf5/$(Platform)/$(Configuration)/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;glew32.lib;glfw3.lib;shlwapi.lib;winmm.lib;snappy.lib;msgpack.lib;libfbxsdk-md.lib;umio_fbx2014.lib;Ws2_32.lib;psapi.lib;Half.lib;Iex.lib;Imath.lib;IlmThread.lib;zlib.lib;AlembicAbc.lib;AlembicAbcCollection.lib;AlembicAbcCoreAbstract.lib;AlembicAbcCoreFactory.lib;AlembicAbcCoreHDF5.lib;AlembicAbcCoreOgawa.lib;AlembicAbcGeom.lib;AlembicAbcMaterial.lib;AlembicOgawa.lib;AlembicUtil.lib;libhdf5.lib;libhdf5_hl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>
+      </SubSystem>
+      <EntryPointSymbol>
+      </EntryPointSymbol>
+      <StackReserveSize>10000000</StackReserveSize>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Emscripten'">
@@ -209,27 +218,41 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)src/umbase/;$(SolutionDir)src/umimage/;$(SolutionDir)src/umdraw/;$(SolutionDir)src/umgui/;$(SolutionDir)src/umabc/;$(SolutionDir)src/umresource/;$(SolutionDir)src/umrt/;$(SolutionDir)lib/glfw2/include;$(SolutionDir)lib/glew/include;$(SolutionDir)lib/umio/include;$(SolutionDir)lib/websocket/include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;GLEW_STATIC;GLFW_EXPOSE_NATIVE_WIN32;GLFW_EXPOSE_NATIVE_WGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)src/umbase/;$(SolutionDir)src/umimage/;$(SolutionDir)src/umdraw/;$(SolutionDir)src/umgui/;$(SolutionDir)src/umabc/;$(SolutionDir)src/umresource/;$(SolutionDir)src/umrt/;$(SolutionDir)src/umwsio/;$(SolutionDir)lib/glfw/include;$(SolutionDir)lib/glew/include;$(SolutionDir)lib/umio/include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;GLEW_STATIC;GLFW_EXPOSE_NATIVE_WIN32;GLFW_EXPOSE_NATIVE_WGL;WITH_ALEMBIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib/$(PlatformTarget)/;$(SolutionDir)lib/umio/$(Platform)/$(Configuration)/;$(SolutionDir)lib/snappy/$(Platform)/$(Configuration)/;$(SolutionDir)lib/glfw2/$(Platform)/$(Configuration)/;$(SolutionDir)lib/glew/$(Platform)/$(Configuration)/;$(SolutionDir)lib/soil/$(Platform)/$(Configuration)/;$(SolutionDir)lib/fbxsdk/$(Platform)/$(Configuration)/;$(SolutionDir)lib/freetype/$(Platform)/$(Configuration)/;$(SolutionDir)lib/msgpack/$(Platform)/$(Configuration)/;$(SolutionDir)lib/tinyobjloader/$(Platform)/$(Configuration)/</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;d3d11.lib;d3dx11.lib;d3dcompiler.lib;glew32.lib;glfw.lib;shlwapi.lib;winmm.lib;soil.lib;snappy.lib;msgpack.lib;libfbxsdk-md.lib;umio_obj.lib;tinyobjloader.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib/$(PlatformTarget)/;$(SolutionDir)lib/umio/$(Platform)/$(Configuration)/;$(SolutionDir)lib/snappy/$(Platform)/$(Configuration)/;$(SolutionDir)lib/glfw/$(Platform)/$(Configuration)/;$(SolutionDir)lib/glew/$(Platform)/$(Configuration)/;$(SolutionDir)lib/fbxsdk/$(Platform)/$(Configuration)/;$(SolutionDir)lib/freetype/$(Platform)/$(Configuration)/;$(SolutionDir)lib/msgpack/$(Platform)/$(Configuration)/;$(SolutionDir)lib/boost/$(Platform)/$(Configuration)/;$(SolutionDir)lib/ilmbase2/$(Platform)/$(Configuration)/;$(SolutionDir)lib/zlib/$(Platform)/$(Configuration)/;$(SolutionDir)lib/alembic/$(Platform)/$(Configuration)/;$(SolutionDir)lib/hdf5/$(Platform)/$(Configuration)/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;glew32.lib;glfw3.lib;shlwapi.lib;winmm.lib;snappy.lib;msgpack.lib;libfbxsdk-md.lib;umio_fbx2014.lib;Ws2_32.lib;psapi.lib;Half.lib;Iex.lib;Imath.lib;IlmThread.lib;zlib.lib;AlembicAbc.lib;AlembicAbcCollection.lib;AlembicAbcCoreAbstract.lib;AlembicAbcCoreFactory.lib;AlembicAbcCoreHDF5.lib;AlembicAbcCoreOgawa.lib;AlembicAbcGeom.lib;AlembicAbcMaterial.lib;AlembicOgawa.lib;AlembicUtil.lib;libhdf5.lib;libhdf5_hl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>
+      </SubSystem>
+      <EntryPointSymbol>
+      </EntryPointSymbol>
+      <StackReserveSize>10000000</StackReserveSize>
+      <StackCommitSize>10000000</StackCommitSize>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\burger\UM30min.h" />
+    <ClInclude Include="..\..\src\burger\UMBurgerGUI.h" />
     <ClInclude Include="..\..\src\burger\UMViewer.h" />
     <ClInclude Include="..\..\src\burger\UMWindow.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\burger\UM30min.cpp" />
+    <ClCompile Include="..\..\src\burger\UMBurgerGUI.cpp" />
     <ClCompile Include="..\..\src\burger\UMMain.cpp" />
     <ClCompile Include="..\..\src\burger\UMViewer.cpp" />
     <ClCompile Include="..\..\src\burger\UMWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\umabc\umabc.vcxproj">
+      <Project>{72ac8405-2ea1-44a9-9474-700791167803}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\umbase\umbase.vcxproj">
       <Project>{8b753bf7-2ccf-4324-9ac4-28863a3e1422}</Project>
     </ProjectReference>
@@ -247,6 +270,9 @@
     </ProjectReference>
     <ProjectReference Include="..\umrt\umrt.vcxproj">
       <Project>{098446cd-e308-44de-bbd8-2b8273feae3a}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\umwsio\umwsio.vcxproj">
+      <Project>{81320559-759a-4a44-843b-308757ea5fba}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

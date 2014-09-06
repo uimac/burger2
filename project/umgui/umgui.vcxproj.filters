@@ -46,6 +46,9 @@
     <ClCompile Include="..\..\src\umgui\UMGUIScene.cpp">
       <Filter>src\software</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\umgui\UMGUIScrollBoard.cpp">
+      <Filter>src\software</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\umgui\UMGUI.h">
@@ -70,6 +73,12 @@
       <Filter>src\software</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\umgui\UMGUIObject.h">
+      <Filter>src\software</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umgui\UMGUIEventType.h">
+      <Filter>src\software</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umgui\UMGUIScrollBoard.h">
       <Filter>src\software</Filter>
     </ClInclude>
   </ItemGroup>

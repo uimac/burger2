@@ -163,6 +163,12 @@
     <ClInclude Include="..\..\src\umdraw\UMOpenGLBoard.h">
       <Filter>src\opengl</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLNode.h">
+      <Filter>src\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11Node.h">
+      <Filter>src\directx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\umdraw\UMDirectX11Board.cpp">
@@ -290,6 +296,12 @@
     </ClCompile>
     <ClCompile Include="..\..\src\umdraw\UMOpenGLBoard.cpp">
       <Filter>src\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLNode.cpp">
+      <Filter>src\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11Node.cpp">
+      <Filter>src\directx</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

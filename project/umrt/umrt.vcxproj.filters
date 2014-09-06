@@ -52,6 +52,9 @@
     <ClInclude Include="..\..\src\umrt\UMRT.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\umrt\UMToonRender.h">
+      <Filter>src\render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\umrt\UMBvh.cpp">
@@ -83,6 +86,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\umrt\UMRT.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\umrt\UMToonRender.cpp">
+      <Filter>src\render</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

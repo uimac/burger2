@@ -128,6 +128,10 @@
       <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;$(SolutionDir)lib/glew/include;$(SolutionDir)lib/poly2tri/include;$(SolutionDir)src/umbase;$(SolutionDir)src/umimage;$(SolutionDir)lib/umio/include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WITH_OPENGL;GLEW_STATIC;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <StringPooling>
+      </StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -153,8 +157,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;$(SolutionDir)lib/glew/include;$(SolutionDir)lib/poly2tri/include;$(SolutionDir)src/umbase;$(SolutionDir)src/umimage;$(SolutionDir)lib/umio/include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WITH_DIRECTX;WITH_OPENGL;GLEW_STATIC;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WITH_OPENGL;GLEW_STATIC;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <StringPooling>
+      </StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -176,6 +184,9 @@
       <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;$(SolutionDir)lib/glew/include;$(SolutionDir)lib/poly2tri/include;$(SolutionDir)src/umbase;$(SolutionDir)src/umimage;$(SolutionDir)lib/umio/include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WITH_OPENGL;GLEW_STATIC;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <StringPooling>
+      </StringPooling>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -210,8 +221,11 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;$(SolutionDir)lib/glew/include;$(SolutionDir)lib/poly2tri/include;$(SolutionDir)src/umbase;$(SolutionDir)src/umimage;$(SolutionDir)lib/umio/include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WITH_DIRECTX;WITH_OPENGL;GLEW_STATIC;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WITH_OPENGL;GLEW_STATIC;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <StringPooling>
+      </StringPooling>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -232,6 +246,12 @@
     <ClInclude Include="..\..\src\umdraw\UMDirectX11Material.h" />
     <ClInclude Include="..\..\src\umdraw\UMDirectX11Mesh.h" />
     <ClInclude Include="..\..\src\umdraw\UMDirectX11MeshGroup.h" />
+    <ClInclude Include="..\..\src\umdraw\UMDirectX11Node.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\..\src\umdraw\UMDirectX11NurbsPatch.h" />
     <ClInclude Include="..\..\src\umdraw\UMDirectX11Point.h" />
     <ClInclude Include="..\..\src\umdraw\UMDirectX11Scene.h" />
@@ -256,6 +276,7 @@
     <ClInclude Include="..\..\src\umdraw\UMOpenGLMaterial.h" />
     <ClInclude Include="..\..\src\umdraw\UMOpenGLMesh.h" />
     <ClInclude Include="..\..\src\umdraw\UMOpenGLMeshGroup.h" />
+    <ClInclude Include="..\..\src\umdraw\UMOpenGLNode.h" />
     <ClInclude Include="..\..\src\umdraw\UMOpenGLNurbsPatch.h" />
     <ClInclude Include="..\..\src\umdraw\UMOpenGLPoint.h" />
     <ClInclude Include="..\..\src\umdraw\UMOpenGLScene.h" />
@@ -280,6 +301,12 @@
     <ClCompile Include="..\..\src\umdraw\UMDirectX11Material.cpp" />
     <ClCompile Include="..\..\src\umdraw\UMDirectX11Mesh.cpp" />
     <ClCompile Include="..\..\src\umdraw\UMDirectX11MeshGroup.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMDirectX11Node.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\src\umdraw\UMDirectX11NurbsPatch.cpp" />
     <ClCompile Include="..\..\src\umdraw\UMDirectX11Point.cpp" />
     <ClCompile Include="..\..\src\umdraw\UMDirectX11Scene.cpp" />
@@ -301,6 +328,7 @@
     <ClCompile Include="..\..\src\umdraw\UMOpenGLMaterial.cpp" />
     <ClCompile Include="..\..\src\umdraw\UMOpenGLMesh.cpp" />
     <ClCompile Include="..\..\src\umdraw\UMOpenGLMeshGroup.cpp" />
+    <ClCompile Include="..\..\src\umdraw\UMOpenGLNode.cpp" />
     <ClCompile Include="..\..\src\umdraw\UMOpenGLNurbsPatch.cpp" />
     <ClCompile Include="..\..\src\umdraw\UMOpenGLPoint.cpp" />
     <ClCompile Include="..\..\src\umdraw\UMOpenGLScene.cpp" />

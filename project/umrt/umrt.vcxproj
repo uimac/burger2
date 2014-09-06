@@ -120,8 +120,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)src/umbase;$(SolutionDir)src/umdraw;$(SolutionDir)src/umimage;$(SolutionDir)src/umabc;$(SolutionDir)lib/alembic/include;$(SolutionDir)lib/ilmbase2/include/config.windows;$(SolutionDir)lib/ilmbase2/include/Half;$(SolutionDir)lib/ilmbase2/include/IlmThread;$(SolutionDir)lib/ilmbase2/include/Imath;$(SolutionDir)lib/ilmbase2/include/Iex;$(SolutionDir)lib/ilmbase2/include;$(SolutionDir)lib/opensubdiv/include;$(SolutionDir)lib/opensubdiv/include/osd;$(SolutionDir)lib/opensubdiv/include/hbr;$(SolutionDir)lib/opensubdiv/include/far;$(SolutionDir)lib/opensubdiv/include/osdutil</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)src/umbase;$(SolutionDir)src/umdraw;$(SolutionDir)src/umimage;$(SolutionDir)src/umabc;$(SolutionDir)lib/alembic/include;$(SolutionDir)lib/ilmbase2/include/config.windows;$(SolutionDir)lib/ilmbase2/include/Half;$(SolutionDir)lib/ilmbase2/include/IlmThread;$(SolutionDir)lib/ilmbase2/include/Imath;$(SolutionDir)lib/ilmbase2/include/Iex;$(SolutionDir)lib/ilmbase2/include;$(SolutionDir)lib/opensubdiv/include;$(SolutionDir)lib/opensubdiv/include/osd;$(SolutionDir)lib/opensubdiv/include/hbr;$(SolutionDir)lib/opensubdiv/include/far;$(SolutionDir)lib/opensubdiv/include/osdutil;$(SolutionDir)lib/oiio/include;$(SolutionDir)lib/osl/include;$(SolutionDir)lib/boost/include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;WITH_ALEMBIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <OpenMPSupport>true</OpenMPSupport>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <MinimalRebuild>false</MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -145,8 +149,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)src/umbase;$(SolutionDir)src/umdraw;$(SolutionDir)src/umimage;$(SolutionDir)src/umabc;$(SolutionDir)lib/alembic/include;$(SolutionDir)lib/ilmbase2/include/config.windows;$(SolutionDir)lib/ilmbase2/include/Half;$(SolutionDir)lib/ilmbase2/include/IlmThread;$(SolutionDir)lib/ilmbase2/include/Imath;$(SolutionDir)lib/ilmbase2/include/Iex;$(SolutionDir)lib/ilmbase2/include;$(SolutionDir)lib/opensubdiv/include;$(SolutionDir)lib/opensubdiv/include/osd;$(SolutionDir)lib/opensubdiv/include/hbr;$(SolutionDir)lib/opensubdiv/include/far;$(SolutionDir)lib/opensubdiv/include/osdutil</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)src/umbase;$(SolutionDir)src/umdraw;$(SolutionDir)src/umimage;$(SolutionDir)src/umabc;$(SolutionDir)lib/alembic/include;$(SolutionDir)lib/ilmbase2/include/config.windows;$(SolutionDir)lib/ilmbase2/include/Half;$(SolutionDir)lib/ilmbase2/include/IlmThread;$(SolutionDir)lib/ilmbase2/include/Imath;$(SolutionDir)lib/ilmbase2/include/Iex;$(SolutionDir)lib/ilmbase2/include;$(SolutionDir)lib/opensubdiv/include;$(SolutionDir)lib/opensubdiv/include/osd;$(SolutionDir)lib/opensubdiv/include/hbr;$(SolutionDir)lib/opensubdiv/include/far;$(SolutionDir)lib/opensubdiv/include/osdutil;$(SolutionDir)lib/oiio/include;$(SolutionDir)lib/osl/include;$(SolutionDir)lib/boost/include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;WITH_ALEMBIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <OpenMPSupport>true</OpenMPSupport>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <MinimalRebuild>false</MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -159,8 +167,11 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)src/umbase;$(SolutionDir)src/umdraw;$(SolutionDir)src/umimage;$(SolutionDir)src/umabc;$(SolutionDir)lib/alembic/include;$(SolutionDir)lib/ilmbase2/include/config.windows;$(SolutionDir)lib/ilmbase2/include/Half;$(SolutionDir)lib/ilmbase2/include/IlmThread;$(SolutionDir)lib/ilmbase2/include/Imath;$(SolutionDir)lib/ilmbase2/include/Iex;$(SolutionDir)lib/ilmbase2/include;$(SolutionDir)lib/opensubdiv/include;$(SolutionDir)lib/opensubdiv/include/osd;$(SolutionDir)lib/opensubdiv/include/hbr;$(SolutionDir)lib/opensubdiv/include/far;$(SolutionDir)lib/opensubdiv/include/osdutil</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)src/umbase;$(SolutionDir)src/umdraw;$(SolutionDir)src/umimage;$(SolutionDir)src/umabc;$(SolutionDir)lib/alembic/include;$(SolutionDir)lib/ilmbase2/include/config.windows;$(SolutionDir)lib/ilmbase2/include/Half;$(SolutionDir)lib/ilmbase2/include/IlmThread;$(SolutionDir)lib/ilmbase2/include/Imath;$(SolutionDir)lib/ilmbase2/include/Iex;$(SolutionDir)lib/ilmbase2/include;$(SolutionDir)lib/opensubdiv/include;$(SolutionDir)lib/opensubdiv/include/osd;$(SolutionDir)lib/opensubdiv/include/hbr;$(SolutionDir)lib/opensubdiv/include/far;$(SolutionDir)lib/opensubdiv/include/osdutil;$(SolutionDir)lib/oiio/include;$(SolutionDir)lib/osl/include;$(SolutionDir)lib/boost/include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;WITH_ALEMBIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <OpenMPSupport>true</OpenMPSupport>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -192,9 +203,11 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)src/umbase;$(SolutionDir)src/umdraw;$(SolutionDir)src/umimage;$(SolutionDir)src/umabc;$(SolutionDir)lib/alembic/include;$(SolutionDir)lib/ilmbase2/include/config.windows;$(SolutionDir)lib/ilmbase2/include/Half;$(SolutionDir)lib/ilmbase2/include/IlmThread;$(SolutionDir)lib/ilmbase2/include/Imath;$(SolutionDir)lib/ilmbase2/include/Iex;$(SolutionDir)lib/ilmbase2/include;$(SolutionDir)lib/opensubdiv/include;$(SolutionDir)lib/opensubdiv/include/osd;$(SolutionDir)lib/opensubdiv/include/hbr;$(SolutionDir)lib/opensubdiv/include/far;$(SolutionDir)lib/opensubdiv/include/osdutil</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)src/umbase;$(SolutionDir)src/umdraw;$(SolutionDir)src/umimage;$(SolutionDir)src/umabc;$(SolutionDir)lib/alembic/include;$(SolutionDir)lib/ilmbase2/include/config.windows;$(SolutionDir)lib/ilmbase2/include/Half;$(SolutionDir)lib/ilmbase2/include/IlmThread;$(SolutionDir)lib/ilmbase2/include/Imath;$(SolutionDir)lib/ilmbase2/include/Iex;$(SolutionDir)lib/ilmbase2/include;$(SolutionDir)lib/opensubdiv/include;$(SolutionDir)lib/opensubdiv/include/osd;$(SolutionDir)lib/opensubdiv/include/hbr;$(SolutionDir)lib/opensubdiv/include/far;$(SolutionDir)lib/opensubdiv/include/osdutil;$(SolutionDir)lib/oiio/include;$(SolutionDir)lib/osl/include;$(SolutionDir)lib/boost/include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;WITH_ALEMBIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <OpenMPSupport>true</OpenMPSupport>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -215,6 +228,7 @@
     <ClInclude Include="..\..\src\umrt\UMSceneAccess.h" />
     <ClInclude Include="..\..\src\umrt\UMShaderParameter.h" />
     <ClInclude Include="..\..\src\umrt\UMSubdivision.h" />
+    <ClInclude Include="..\..\src\umrt\UMToonRender.h" />
     <ClInclude Include="..\..\src\umrt\UMTriangle.h" />
     <ClInclude Include="..\..\src\umrt\UMVertexParameter.h" />
   </ItemGroup>
@@ -227,10 +241,14 @@
     <ClCompile Include="..\..\src\umrt\UMRT.cpp" />
     <ClCompile Include="..\..\src\umrt\UMSceneAccess.cpp" />
     <ClCompile Include="..\..\src\umrt\UMSubdivision.cpp" />
+    <ClCompile Include="..\..\src\umrt\UMToonRender.cpp" />
     <ClCompile Include="..\..\src\umrt\UMTriangle.cpp" />
     <ClCompile Include="..\..\src\umrt\UMVertexParameter.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\umabc\umabc.vcxproj">
+      <Project>{72ac8405-2ea1-44a9-9474-700791167803}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\umbase\umbase.vcxproj">
       <Project>{8b753bf7-2ccf-4324-9ac4-28863a3e1422}</Project>
     </ProjectReference>

@@ -119,8 +119,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;$(SolutionDir)lib/glew/include;$(SolutionDir)src/umbase;$(SolutionDir)src/umresource;$(SolutionDir)src/umdraw;$(SolutionDir)src/umimage</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WITH_DIRECTX;WITH_OPENGL;WITH_FREETYPE;GLEW_STATIC;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;$(SolutionDir)lib/glfw/include;$(SolutionDir)lib/glew/include;$(SolutionDir)src/umbase;$(SolutionDir)src/umresource;$(SolutionDir)src/umdraw;$(SolutionDir)src/umimage</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WITH_OPENGL;WITH_FREETYPE;GLEW_STATIC;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <MinimalRebuild>false</MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -144,8 +147,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;$(SolutionDir)lib/glew/include;$(SolutionDir)src/umbase;$(SolutionDir)src/umresource;$(SolutionDir)src/umdraw;$(SolutionDir)src/umimage</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WITH_DIRECTX;WITH_OPENGL;WITH_FREETYPE;GLEW_STATIC;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;$(SolutionDir)lib/glfw/include;$(SolutionDir)lib/glew/include;$(SolutionDir)src/umbase;$(SolutionDir)src/umresource;$(SolutionDir)src/umdraw;$(SolutionDir)src/umimage</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WITH_OPENGL;WITH_FREETYPE;GLEW_STATIC;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <MinimalRebuild>false</MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -158,8 +164,10 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;$(SolutionDir)lib/glew/include;$(SolutionDir)src/umbase;$(SolutionDir)src/umresource;$(SolutionDir)src/umdraw;$(SolutionDir)src/umimage</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WITH_DIRECTX;WITH_OPENGL;WITH_FREETYPE;GLEW_STATIC;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;$(SolutionDir)lib/glfw/include;$(SolutionDir)lib/glew/include;$(SolutionDir)src/umbase;$(SolutionDir)src/umresource;$(SolutionDir)src/umdraw;$(SolutionDir)src/umimage</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WITH_OPENGL;WITH_FREETYPE;GLEW_STATIC;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -191,8 +199,10 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;$(SolutionDir)lib/glew/include;$(SolutionDir)src/umbase;$(SolutionDir)src/umresource;$(SolutionDir)src/umdraw;$(SolutionDir)src/umimage</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WITH_DIRECTX;WITH_OPENGL;WITH_FREETYPE;GLEW_STATIC;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;$(SolutionDir)lib/glfw/include;$(SolutionDir)lib/glew/include;$(SolutionDir)src/umbase;$(SolutionDir)src/umresource;$(SolutionDir)src/umdraw;$(SolutionDir)src/umimage</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WITH_OPENGL;WITH_FREETYPE;GLEW_STATIC;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -207,6 +217,7 @@
     <ClCompile Include="..\..\src\umgui\UMGUIBoard.cpp" />
     <ClCompile Include="..\..\src\umgui\UMGUIObject.cpp" />
     <ClCompile Include="..\..\src\umgui\UMGUIScene.cpp" />
+    <ClCompile Include="..\..\src\umgui\UMGUIScrollBoard.cpp" />
     <ClCompile Include="..\..\src\umgui\UMOpenGLGUIBoard.cpp" />
     <ClCompile Include="..\..\src\umgui\UMOpenGLGUIScene.cpp" />
   </ItemGroup>
@@ -215,8 +226,10 @@
     <ClInclude Include="..\..\src\umgui\UMDirectX11GUIScene.h" />
     <ClInclude Include="..\..\src\umgui\UMGUI.h" />
     <ClInclude Include="..\..\src\umgui\UMGUIBoard.h" />
+    <ClInclude Include="..\..\src\umgui\UMGUIEventType.h" />
     <ClInclude Include="..\..\src\umgui\UMGUIObject.h" />
     <ClInclude Include="..\..\src\umgui\UMGUIScene.h" />
+    <ClInclude Include="..\..\src\umgui\UMGUIScrollBoard.h" />
     <ClInclude Include="..\..\src\umgui\UMOpenGLGUIBoard.h" />
     <ClInclude Include="..\..\src\umgui\UMOpenGLGUIScene.h" />
   </ItemGroup>
