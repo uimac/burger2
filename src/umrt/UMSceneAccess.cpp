@@ -88,7 +88,7 @@ namespace
 		}
 	}
 	
-#ifdef WITH_ALMBIC
+#ifdef WITH_ALEMBIC
 	void create_triangle_and_vertex_from_abc_mesh(
 		UMPrimitiveList& primitive_list, 
 		UMVertexParameterList& vertex_parameter_list,
@@ -110,7 +110,7 @@ namespace
 			primitive_list.resize(start_index + face_count);
 			for (int i = 0; i < face_count; ++i)
 			{
-				const UMVec3i face(i * 3 + 0, i * 3 + 1, i * 3 + 2);
+				const UMVec3i face(i * 3 + 0, i * 3 + 2, i * 3 + 1);
 				const UMVec3i iface(face.x, face.y, face.z);
 				UMTrianglePtr triangle(UMTriangle::create_from_abc_mesh(mesh, iface, i));
 				primitive_list.at(start_index + i) = triangle;
@@ -130,7 +130,7 @@ namespace
 			for (int i = 0; i < face_count; ++i)
 			{
 				const UMVec3ui& face = mesh->triangle_index().at(i);
-				const UMVec3i iface(face.x, face.y, face.z);
+				const UMVec3i iface(face.x, face.z, face.y);
 				UMTrianglePtr triangle(UMTriangle::create_from_abc_mesh(mesh, iface, i));
 				primitive_list.at(start_index + i) = triangle;
 
@@ -287,7 +287,20 @@ bool UMSceneAccess::update_bvh()
 {
 	if (!bvh_) return false;
 	if (!scene_) return false;
-	return bvh_->build(mutable_primitive_list());
+
+	UMPrimitiveList::iterator it = mutable_primitive_list().begin();
+	for (; it != mutable_primitive_list().end(); ++it)
+	{
+		(*it)->update_box();
+	}
+
+	if (bvh_->build(mutable_primitive_list()))
+	{
+		mutable_render_primitive_list().clear();
+		mutable_render_primitive_list().push_back(bvh_);
+		return true;
+	}
+	return false;
 }
 
 	

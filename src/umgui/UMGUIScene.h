@@ -47,12 +47,12 @@ class UMGUIScene
 public:
 
 	UMGUIScene();
-	~UMGUIScene();
+	virtual ~UMGUIScene();
 	
 	/**
-	 * initialize
+	 * initialize gui components
 	 */
-	bool init(int width, int height);
+	virtual bool init(int width, int height);
 
 	/** 
 	 * set umdraw scene
@@ -78,6 +78,26 @@ public:
 	 * get root object;
 	 */
 	UMGUIObjectPtr root_object();
+	
+	/**
+	 * keyboard
+	 */
+	bool on_keyboard(int key, int action);
+
+	/**
+	 * mouse button up/down
+	 */
+	bool on_mouse(int button, int action);
+
+	/**
+	 * mouse move
+	 */
+	bool on_mouse_move(double x, double y);
+	
+	/**
+	 * scroll
+	 */
+	bool on_scroll(double x, double y);
 
 private:
 	class SceneImpl;

@@ -90,6 +90,7 @@ bool UMOpenGLImpl::init(UMScenePtr scene)
 	//glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glLineWidth(1.2f);
 
 	mutable_event_list().clear();
 

@@ -13,6 +13,7 @@
 #include "UMRenderer.h"
 #include "UMRayTracer.h"
 #include "UMPathTracer.h"
+#include "UMToonRender.h"
 
 namespace umrt
 {
@@ -29,6 +30,10 @@ UMRendererPtr UMRenderer::create(RendererType type)
 	else if (type == ePathTracer)
 	{
 		return std::make_shared<UMPathTracer>();
+	}
+	else if (type == eToonRender)
+	{
+		return std::make_shared<UMToonRender>();
 	}
 	return UMRendererPtr();
 }

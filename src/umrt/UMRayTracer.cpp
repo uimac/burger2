@@ -14,11 +14,16 @@
 #include "UMRay.h"
 #include "UMScene.h"
 #include "UMVector.h"
+#include "UMStringUtil.h"
 
 #include <limits>
 #include <algorithm>
 #include <random>
 #include <utility>
+
+#ifdef WITH_OSL
+	#include <OSL/oslexec.h>
+#endif
 
 namespace
 {
@@ -118,7 +123,7 @@ namespace
 			UMShaderParameter shadow_parameter;
 			if (!intersect(shadow_ray, scene_access, shadow_parameter, intersection))
 			{
-				radiance += parameter.color * normal.dot(L);
+				radiance += parameter.color * std::max(0.0, normal.dot(L));
 			}
 		}
 		// reflection ray
@@ -144,7 +149,7 @@ namespace
 	{
 		umdraw::UMScenePtr scene = scene_access->scene();
 		UMIntersection intersection;
-		if (parameter.bounce == 1)
+		//if (parameter.bounce == 1)
 		{
 			if (!intersect(ray, scene_access, parameter, intersection)){
 				return scene->background_color();
@@ -157,35 +162,289 @@ namespace
 		}
 		return scene->background_color();
 	}
+
 }
 
 namespace umrt
 {
+	
+#ifdef WITH_OSL
+	using namespace OSL;
 
 /**
- * render
+ * OSLRenderService implementation class
  */
-bool UMRayTracer::render(UMSceneAccessPtr scene_access, UMRenderParameter& parameter)
+class UMOSLRenderService : public OSL::RendererServices
+{
+public:
+	UMOSLRenderService() {}
+	virtual ~UMOSLRenderService() {}
+	
+	/// Get the 4x4 matrix that transforms by the specified
+	/// transformation at the given time.  Return true if ok, false
+	/// on error.
+	virtual bool get_matrix (Matrix44 &result, TransformationPtr xform, float time)
+	{
+		return false;
+	}
+	
+	/// Get the 4x4 matrix that transforms by the specified
+	/// transformation at the given time.  Return true if ok, false on
+	/// error.  The default implementation is to use get_matrix and
+	/// invert it, but a particular renderer may have a better technique
+	/// and overload the implementation.
+	virtual bool get_inverse_matrix (Matrix44 &result, TransformationPtr xform, float time)
+	{
+		return false;
+	}
+
+	/// Get the 4x4 matrix that transforms by the specified
+	/// transformation.  Return true if ok, false on error.  Since no
+	/// time value is given, also return false if the transformation may
+	/// be time-varying.
+	virtual bool get_matrix (Matrix44 &result, TransformationPtr xform) 
+	{
+		return false;
+	}
+	
+	/// Get the 4x4 matrix that transforms by the specified
+	/// transformation.  Return true if ok, false on error.  Since no
+	/// time value is given, also return false if the transformation may
+	/// be time-varying.  The default implementation is to use
+	/// get_matrix and invert it, but a particular renderer may have a
+	/// better technique and overload the implementation.
+	virtual bool get_inverse_matrix (Matrix44 &result, TransformationPtr xform)
+	{
+		return false;
+	}
+
+	/// Get the 4x4 matrix that transforms points from the named
+	/// 'from' coordinate system to "common" space at the given time.
+	/// Returns true if ok, false if the named matrix is not known.
+	virtual bool get_matrix (Matrix44 &result, ustring from, float time)
+	{
+		return false;
+	}
+	
+	/// Get the 4x4 matrix that transforms 'from' to "common" space.
+	/// Since there is no time value passed, return false if the
+	/// transformation may be time-varying (as well as if it's not found
+	/// at all).
+	virtual bool get_matrix (Matrix44 &result, ustring from)
+	{
+		return false;
+	}
+
+	/// Get the named attribute from the renderer and if found then
+	/// write it into 'val'.  Otherwise, return false.  If no object is
+	/// specified (object == ustring()), then the renderer should search *first*
+	/// for the attribute on the currently shaded object, and next, if
+	/// unsuccessful, on the currently shaded "scene".
+	///
+	/// Note to renderers: if renderstate is NULL, that means
+	/// get_attribute is being called speculatively by the runtime
+	/// optimizer, and it doesn't know which object the shader will be
+	/// run on. Be robust to this situation, return 'true' (retrieve the
+	/// attribute) if you can (known object and attribute name), but
+	/// otherwise just fail by returning 'false'.
+	virtual bool get_attribute (
+		void *renderstate, 
+		bool derivatives,
+		ustring object, 
+		TypeDesc type, 
+		ustring name,
+		void *val )
+	{
+		return false;
+	}
+
+	/// Similar to get_attribute();  this method will return the 'index'
+	/// element of an attribute array.
+	virtual bool get_array_attribute (
+		void *renderstate, 
+		bool derivatives,
+		ustring object, 
+		TypeDesc type,
+		ustring name, 
+		int index, 
+		void *val )
+	{
+		return false;
+	}
+
+	/// Get the named user-data from the current object and write it into
+	/// 'val'. If derivatives is true, the derivatives should be written into val
+	/// as well. Return false if no user-data with the given name and type was
+	/// found.
+	virtual bool get_userdata (
+		bool derivatives, 
+		ustring name, 
+		TypeDesc type,
+		void *renderstate, 
+		void *val)
+	{
+		return false;
+	}
+
+	/// Does the current object have the named user-data associated with it?
+	virtual bool has_userdata (ustring name, TypeDesc type, void *renderstate)
+	{
+		return false;
+	}
+};
+#endif
+
+/**
+ * UMRayTracer implementation class
+ */
+class UMRayTracer::Impl
+{
+public:
+	Impl(int width, int height) 
+		:  current_x_(0)
+		, current_y_(0)
+		, width_(width)
+		, height_(height)
+#ifdef WITH_OSL
+		, render_service_(new UMOSLRenderService())
+#else
+		, render_service_(NULL)
+#endif
+	{}
+
+	virtual ~Impl()
+	{
+#ifdef WITH_OSL
+		delete render_service_;
+#endif
+		render_service_ = NULL;
+	}
+
+	bool render(UMSceneAccessPtr scene_access, UMRenderParameter& parameter);
+
+	bool progress_render(UMSceneAccessPtr scene_access, UMRenderParameter& parameter);
+	
+	/** 
+	 * set client width
+	 */
+	void set_width(int width)
+	{
+		width_ = width;
+	}
+
+	/** 
+	 * set client height
+	 */
+	void set_height(int height)
+	{
+		height_ = height;
+	}
+
+	bool init() 
+	{
+		current_x_ = 0;
+		current_y_ = 0;
+		return true;
+	}
+
+	OSL::RendererServices* render_service()
+	{
+		return render_service_;
+	}
+
+private:
+	OSL::RendererServices* render_service_;
+	// for progress render
+	int current_x_;
+	int current_y_;
+	int width_;
+	int height_;
+};
+
+#ifdef WITH_OSL
+static void setup_shader_globals(
+	UMRenderParameter& parameter,
+	OSL::ShaderGlobals& sg,
+	OSL::ShadingSystem* shading_system,
+	int x,
+	int y)
+{
+	const int w = parameter.output_image()->width();
+	const int h = parameter.output_image()->height();
+
+	sg.u = static_cast<float>(x + 0.5) / w;
+	sg.v = static_cast<float>(y + 0.5) / h;
+	sg.dudx = 1.0f / w;
+	sg.dvdy = 1.0f / h;
+
+	sg.P = Imath::V3f(sg.u, sg.v, 1.0f);
+
+	sg.dPdx = Imath::V3f(sg.dudx, sg.dudy, 0.0f);
+	sg.dPdy = Imath::V3f(sg.dudx, sg.dudy, 0.0f);
+	sg.dPdz = Imath::V3f(0.0f);
+
+	sg.dPdu = Imath::V3f(1.0f, 0.0f, 0.0f);
+	sg.dPdu = Imath::V3f(0.0f, 1.0f, 0.0f);
+
+	sg.N = Imath::V3f(0, 0, 1);
+	sg.Ng = Imath::V3f(0, 0, 1);
+
+	sg.surfacearea = 1;
+	sg.Ci = NULL;
+}
+#endif 
+
+bool UMRayTracer::Impl::render(UMSceneAccessPtr scene_access, UMRenderParameter& parameter)
 {
 	umdraw::UMScenePtr scene = scene_access->scene();
 	if (!scene) return false;
 	if (width_ == 0 || height_ == 0) return false;
 	if (!scene->camera()) return false;
 	
+	//OSL::ErrorHandler error_handler;
+	//OSL::TextureSystem* texture_system = render_service()->texturesys();
+	//OSL::ShadingSystem* shading_system = OSL::ShadingSystem::create(render_service(), texture_system, &error_handler);
+	//shading_system->attribute("hoge", "moga");
+
+	//shading_system->ShaderGroupBegin();
+	//umstring oslpath = parameter.osl_filepath();
+	//shading_system->Shader("surface", umbase::UMStringUtil::utf16_to_utf8(oslpath).c_str(), NULL);
+	//shading_system->ShaderGroupEnd();
+
+	//OSL::ShadingAttribStateRef shading_state = shading_system->state();
+	//// create shading context
+	//OSL::PerThreadInfo *thread_info = shading_system->create_thread_info();
+	//OSL::ShadingContext *shading_context = shading_system->get_context(thread_info);
+
+	//// setup global input variables to shader
+	//OSL::ShaderGlobals shader_globals;
+	//setup_shader_globals(parameter, shader_globals, shading_system, 0, 0);
+
+	//if (shading_system->execute(*shading_context, *shading_state, shader_globals))
+	//{
+	//	std::cout << "shader executed success!!" << std::endl;
+	//}
+	//else
+	//{
+	//	std::cout << "shader filed to execute" << std::endl;
+	//}
+
+	//shading_state = OSL::ShadingAttribStateRef();
+	//OSL::TextureSystem::destroy(texture_system, true);
+	//shading_system->release_context(shading_context);
+	//shading_system->destroy_thread_info(thread_info);
+	//thread_info = NULL;
+	//OSL::ShadingSystem::destroy(shading_system);
+	//shading_system = NULL;
+
 	const int sample_count = parameter.super_sampling_count().x * parameter.super_sampling_count().y;
 	const double inv_sample_count = 1.0 / sample_count;
 
 	UMImage::ImageBuffer& dst_buffer = parameter.output_image()->mutable_list();
 	
-	//std::random_device random_device;
-	//std::vector<unsigned int> seed(2 * height_);
-	//std::generate(seed.begin(), seed.end(), std::ref(random_device));
-	
-//#pragma omp parallel for schedule(dynamic, 1) num_threads(8)
+//#pragma omp parallel for schedule(dynamic, 1) num_threads(4)
 	for (int y = 0; y < height_; ++y)
 	{
-		//std::mt19937 mt(std::seed_seq(seed.begin() + 2 * y, seed.begin() +  2 * (y + 1)));
-
 		if (sample_count > 1)
 		{
 			for (int x = 0; x < width_; ++x)
@@ -196,8 +455,10 @@ bool UMRayTracer::render(UMSceneAccessPtr scene_access, UMRenderParameter& param
 					UMVec2d sample_point(xor128d(), xor128d());
 					sample_point.x += x;
 					sample_point.y += y;
-					scene_access->generate_ray(ray_, sample_point);
-					UMVec3d color = trace(ray_, scene_access, shader_param_);
+					UMRay ray;
+					scene_access->generate_ray(ray, sample_point);
+					UMShaderParameter shader_parameter;
+					UMVec3d color = trace(ray, scene_access, shader_parameter);
 					dst_buffer[pos] += UMVec4d(color, 1.0);
 				}
 				dst_buffer[pos] *= inv_sample_count;
@@ -208,8 +469,10 @@ bool UMRayTracer::render(UMSceneAccessPtr scene_access, UMRenderParameter& param
 			for (int x = 0; x < width_; ++x)
 			{
 				const int pos = width_ * y + x;
-				scene_access->generate_ray(ray_, UMVec2d(x, y));
-				UMVec3d color = trace(ray_, scene_access, shader_param_);
+				UMRay ray;
+				scene_access->generate_ray(ray, UMVec2d(x, y));
+				UMShaderParameter shader_parameter;
+				UMVec3d color = trace(ray, scene_access, shader_parameter);
 				dst_buffer[pos] = UMVec4d(color, 1.0);
 			}
 		}
@@ -217,10 +480,7 @@ bool UMRayTracer::render(UMSceneAccessPtr scene_access, UMRenderParameter& param
 	return true;
 }
 
-/**
- * progressive render
- */
-bool UMRayTracer::progress_render(UMSceneAccessPtr scene_access, UMRenderParameter& parameter)
+bool UMRayTracer::Impl::progress_render(UMSceneAccessPtr scene_access, UMRenderParameter& parameter)
 {
 	umdraw::UMScenePtr scene = scene_access->scene();
 	if (!scene) return false;
@@ -232,17 +492,11 @@ bool UMRayTracer::progress_render(UMSceneAccessPtr scene_access, UMRenderParamet
 	const int sample_count = parameter.super_sampling_count().x * parameter.super_sampling_count().y;
 	const double inv_sample_count = 1.0 / sample_count;
 	
-	//std::random_device random_device;
-	//std::vector<unsigned int> seed(2 * height_);
-	//std::generate(seed.begin(), seed.end(), std::ref(random_device));
-	
 	for (int& y = current_y_, rows = (y + ystep); y < rows; ++y)
 	{
 		// end
 		if (y == height_) { return false; }
 		
-		//std::mt19937 mt(std::seed_seq(seed.begin() + 2 * y, seed.begin() +  2 * (y + 1)));
-
 		for (int x = 0; x < width_; ++x)
 		{
 			const int pos = width_ * y + x;
@@ -251,8 +505,10 @@ bool UMRayTracer::progress_render(UMSceneAccessPtr scene_access, UMRenderParamet
 				UMVec2d sample_point(xor128d(), xor128d());
 				sample_point.x += x;
 				sample_point.y += y;
-				scene_access->generate_ray(ray_, sample_point);
-				UMVec3d color = trace(ray_, scene_access, shader_param_);
+				UMRay ray;
+				scene_access->generate_ray(ray, sample_point);
+				UMShaderParameter shader_parameter;
+				UMVec3d color = trace(ray, scene_access, shader_parameter);
 				parameter.output_image()->mutable_list()[pos] += UMVec4d(color, 1.0);
 			}
 			parameter.output_image()->mutable_list()[pos] *= inv_sample_count;
@@ -260,6 +516,67 @@ bool UMRayTracer::progress_render(UMSceneAccessPtr scene_access, UMRenderParamet
 	}
 	
 	return true;
+}
+
+/**
+ * constructor
+ */
+UMRayTracer::UMRayTracer()
+	: impl_(new UMRayTracer::Impl(width(), height()))
+{}
+
+/**
+ * destructor
+ */
+UMRayTracer::~UMRayTracer()
+{}
+
+/**
+ * initialize
+ * @note needs a context
+ */
+bool UMRayTracer::init() 
+{
+	return impl_->init();
+}
+
+/**
+ * render
+ */
+bool UMRayTracer::render(UMSceneAccessPtr scene_access, UMRenderParameter& parameter)
+{
+	return impl_->render(scene_access, parameter);
+}
+
+/**
+ * progressive render
+ */
+bool UMRayTracer::progress_render(UMSceneAccessPtr scene_access, UMRenderParameter& parameter)
+{
+	return impl_->progress_render(scene_access, parameter);
+}
+
+/** 
+ * set client width
+ */
+void UMRayTracer::set_width(int width)
+{
+	impl_->set_width(width);
+	UMRenderer::set_width(width);
+}
+
+/** 
+ * set client height
+ */
+void UMRayTracer::set_height(int height)
+{
+	impl_->set_height(height);
+	UMRenderer::set_height(height);
+}
+
+OSL::RendererServices* UMRayTracer::render_service()
+{
+	return impl_->render_service();
 }
 
 } // umrt

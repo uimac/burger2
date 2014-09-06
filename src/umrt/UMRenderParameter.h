@@ -27,13 +27,13 @@ class UMRenderParameter
 public:
 	UMRenderParameter() 
 		: super_sampling_count_(2, 2)
-		, sample_count_(4)
+		, sample_count_(20)
 		, output_image_(std::make_shared<UMImage>())
 	{}
 
 	UMRenderParameter(int width, int height)
-		: super_sampling_count_(1, 1)
-		, sample_count_(2)
+		: super_sampling_count_(2, 2)
+		, sample_count_(20)
 		, output_image_(std::make_shared<UMImage>())
 	{
 		if (UMImagePtr image = output_image())
@@ -58,12 +58,23 @@ public:
 	 * get super sampling
 	 */
 	UMVec2i super_sampling_count() const { return super_sampling_count_; }
+
+	/**
+	 * get osl file path(test)
+	 */
+	const umstring& osl_filepath() { return osl_filepath_; }
+
+	/**
+	 * set osl file path(test)
+	 */ 
+	void set_osl_filepath(const umstring& path) { osl_filepath_ = path; }
 	
 private:
 	UMImagePtr output_image_;
 	//UMImagePtr temporary_image_;
 	int sample_count_;
 	UMVec2i super_sampling_count_;
+	umstring osl_filepath_;
 };
 
 } // umrt

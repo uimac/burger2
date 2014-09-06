@@ -15,6 +15,7 @@
 #include "UMMathTypes.h"
 #include "UMBox.h"
 #include "UMNode.h"
+#include "UMSkin.h"
 
 #include <vector>
 
@@ -124,6 +125,16 @@ public:
 	 */
 	UMMaterialList& mutable_material_list() { return material_list_; }
 
+	/**
+	 * get skin list
+	 */
+	const UMSkinList& skin_list() const { return skin_list_; }
+
+	/** 
+	 * get skin list
+	 */
+	UMSkinList& mutable_skin_list() { return skin_list_; }
+
 	/** 
 	 * create normals
 	 * @param [in] is_smooth smooth or flat
@@ -144,8 +155,12 @@ public:
 	 * update AABB
 	 */
 	void update_box();
-	
 
+	/**
+	 * update from skin
+	 */
+	void update();
+	
 	/**
 	 * get material from face index
 	 */ 
@@ -155,10 +170,16 @@ private:
 	Vec3iList face_list_;
 	VertexIndexList vertex_index_list_;
 	Vec4dList vertex_list_;
+	Vec4dList original_vertex_list_;
 	Vec4dList normal_list_;
+	Vec4dList original_normal_list_;
 	Vec4dList vertex_color_list_;
 	Vec2dList uv_list_;
 	IndexList uv_index_list_;
+	UMSkinList skin_list_;
+	typedef std::pair<int, int> IndexPair;
+	typedef std::vector<IndexPair> IndexPairList;
+	std::map<int, IndexPairList > vertex_index_to_face_index_map_;
 
 	umbase::UMBox box_;
 	UMMaterialList material_list_;

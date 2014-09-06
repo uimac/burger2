@@ -85,6 +85,8 @@ public:
 	 * update AABB
 	 */
 	virtual void update_box() {}
+	
+	UMPrimitiveList& ordered_primitives() { return ordered_primitives_; }
 
 private:
 	UMBvh() {}

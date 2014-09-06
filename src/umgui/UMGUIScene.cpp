@@ -19,9 +19,11 @@
 #include "UMPath.h"
 #include "UMMaterial.h"
 #include "UMGUIBoard.h"
+#include "UMGUIScrollBoard.h"
 #include "UMResource.h"
 #include "UMScene.h"
 #include "UMCamera.h"
+#include <GL/glfw3.h>
 
 namespace umgui
 {
@@ -33,7 +35,9 @@ class UMGUIScene::SceneImpl
 	DISALLOW_COPY_AND_ASSIGN(SceneImpl);
 public:
 
-	SceneImpl() {}
+	SceneImpl() {
+		intersect_list.reserve(10);
+	}
 	~SceneImpl() {
 	}
 	
@@ -42,103 +46,22 @@ public:
 	 */
 	bool init(int width, int height)
 	{
-		UMImagePtr test_image;
-		{
-			const std::string& data = UMResource::find_resource_data(UMResource::instance(), "test.jpg");
-			test_image = UMImage::load_from_memory(data);
-			test_image = test_image->create_flip_image(false, true);
-		}
-
-		UMImagePtr cabbage_image;
-		{
-			const std::string& data = UMResource::find_resource_data(UMResource::instance(), "cabbage.png");
-			cabbage_image = UMImage::load_from_memory(data);
-			cabbage_image = cabbage_image->create_flip_image(false, true);
-		}
-		
-		UMImagePtr pen_icon_image;
-		{
-			const std::string& data = UMResource::find_resource_data(UMResource::instance(), "pen.png");
-			pen_icon_image = UMImage::load_from_memory(data);
-			pen_icon_image = pen_icon_image->create_flip_image(false, true);
-		}
-
-		UMImagePtr hoge_icon_image;
-		{
-			const std::string& data = UMResource::find_resource_data(UMResource::instance(), "hoge.png");
-			hoge_icon_image = UMImage::load_from_memory(data);
-			hoge_icon_image = hoge_icon_image->create_flip_image(false, true);
-		}
-
-		UMImagePtr piyo_icon_image;
-		{
-			const std::string& data = UMResource::find_resource_data(UMResource::instance(), "piyo.png");
-			piyo_icon_image = UMImage::load_from_memory(data);
-			piyo_icon_image = piyo_icon_image->create_flip_image(false, true);
-		}
-
-		UMImagePtr round_rect_image;
-		{
-			const std::string& data = UMResource::find_resource_data(UMResource::instance(), "round_rect.png");
-			round_rect_image = UMImage::load_from_memory(data);
-			round_rect_image = round_rect_image->create_flip_image(false, true);
-		}
 		object_ = UMGUIBoard::create_root_board(width, height);
-		if (object_)
-		{
-#ifdef WITH_FREETYPE
-			// menu back
-			UMGUIBoardPtr menu_back = std::make_shared<UMGUIBoard>(-100);
-			menu_back->add_color_panel(width, height, 0, 0, width, 20, UMVec4d(0.1, 0.1, 0.1, 1.0));
-			object_->mutable_children().push_back(menu_back);
-			{
-				// menu front
-				UMGUIBoardPtr menu_front = std::make_shared<UMGUIBoard>(-10);
-				menu_back->mutable_children().push_back(menu_front);
-				{
-					// icon
-					menu_front->add_texture_panel(width, height, 5, 2, 16, 16, cabbage_image);
-					// menus
-					menu_front->add_text_panel(width, height, 30, 4, 12, L"ファイル");
-					menu_front->add_text_panel(width, height, 100, 4, 12, L"ウィンドウ");
-					menu_front->add_text_panel(width, height, 180, 4, 12, L"ヘルプ");
-				}
-			}
-#endif // WITH_FREETYPE
+		
+		UMScenePtr scene = scene_.lock();
+		if (!scene) { return true; }
+		
+		double pre_x_ = 0.0;
+		double pre_y_ = 0.0;
+		double current_x_ = 0.0;
+		double current_y_ = 0.0;
+		bool is_ctrl_button_down_ = false;
+		bool is_left_button_down_ = false;
+		bool is_right_button_down_ = false;
+		bool is_middle_button_down_ = false;
+		bool is_alt_down_ = false;
+		bool is_shift_down_ = false;
 
-			// left
-			UMGUIBoardPtr left_board = UMGUIBoardPtr(new UMGUIBoard(-100));
-			left_board->add_color_panel(width, height, 10, 50, 280, height-60, UMVec4d(0.1, 0.1, 0.1, 0.9));
-			object_->mutable_children().push_back(left_board);
-			{
-				UMGUIBoardPtr left_board_front = UMGUIBoardPtr(new UMGUIBoard(-10));
-				left_board->mutable_children().push_back(left_board_front);
-				{
-					// text text board
-#ifdef WITH_FREETYPE
-					left_board_front->add_text_panel(width, height, 15, 50, 14, L"WebGLテスト");
-#endif // WITH_FREETYPE
-
-					left_board_front->add_texture_panel(width, height, 80, 80, 20, 20, round_rect_image);
-#ifdef WITH_FREETYPE
-					left_board_front->add_text_panel(width, height, 110, 82, 14, L"チェックボックス(予定)");
-#endif // WITH_FREETYPE
-
-					// pen icon
-					left_board_front->add_texture_panel(width, height, 15, 75 * 1, 32, 32, pen_icon_image);
-					// hoge icon
-					left_board_front->add_texture_panel(width, height, 15, 75 * 2, 32, 32, hoge_icon_image);
-					// piyo icon
-					left_board_front->add_texture_panel(width, height, 15, 75 * 3, 32, 32, piyo_icon_image);
-					// miku
-					left_board_front->add_texture_panel(width, height, 15, 75 * 4, 80, 50, test_image);
-				}
-				// color circle
-				UMGUIBoardPtr color_circle = UMGUIBoard::create_color_circle_board(width, height, 30, 380, 150, 150, -10);
-				left_board->mutable_children().push_back(color_circle);
-			}
-		}
-			
 		camera_ = UMCameraPtr(new UMCamera(true, width, height));
 		if (camera_)
 		{
@@ -190,8 +113,130 @@ public:
 	{
 		return object_;
 	}
+	
+	/**
+	 * keyboard
+	 */
+	bool on_keyboard(int key, int action)
+	{
+		return false;
+	}
+
+	/**
+	 * mouse button up/down
+	 */
+	bool on_mouse(int button, int action)
+	{
+		if (action == GLFW_PRESS)
+		{
+			pre_x_ = current_x_;
+			pre_y_ = current_y_;
+			is_left_button_down_ = (button == GLFW_MOUSE_BUTTON_LEFT);
+			is_right_button_down_ = (button == GLFW_MOUSE_BUTTON_RIGHT);
+			is_middle_button_down_ = (button == GLFW_MOUSE_BUTTON_MIDDLE);
+
+			if (is_left_button_down_)
+			{
+				if (object_)
+				{
+					intersect_list.clear();
+					UMGUIObject::intersect(object_, intersect_list, current_x_, current_y_);
+					if (!intersect_list.empty())
+					{
+						UMGUIObjectList::const_reverse_iterator it = intersect_list.rbegin();
+						for (; it != intersect_list.rend(); ++it)
+						{
+							(*it)->on_left_button_down(current_x_, current_y_);
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			if (button == GLFW_MOUSE_BUTTON_LEFT) 
+			{
+				is_left_button_down_ = false;
+				
+				if (!intersect_list.empty())
+				{
+					UMGUIObjectList::const_reverse_iterator it = intersect_list.rbegin();
+					for (; it != intersect_list.rend(); ++it)
+					{
+						(*it)->on_left_button_up(current_x_, current_y_);
+					}
+				}
+			}
+			if (button == GLFW_MOUSE_BUTTON_RIGHT)
+			{
+				is_right_button_down_ = false;
+			}
+			if (button == GLFW_MOUSE_BUTTON_MIDDLE)
+			{
+				is_middle_button_down_ = false;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * mouse move
+	 */
+	bool on_mouse_move(double x, double y)
+	{
+		current_x_ = x;
+		current_y_ = y;
+
+		if (!intersect_list.empty())
+		{
+			if (is_left_button_down_)
+			{
+				UMGUIObjectList::const_reverse_iterator it = intersect_list.rbegin();
+				for (; it != intersect_list.rend(); ++it)
+				{
+					(*it)->on_left_button_move(current_x_, current_y_);
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * scroll
+	 */
+	bool on_scroll(double x, double y)
+	{
+		if (intersect_list.empty())
+		{
+			UMGUIObject::intersect(object_, intersect_list, current_x_, current_y_);
+		}
+
+		if (!intersect_list.empty())
+		{
+			UMGUIObjectList::const_reverse_iterator it = intersect_list.rbegin();
+			for (; it != intersect_list.rend(); ++it)
+			{
+				(*it)->on_scroll(x, y);
+			}
+			intersect_list.clear();
+			return true;
+		}
+		return false;
+	}
 
 private:
+	UMGUIObjectList intersect_list;
+	double pre_x_;
+	double pre_y_;
+	double current_x_;
+	double current_y_;
+	bool is_ctrl_button_down_;
+	bool is_left_button_down_;
+	bool is_right_button_down_;
+	bool is_middle_button_down_;
+	bool is_alt_down_;
+	bool is_shift_down_;
+
 	umdraw::UMSceneWeakPtr scene_;
 	UMGUIObjectPtr object_;
 	UMCameraPtr camera_;
@@ -260,6 +305,38 @@ UMLightPtr UMGUIScene::light()
 UMGUIObjectPtr UMGUIScene::root_object()
 {
 	return impl_->root_object();
+}
+
+/**
+ * keyboard
+ */
+bool UMGUIScene::on_keyboard(int key, int action)
+{
+	return impl_->on_keyboard(key, action);
+}
+
+/**
+ * mouse button up/down
+ */
+bool UMGUIScene::on_mouse(int button, int action)
+{
+	return impl_->on_mouse(button, action);
+}
+
+/**
+ * mouse move
+ */
+bool UMGUIScene::on_mouse_move(double x, double y)
+{
+	return impl_->on_mouse_move(x, y);
+}
+
+/**
+ * mouse move
+ */
+bool UMGUIScene::on_scroll(double x, double y)
+{
+	return impl_->on_scroll(x, y);
 }
 
 } // UMGUI

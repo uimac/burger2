@@ -9,15 +9,12 @@
  */
 #pragma once
 
-#if !defined(WITH_EMSCRIPTEN)
-	#include <tchar.h>
-	#include <windows.h>
-#endif 
-
 #include <memory>
+#include <tchar.h>
+#include <windows.h>
 #include "UMMacro.h"
 
-namespace test_viewer
+namespace burger
 {
 
 /**
@@ -43,7 +40,7 @@ public:
 	int main(int argc, char** argv);
 
 private:
-	UMWindow() : width_(1024), height_(1024) {}
+	UMWindow() : width_(800), height_(600) {}
 
 	/// initial client width
 	int width_;
@@ -51,4 +48,4 @@ private:
 	int height_;
 };
 
-} // test_viewer
+} // burger

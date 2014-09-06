@@ -196,6 +196,14 @@ umstring UMResource::default_resource_path()
 }
 
 /**
+ * get default resource path
+ */
+umstring UMResource::default_model_resource_path()
+{
+	return umbase::UMPath::resource_absolute_path(umbase::UMStringUtil::utf8_to_utf16("model_resource.pack"));
+}
+
+/**
  * pack files to dst file
  */
 bool UMResource::pack(const umstring& dst_absolute_path, const FilePathList& src_absolute_path_list)
@@ -208,13 +216,53 @@ bool UMResource::pack(const umstring& dst_absolute_path, const FilePathList& src
 		for (; it != src_absolute_path_list.end(); ++it)
 		{
 			const umstring& path = *it;
-			std::ifstream in(path.c_str(), std::ios::binary);
-			if (!in) { assert(0); return false; }
-
-			const umstring file_name = umbase::UMPath::get_file_name(path);
-			if (!compress(file_name, in, out))
+			if (umbase::UMPath::exists(path))
 			{
-				assert(0);
+				if (umbase::UMPath::is_folder(path))
+				{
+					// create inner resource file
+					umstring temp_path = umbase::UMPath::get_temp_absolute_path();
+					std::ofstream inner_out(temp_path.c_str(), std::ios::out|std::ios::binary|std::ios::trunc);
+
+					std::vector<umstring> dirs;
+					std::vector<umstring> files;
+					if (umbase::UMPath::get_child_path_list(dirs, files, path))
+					{
+						for (size_t i = 0; i < files.size(); ++i)
+						{
+							umstring& file_path = files.at(i);
+
+							std::ifstream in(file_path.c_str(), std::ios::binary);
+							if (!in) { assert(0); return false; }
+
+							const umstring file_name = umbase::UMPath::get_file_name(file_path);
+							if (!compress(file_name, in, inner_out))
+							{
+								assert(0);
+							}
+						}
+					}
+					
+					std::ifstream in(temp_path.c_str(), std::ios::binary);
+					if (!in) { assert(0); return false; }
+					const umstring folder_name = umbase::UMPath::get_file_name(path);
+					if (!compress(folder_name, in, out))
+					{
+						assert(0);
+					}
+					umbase::UMPath::remove_file(temp_path);
+				}
+				else
+				{
+					std::ifstream in(path.c_str(), std::ios::binary);
+					if (!in) { assert(0); return false; }
+
+					const umstring file_name = umbase::UMPath::get_file_name(path);
+					if (!compress(file_name, in, out))
+					{
+						assert(0);
+					}
+				}
 			}
 		}
 	}
@@ -259,8 +307,8 @@ const std::string& UMResource::find_resource_data(UMResource& resource, const st
 {
 	UMResource::UnpackedNameList& name_list = resource.unpacked_name_list();
 	UMResource::UnpackedDataList& data_list = resource.unpacked_data_list();
-	umstring hoge = umbase::UMStringUtil::utf8_to_utf16(name);
-	UMResource::UnpackedNameList::iterator it = std::find(name_list.begin(), name_list.end(), hoge);
+	umstring utf16name = umbase::UMStringUtil::utf8_to_utf16(name);
+	UMResource::UnpackedNameList::iterator it = std::find(name_list.begin(), name_list.end(), utf16name);
 
 	if (it != name_list.end())
 	{

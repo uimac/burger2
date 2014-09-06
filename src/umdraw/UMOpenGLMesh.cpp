@@ -81,6 +81,8 @@ public:
 		return true;
 	}
 
+	bool update();
+
 	void draw(UMOpenGLDrawParameterPtr parameter);
 	
 	bool is_valid_vertex_vbo() const { return is_valid_vertex_vbo_; };
@@ -464,6 +466,15 @@ void UMOpenGLMesh::Impl::draw(UMOpenGLDrawParameterPtr parameter)
 	glUseProgram(0);
 }
 
+/**
+ * update
+ */
+bool UMOpenGLMesh::Impl::update()
+{
+	return false;
+}
+
+
 UMOpenGLMesh::UMOpenGLMesh()
 	: impl_(new UMOpenGLMesh::Impl)
 {}
@@ -486,6 +497,14 @@ bool UMOpenGLMesh::init()
 void UMOpenGLMesh::draw(UMOpenGLDrawParameterPtr parameter)
 {
 	impl_->draw(parameter);
+}
+
+/**
+ * update
+ */
+bool UMOpenGLMesh::update()
+{
+	return impl_->update();
 }
 
 /**

@@ -24,6 +24,7 @@ namespace umdraw
 class UMCamera;
 typedef std::shared_ptr<UMCamera> UMCameraPtr;
 typedef std::weak_ptr<UMCamera> UMCameraWeakPtr;
+typedef std::vector<UMCameraPtr> UMCameraList;
 
 /**
  * a camera

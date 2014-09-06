@@ -20,6 +20,8 @@
 #include "UMSoftwareIO.h"
 #include "UMSoftwareEventType.h"
 
+#include <mutex>
+
 namespace umdraw
 {
 
@@ -33,9 +35,12 @@ void UMScene::init(int width, int height)
 
 	width_ = width;
 	height_ = height;
+	is_enable_deform_ = true;
+	visibility_ = 0xFFFFFFFF;
 
 	light_list_.clear();
-	camera_ = UMCameraPtr(new UMCamera(false, width, height));
+	mutable_camera_list().clear();
+	mutable_camera_list().push_back(UMCameraPtr(new UMCamera(false, width, height)));
 }
 
 /**
@@ -64,6 +69,13 @@ bool UMScene::load(const umstring& absolute_file_path)
 		}
 		mutable_mesh_group_list().push_back(mesh_group);
 	}
+
+	if (!UMSoftwareIO::import_node_list(node_list_, mesh_group->mutable_mesh_list(), obj))
+	{
+		node_list_.clear();
+		return false;
+	}
+
 	return true;
 }
 
@@ -79,22 +91,38 @@ bool UMScene::load_from_memory(const std::string& src)
 	setting.set_bl_imp_bool_prop(umio::UMIOSetting::eUMImpTriangulate, true);
 	setting.set_system_unit_type(umio::UMIOSetting::eFbxSystemUnitM);
 	printf("loading model ...\n");
-	obj = io.load_bos_from_memory(src, setting);
+	obj = io.load_from_memory(src, setting);
 	if (!obj) return false;
 	printf("finish loading model ...\n");
 	
+	// import camera
+	if (!UMSoftwareIO::import_camera_list(
+		mutable_camera_list(),
+		obj,
+		width(),
+		height()))
+	{
+		return false;
+	}
+
 	// import to umdraw
 	UMMeshGroupPtr mesh_group(std::make_shared<UMMeshGroup>());
 	{
-		if (!UMSoftwareIO::import_mesh_list(
+		if (UMSoftwareIO::import_mesh_list(
 			mesh_group->mutable_mesh_list(), 
 			obj,
 			umstring()))
 		{
-			return false;
+			mutable_mesh_group_list().push_back(mesh_group);
 		}
-		mutable_mesh_group_list().push_back(mesh_group);
 	}
+
+	if (!UMSoftwareIO::import_node_list(node_list_, mesh_group->mutable_mesh_list(), obj))
+	{
+		node_list_.clear();
+		return false;
+	}
+	
 	return true;
 }
 
@@ -119,9 +147,16 @@ size_t UMScene::total_polygon_size() const
 /**
  * set camera
  */
-void UMScene::set_camera(UMCameraPtr camera)
+void UMScene::set_current_camera(UMCameraPtr camera)
 {
-	camera_ = camera;
+	if (mutable_camera_list().empty())
+	{
+		mutable_camera_list().push_back(camera);
+	}
+	else
+	{
+		mutable_camera_list()[0] = camera;
+	}
 	umbase::UMEvent::Parameter parameter(camera);
 	camera_change_event_->set_parameter(parameter);
 	camera_change_event_->notify();
@@ -139,8 +174,8 @@ void UMScene::set_background_image(UMImagePtr image)
 }
 
 /**
-	* get foreground image
-	*/ 
+ * get foreground image
+ */ 
 void UMScene::set_foreground_image(UMImagePtr image)
 {
 	foreground_image_ = image;
@@ -149,5 +184,40 @@ void UMScene::set_foreground_image(UMImagePtr image)
 	foreground_change_event_->notify();
 }
 
+/**
+ * get camera
+ */
+UMCameraPtr UMScene::camera()
+{
+	if (camera_list_.empty())
+	{
+		return UMCameraPtr();
+	}
+	return camera_list_[0];
+}
+
+/**
+ * clear all data
+ */
+void UMScene::clear_geometry()
+{
+	mutable_mesh_group_list().clear();
+	mutable_node_list().clear();
+}
+
+/** 
+ *  set visibility
+ */
+void UMScene::set_visible(VisibleType type, bool visible)
+{
+	if (visible)
+	{ 
+		visibility_.set(type);
+	}
+	else
+	{
+		visibility_.reset(type);
+	}
+}
 
 } // umdraw

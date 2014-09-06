@@ -45,6 +45,7 @@ public:
 	{
 		if (UMMaterialPtr material = ummaterial())
 		{
+			set_name(material->name());
 			set_ambient(to_gl(material->ambient()));
 			set_diffuse(to_gl(material->diffuse()));
 			set_specular(to_gl(material->specular()));

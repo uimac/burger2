@@ -53,6 +53,26 @@ public:
 	 * resize
 	 */
 	void resize(int width, int height);
+	
+	/**
+	 * keyboard
+	 */
+	bool on_keyboard(int key, int action);
+	
+	/**
+	 * mouse button up/down
+	 */
+	bool on_mouse(int button, int action);
+	
+	/**
+	 * mouse move
+	 */
+	bool on_mouse_move(double x, double y);
+	
+	/**
+	 * scroll
+	 */
+	bool on_scroll(double x, double y);
 
 private:
 	class SceneImpl;

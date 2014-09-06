@@ -16,7 +16,7 @@
 #include "UMMesh.h"
 #include "UMSceneAccess.h"
 
-#ifdef WITH_OSL
+#ifdef WITH_OSD
 	#define and &&
 	#define and_eq &=
 	#define bitand &
@@ -34,12 +34,12 @@
 	#include <osd/cpuComputeController.h>
 	#include <osd/cpuComputeContext.h>
 	#include <osd/cpuVertexBuffer.h>
-#endif // WITH_OSL
+#endif // WITH_OSD
 
 namespace umrt
 {
 	
-#ifdef WITH_OSL
+#ifdef WITH_OSD
 
 namespace
 {
@@ -276,7 +276,7 @@ public:
 	~SudivImpl() {}
 };
 
-#endif // WITH_OSL
+#endif // WITH_OSD
 
 /**
  * constructor
@@ -298,7 +298,7 @@ UMSubdivision::~UMSubdivision()
  */
 umdraw::UMMeshPtr UMSubdivision::subdivided_mesh(unsigned int level)
 {
-#ifdef WITH_OSL
+#ifdef WITH_OSD
 	return impl_->create_subdivided_mesh(level);
 #else
 	return umdraw::UMMeshPtr();

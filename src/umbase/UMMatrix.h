@@ -631,4 +631,21 @@ void um_matrix_look_at_rh(
 	dst.m[3][3] = 1.0;
 }
 
+/** 
+ * remove scale from matrix
+ */
+template<typename T>
+void um_matrix_remove_scale(
+		UMMatrix44<T>& dst,
+		const UMMatrix44<T>& src)
+{
+	const double len_x_inv = 1.0 / UMVec3d(src.m[0][0], src.m[0][1], src.m[0][2]).length();
+	const double len_y_inv = 1.0 / UMVec3d(src.m[1][0], src.m[1][1], src.m[1][2]).length();
+	const double len_z_inv = 1.0 / UMVec3d(src.m[2][0], src.m[2][1], src.m[2][2]).length();
+	dst.m[0][0] *= len_x_inv; dst.m[0][1] *= len_x_inv; dst.m[0][2] *= len_x_inv;
+	dst.m[1][0] *= len_y_inv; dst.m[1][1] *= len_y_inv; dst.m[1][2] *= len_y_inv;
+	dst.m[2][0] *= len_z_inv; dst.m[2][1] *= len_z_inv; dst.m[2][2] *= len_z_inv;
+}
+
+
 } //umbase

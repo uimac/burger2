@@ -18,6 +18,7 @@
 #include "UMStringUtil.h"
 #include "UMPath.h"
 #include "UMLine.h"
+#include "UMMatrix.h"
 
 #include "UMSoftwareIO.h"
 #include "UMOpenGLMesh.h"
@@ -25,6 +26,7 @@
 #include "UMOpenGLMaterial.h"
 #include "UMOpenGLTexture.h"
 #include "UMOpenGLLine.h"
+#include "UMOpenGLNode.h"
 #include "UMOpenGLDrawParameter.h"
 
 namespace
@@ -38,6 +40,23 @@ namespace
 	UMVec3f to_gl(const umio::UMVec3d& v) { return UMVec3f((float)v.x, (float)v.y, (float)v.z); }
 
 	UMVec4f to_gl(const umio::UMVec4d& v) { return UMVec4f((float)v.x, (float)v.y, (float)v.z, (float)v.w); } 
+	
+	UMVec3f to_float(const UMVec3d& v) { return UMVec3f((float)v.x, (float)v.y, (float)v.z); }
+
+	UMVec4f to_float(const UMVec4d& v) { return UMVec4f((float)v.x, (float)v.y, (float)v.z, (float)v.w); }
+	
+	UMMat44f to_float(const UMMat44d& src)
+	{
+		UMMat44f dst;
+		for (int i = 0; i < 4; ++i)
+		{
+			for (int k = 0; k < 4; ++k)
+			{
+				dst.m[i][k] = static_cast<float>(src.m[i][k]);
+			}
+		}
+		return dst;
+	}
 
 	//----------------------------------------------------------------------------
 
@@ -305,6 +324,103 @@ namespace
 		dst_line->set_vertex_count(static_cast<unsigned int>(line_size));
 		return true;
 	}
+	
+	/** 
+	 * load node from umdraw to gl
+	 */
+	bool load_node(
+		UMOpenGLNodePtr dst_node,
+		UMNodePtr src_node)
+	{
+		unsigned int vertex_vbo = dst_node->vertex_vbo();
+		if (!dst_node->is_valid_vertex_vbo())
+		{
+			glGenBuffers(1, &vertex_vbo);
+			glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
+		}
+		if (vertex_vbo == 0) return false;
+		
+		glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
+		
+		const unsigned int point_count = 24;
+		std::vector<UMVec3f> points;
+		points.resize(point_count);
+		std::vector<UMVec3f> octahedron(6);
+		
+		UMMat44d global = src_node->global_transform();
+		UMMat44d parent_global;
+		if (src_node->parent())
+		{
+			parent_global = src_node->parent()->global_transform();
+		}
+		else
+		{
+			parent_global = src_node->global_transform();
+		}
+		// remove scale
+		umbase::um_matrix_remove_scale(global, global);
+		umbase::um_matrix_remove_scale(parent_global, parent_global);
+
+		UMMat44f global_rot = to_float(parent_global);
+		global_rot.m[3][0] = global_rot.m[3][1] = global_rot.m[3][2] = 0.0f;
+		UMVec3f start = to_float(UMVec3d(parent_global.m[3][0], parent_global.m[3][1], parent_global.m[3][2]));
+		UMVec3f end = to_float(UMVec3d(global.m[3][0], global.m[3][1], global.m[3][2]));
+		float length = (end - start).length();
+		if (length <= FLT_EPSILON) { length = 1.0f; }
+		UMVec3f middle = (start + end) * 0.5;
+		UMVec3f dir = (end - start).normalized();
+		UMVec3f global_y(global_rot.m[1][0], global_rot.m[1][1], global_rot.m[1][2]);
+		UMVec3f global_z(global_rot.m[2][0], global_rot.m[2][1], global_rot.m[2][2]);
+		octahedron[0] = end;
+		octahedron[1] = middle + dir.cross(global_y) * 0.1 * length;
+		octahedron[2] = middle + dir.cross(global_z) * 0.1 * length;
+		octahedron[3] = start;
+		octahedron[4] = middle + dir.cross(global_y) * -0.1 * length;
+		octahedron[5] = middle + dir.cross(global_z) * -0.1 * length;
+			
+		points[0] = octahedron[1];
+		points[1] = octahedron[0];
+		points[2] = octahedron[5];
+			
+		points[3] = octahedron[1];
+		points[4] = octahedron[5];
+		points[5] = octahedron[3];
+			
+		points[6] = octahedron[1];
+		points[7] = octahedron[3];
+		points[8] = octahedron[2];
+			
+		points[9] = octahedron[1];
+		points[10] = octahedron[2];
+		points[11] = octahedron[0];
+			
+		points[12] = octahedron[0];
+		points[13] = octahedron[4];
+		points[14] = octahedron[5];
+			
+		points[15] = octahedron[5];
+		points[16] = octahedron[4];
+		points[17] = octahedron[3];
+			
+		points[18] = octahedron[3];
+		points[19] = octahedron[4];
+		points[20] = octahedron[2];
+			
+		points[21] = octahedron[2];
+		points[22] = octahedron[4];
+		points[23] = octahedron[0];
+
+		glBufferData(GL_ARRAY_BUFFER,
+			sizeof (UMVec3f) * point_count,
+			reinterpret_cast<const GLvoid*>( &(*points.begin()) ), 
+			GL_STATIC_DRAW );
+		
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		dst_node->set_vertex_vbo(vertex_vbo);
+		dst_node->set_vertex_count(point_count);
+		return true;
+	}
 
 } // anonymouse namespace
 
@@ -393,6 +509,30 @@ UMOpenGLMeshPtr UMOpenGLIO::convert_mesh_to_gl_mesh(
 }
 
 /**
+ * convert umdraw mesh to OpenGL mesh
+ */
+bool UMOpenGLIO::deformed_mesh_to_gl_mesh(
+	UMOpenGLMeshPtr deform_mesh,
+	UMMeshPtr src)
+{
+	// create vertex buffer
+	if (src->vertex_list().size() > 0) {
+		// create full triangle verts for uv
+		if (!load_vertex(deform_mesh, src)) {
+			return false;
+		}
+	}
+	// create normal buffer
+	if (src->normal_list().size() > 0) {
+		// create full triangle normals for uv
+		if (!load_normal(deform_mesh, src)) {
+			return UMOpenGLMeshPtr();
+		}
+	}
+	return true;
+}
+
+/**
  * convert umdraw mesh group to OpenGL mesh
  */
 UMOpenGLMeshGroupPtr UMOpenGLIO::convert_mesh_group_to_gl_mesh_group(
@@ -416,6 +556,47 @@ UMOpenGLMeshGroupPtr UMOpenGLIO::convert_mesh_group_to_gl_mesh_group(
 	return group;
 }
 
+/**
+ * convert umdraw node to OpenGL node
+ */
+UMOpenGLNodePtr UMOpenGLIO::convert_node_to_gl_node(
+	UMNodePtr src)
+{
+	if (!src) { return false; }
+
+	UMOpenGLNodePtr node = std::make_shared<UMOpenGLNode>();
+	if (load_node(node, src))
+	{
+		// convert default material
+		UMMaterialPtr material = UMMaterial::default_material();
+		material->set_polygon_count(8);
+		UMOpenGLMaterialPtr gl_material = UMOpenGLIO::convert_material_to_gl_material(material);
+		gl_material->set_shader_flags(UMVec4f(0, 1, 0, 0));
+		if (gl_material)
+		{
+			node->mutable_material_list().push_back(gl_material);
+		}
+		return node;
+	}
+	return UMOpenGLNodePtr();
+}
+
+/**
+ * convert umdraw node to OpenGL node
+ */
+bool UMOpenGLIO::deformed_node_to_gl_node(
+	UMOpenGLNodePtr deform_node,
+	UMNodePtr src)
+{
+	if (!deform_node) { return false; }
+	if (!src) { return false; }
+
+	if (load_node(deform_node, src))
+	{
+		return true;
+	}
+	return false;
+}
 
 /**
  * convert umdraw line to OpenGL line

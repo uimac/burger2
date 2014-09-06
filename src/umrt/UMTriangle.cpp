@@ -15,6 +15,10 @@
 	#include "UMAbcMesh.h"
 #endif
 
+#include <Imath/ImathVec.h>
+#include <Imath/ImathLine.h>
+#include <Imath/ImathLineAlgo.h>
+
 namespace umrt
 {
 	using namespace umdraw;
@@ -98,7 +102,29 @@ bool UMTriangle::intersects(
 	const UMRay& ray,
 	UMShaderParameter& parameter)
 {
-	
+	//Imath::Line3d iray;
+	//iray.pos = Imath::V3d(ray.origin().x, ray.origin().y, ray.origin().z);
+	//iray.dir = Imath::V3d(ray.direction().x, ray.direction().y, ray.direction().z);
+	//Imath::V3d hit;
+	//Imath::V3d bary;
+	//bool is_front;
+	//bool is_hit = Imath::intersect(
+	//	iray,
+	//	Imath::V3d(a.x, a.y, a.z),
+	//	Imath::V3d(b.x, b.y, b.z),
+	//	Imath::V3d(c.x, c.y, c.z),
+	//	hit,
+	//	bary,
+	//	is_front);
+
+	//if (is_hit && is_front)
+	//{
+	//	parameter.intersect_point = UMVec3d(hit.x, hit.y, hit.z);
+	//	parameter.uvw = UMVec3d(bary.x, bary.y, bary.z);
+	//	parameter.distance = (parameter.intersect_point - ray.origin()).length();
+	//}
+	//return is_hit && is_front;
+
 	const UMVec3d& ray_dir(ray.direction());
 	const UMVec3d& ray_orig(ray.origin());
 	
@@ -126,18 +152,22 @@ bool UMTriangle::intersects(
 	double w = -ab.dot(barycentric);
 	if (w < 0 || (v + w) > d) return false;
 
-	// v
-	parameter.uvw.y = v * inv_dir;
-	// w
-	parameter.uvw.z = w * inv_dir;
-	// u
-	parameter.uvw.x = 1.0 - parameter.uvw.y - parameter.uvw.z;
+	bool is_front = ray_dir.dot(n) < 0.0;
+	if (is_front)
+	{
+		// v
+		parameter.uvw.y = v * inv_dir;
+		// w
+		parameter.uvw.z = w * inv_dir;
+		// u
+		parameter.uvw.x = 1.0 - parameter.uvw.y - parameter.uvw.z;
 	
-	parameter.distance = distance;
-	parameter.intersect_point = ray_orig + ray_dir * distance;
-	//parameter.normal = n.normalized();
-
-	return true;
+		parameter.distance = distance;
+		parameter.intersect_point = ray_orig + ray_dir * distance;
+		parameter.face_normal = n.normalized();
+		return true;
+	}
+	return false;
 }
 
 /**
@@ -161,6 +191,7 @@ bool UMTriangle::intersects(const UMRay& ray, UMShaderParameter& parameter) cons
 			const UMVec3d& n1 = me->normal_list()[vertex_index_.y];
 			const UMVec3d& n2 = me->normal_list()[vertex_index_.z];
 			parameter.normal = (n0 * parameter.uvw.x + n1 * parameter.uvw.y + n2 * parameter.uvw.z).normalized();
+			parameter.face_normal = (v1-v0).cross(v2-v0).normalized();
 
 			if (UMMaterialPtr material = me->material_from_face_index(face_index_))
 			{
@@ -189,9 +220,9 @@ bool UMTriangle::intersects(const UMRay& ray, UMShaderParameter& parameter) cons
 					const int pixel = y * texture->width() + x;
 					const UMVec4d& pixel_color = texture->list()[pixel];
 					parameter.uv = uv;
-					parameter.color.x *= pixel_color.x;
-					parameter.color.y *= pixel_color.y;
-					parameter.color.z *= pixel_color.z;
+					parameter.color.x = pixel_color.x;
+					parameter.color.y = pixel_color.y;
+					parameter.color.z = pixel_color.z;
 				}
 			}
 			return true;
@@ -217,7 +248,7 @@ bool UMTriangle::intersects(const UMRay& ray, UMShaderParameter& parameter) cons
 			const UMVec3d n1(in1.x, in1.y, in1.z);
 			const UMVec3d n2(in2.x, in2.y, in2.z);
 			parameter.normal = (n0 * parameter.uvw.x + n1 * parameter.uvw.y + n2 * parameter.uvw.z).normalized();
-
+			
 			if (UMMaterialPtr material = me->material_from_face_index(face_index_))
 			{
 				parameter.material = material;
@@ -231,23 +262,26 @@ bool UMTriangle::intersects(const UMRay& ray, UMShaderParameter& parameter) cons
 					// uv
 					const int base = face_index_ * 3;
 					const Imath::V2f& uv0 = me->uv().getVals()->get()[base + 0];
-					const Imath::V2f& uv1 = me->uv().getVals()->get()[base + 1];
-					const Imath::V2f& uv2 = me->uv().getVals()->get()[base + 2];
+					const Imath::V2f& uv1 = me->uv().getVals()->get()[base + 2];
+					const Imath::V2f& uv2 = me->uv().getVals()->get()[base + 1];
 					UMVec2d uv = UMVec2d(
 						UMVec2d(uv0.x, uv0.y) * parameter.uvw.x +
 						UMVec2d(uv1.x, uv1.y) * parameter.uvw.y +
 						UMVec2d(uv2.x, uv2.y) * parameter.uvw.z);
 					uv.x = umbase::um_clip(uv.x);
-					uv.y = umbase::um_clip(uv.y);
+					uv.y = umbase::um_clip(1.0f - uv.y);
 					const UMImagePtr texture = material->texture_list()[0];
 					const int x = static_cast<int>(texture->width() * uv.x);
 					const int y = static_cast<int>(texture->height() * uv.y);
 					const int pixel = y * texture->width() + x;
-					const UMVec4d& pixel_color = texture->list()[pixel];
-					parameter.uv = uv;
-					parameter.color.x *= pixel_color.x;
-					parameter.color.y *= pixel_color.y;
-					parameter.color.z *= pixel_color.z;
+					if (pixel < texture->list().size())
+					{
+						const UMVec4d& pixel_color = texture->list()[pixel];
+						parameter.uv = uv;
+						parameter.color.x = pixel_color.x;
+						parameter.color.y = pixel_color.y;
+						parameter.color.z = pixel_color.z;
+					}
 				}
 			}
 			return true;

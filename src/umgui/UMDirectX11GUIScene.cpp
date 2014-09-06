@@ -13,6 +13,7 @@
 #include "UMDirectX11GUIScene.h"
 
 #include <memory>
+#include <queue>
 
 #include "UMGUIScene.h"
 #include "UMDirectX11.h"
@@ -24,12 +25,14 @@
 #include "UMDirectX11IO.h"
 #include "UMCamera.h"
 #include "UMGUIBoard.h"
+#include "UMAny.h"
+#include "UMListenerConnector.h"
 
 namespace umgui
 {
 	using namespace umdraw;
 
-class UMDirectX11GUIScene::SceneImpl
+class UMDirectX11GUIScene::SceneImpl : public umbase::UMListenerConnector
 {
 	DISALLOW_COPY_AND_ASSIGN(SceneImpl);
 public:
@@ -38,18 +41,28 @@ public:
 
 	void init_object(ID3D11Device* device_pointer, UMGUIObjectPtr obj)
 	{
-		if (UMGUIBoardPtr board = std::dynamic_pointer_cast<UMGUIBoard>(obj))
+		std::queue<UMGUIObjectPtr> queue;
+		queue.push(obj);
+		while (!queue.empty())
 		{
-			if (UMDirectX11GUIBoardPtr dx_board = std::make_shared<UMDirectX11GUIBoard>(board))
+			UMGUIObjectPtr target = queue.front();
+			queue.pop();
+			
+			if (UMDirectX11GUIBoardPtr dx_board = std::make_shared<UMDirectX11GUIBoard>(target))
 			{
-				dx_board->init(device_pointer);
-				dx_board_list_.push_back(dx_board);
+				if (dx_board->init(device_pointer))
+				{
+					dx_board_list_.push_back(dx_board);
+					mutable_event_list().push_back(target->update_event());
+					target->update_event()->add_listener(gl_board);
+				}
 			}
-		}
-		UMGUIObjectList::iterator it = obj->mutable_children().begin();
-		for (; it != obj->mutable_children().end(); ++it)
-		{
-			init_object(device_pointer, *it);
+
+			UMGUIObjectList::iterator it = target->mutable_children().begin();
+			for (; it != target->mutable_children().end(); ++it)
+			{
+				queue.push(*it);
+			}
 		}
 	}
 
@@ -141,7 +154,54 @@ public:
 	void resize(ID3D11Device* device_pointer, int width, int height)
 	{
 	}
+	
+	/**
+	 * keyboard
+	 */
+	bool on_keyboard(int key, int action)
+	{
+		if (gui_scene_)
+		{
+			return gui_scene_->on_keyboard(key, action);
+		}
+		return false;
+	}
 
+	/**
+	 * mouse button up/down
+	 */
+	bool on_mouse(int button, int action)
+	{
+		if (gui_scene_)
+		{
+			return gui_scene_->on_mouse(button, action);
+		}
+		return false;
+	}
+
+	/**
+	 * mouse move
+	 */
+	bool on_mouse_move(double x, double y)
+	{
+		if (gui_scene_)
+		{
+			return gui_scene_->on_mouse_move(x, y);
+		}
+		return false;
+	}
+	
+	/**
+	 * scroll
+	 */
+	bool on_scroll(double x, double y)
+	{
+		if (gui_scene_)
+		{
+			return gui_scene_->on_scroll(x, y);
+		}
+		return false;
+	}
 private:
 	UMGUIScenePtr gui_scene_;
 	umdraw::UMDirectX11DrawParameterPtr dx_draw_parameter_;
@@ -223,6 +283,39 @@ void UMDirectX11GUIScene::resize(int width, int height)
 		return impl_->resize(device_pointer, width, height);
 	}
 }
+
+/**
+ * keyboard
+ */
+bool UMDirectX11GUIScene::on_keyboard(int key, int action)
+{
+	return impl_->on_keyboard(key, action);
+}
+
+/**
+ * mouse button up/down
+ */
+bool UMDirectX11GUIScene::on_mouse(int button, int action)
+{
+	return impl_->on_mouse(button, action);
+}
+
+/**
+ * mouse move
+ */
+bool UMDirectX11GUIScene::on_mouse_move(double x, double y)
+{
+	return impl_->on_mouse(x, y);
+}
+
+/**
+ * scroll
+ */
+bool UMDirectX11GUIScene::on_scroll(double x, double y)
+{
+	return impl_->on_scroll(x, y);
+}
+
 
 } // umgui
 

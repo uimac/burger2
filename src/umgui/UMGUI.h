@@ -70,6 +70,30 @@ public:
 	 * resize
 	 */
 	virtual void resize(int width, int height) = 0;
+	
+	/**
+	 * keyboard
+	 * @return stop propagation or not
+	 */
+	virtual bool on_keyboard(int key, int action) = 0;
+	
+	/**
+	 * mouse button up/down
+	 * @return stop propagation or not
+	 */
+	virtual bool on_mouse(int button, int action) = 0;
+	
+	/**
+	 * mouse move
+	 * @return stop propagation or not
+	 */
+	virtual bool on_mouse_move(double x, double y) = 0;
+	
+	/**
+	 * scroll
+	 * @return stop propagation or not
+	 */
+	virtual bool on_scroll(double x, double y) = 0;
 
 protected:
 	UMGUI() {}

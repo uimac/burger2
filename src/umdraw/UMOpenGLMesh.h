@@ -52,7 +52,7 @@ public:
 	/** 
 	 * update
 	 */
-	bool update() { return true; }
+	bool update();
 
 	/**
 	 * draw

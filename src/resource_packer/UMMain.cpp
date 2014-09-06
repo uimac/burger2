@@ -57,14 +57,13 @@ int main()
 
 	files.push_back(resource_path("test.jpg"));
 	files.push_back(resource_path("license/GLFW-LICENSE.txt"));
-	files.push_back(resource_path("license/tinyobjloader-LICENSE.txt"));
 	files.push_back(resource_path("license/snappy-LICENSE.txt"));
+	files.push_back(resource_path("license/Alembic-LICENSE.txt"));
 	//files.push_back(resource_path("KodomoRounded.otf"));
-	//files.push_back(resource_path("KodomoRounded.ttf"));
-	files.push_back(resource_path("mplus-1c-medium-sub.ttf"));
+	files.push_back(resource_path("KodomoRounded.ttf"));
+	//files.push_back(resource_path("mplus-1c-medium-sub.ttf"));
 
 
-	//files.push_back(resource_path("out2/alembic_file.abc"));
 	//files.push_back(resource_path("particle1.abc"));
 	//files.push_back(resource_path("miku_alegro.bos"));
 	//files.push_back(resource_path("cornellbox_nolight.bos"));
@@ -73,6 +72,11 @@ int main()
 	umstring out_file = resource_path("cabbage_resource.pack");
 
 	umresource::UMResource::instance().pack(out_file, files);
+	
+	//FileList model_files;
+	//model_files.push_back(resource_path("out"));
+	//umstring out_model_file = resource_path("model_resource.pack");
+	//umresource::UMResource::instance().pack(out_model_file, model_files);
 
 	// unpack test
 	umresource::UMResource::instance().unpack_to_memory(out_file);

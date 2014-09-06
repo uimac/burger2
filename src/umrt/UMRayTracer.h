@@ -38,25 +38,15 @@ class UMRayTracer : public UMRenderer
 {
 	DISALLOW_COPY_AND_ASSIGN(UMRayTracer);
 public:
-	UMRayTracer() : 
-		current_x_(0),
-		current_y_(0),
-		ray_(UMVec3d(0, 0, 500), UMVec3d(0))
-	{}
+	UMRayTracer();
 
-	~UMRayTracer() {}
+	~UMRayTracer();
 	
 	/**
 	 * initialize
 	 * @note needs a context
 	 */
-	virtual bool init() {
-		current_x_ = 0;
-		current_y_ = 0;
-		ray_.set_origin( UMVec3d(0, 0, 500) );
-		ray_.set_direction( UMVec3d(0) );
-		return true;
-	}
+	virtual bool init();
 
 	/**
 	 * get renderer type
@@ -72,6 +62,11 @@ public:
 	virtual bool render(UMSceneAccessPtr scene_access, UMRenderParameter& parameter);
 	
 	/**
+	 * OpenShadingLanguage render service
+	 */
+	virtual OSL::RendererServices* render_service();
+
+	/**
 	 * progressive render
 	 * @param [in] scene_access target scene access
 	 * @param [in,out] parameter parameters for rendering
@@ -80,13 +75,21 @@ public:
 	 */
 	virtual bool progress_render(UMSceneAccessPtr scene_access, UMRenderParameter& parameter);
 
+	/** 
+	 * set client width
+	 */
+	virtual void set_width(int width);
+
+	/** 
+	 * set client height
+	 */
+	virtual void set_height(int height);
+
+
 private:
-	// for progress render
-	int current_x_;
-	int current_y_;
-	UMRay ray_;
-	UMShaderParameter shader_param_;
-	//UMRandomSampler sampler_;
+	class Impl;
+	typedef std::unique_ptr<Impl> ImplPtr;
+	ImplPtr impl_;
 };
 
 } // umrt

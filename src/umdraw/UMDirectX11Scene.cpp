@@ -193,6 +193,7 @@ public:
 		}
 	
 		// draw lines
+		if (scene_->is_visible(UMScene::eLine))
 		{
 			UMDirectX11LineList::const_iterator it = dx11_line_list_.begin();
 			for (; it != dx11_line_list_.end(); ++it)
@@ -201,6 +202,7 @@ public:
 			}
 		}
 		// draw models
+		if (scene_->is_visible(UMScene::eMesh))
 		{
 			UMDirectX11MeshGroupList::iterator it = dx11_mesh_group_list_.begin();
 			for (; it != dx11_mesh_group_list_.end(); ++it)

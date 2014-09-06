@@ -13,6 +13,8 @@
 #include <memory>
 #include "UMMacro.h"
 #include "UMMesh.h"
+#include "UMListener.h"
+#include "UMGUIObject.h"
 
 namespace umdraw
 {
@@ -26,10 +28,6 @@ namespace umdraw
 
 namespace umgui
 {
-	
-class UMGUIBoard;
-typedef std::shared_ptr<UMGUIBoard> UMGUIBoardPtr;
-typedef std::weak_ptr<UMGUIBoard> UMGUIBoardWeakPtr;
 
 class UMOpenGLGUIBoard;
 typedef std::shared_ptr<UMOpenGLGUIBoard> UMOpenGLGUIBoardPtr;
@@ -38,12 +36,12 @@ typedef std::vector<UMOpenGLGUIBoardPtr> UMOpenGLGUIBoardList;
 /**
  * a board
  */
-class UMOpenGLGUIBoard
+class UMOpenGLGUIBoard : public umbase::UMListener
 {
 	DISALLOW_COPY_AND_ASSIGN(UMOpenGLGUIBoard);
 public:
 	UMOpenGLGUIBoard() {}
-	UMOpenGLGUIBoard(UMGUIBoardPtr board);
+	UMOpenGLGUIBoard(UMGUIObjectPtr board);
 
 	~UMOpenGLGUIBoard() {}
 
@@ -53,13 +51,24 @@ public:
 	bool init();
 
 	/**
+	 * update
+	 */
+	bool update();
+
+	/**
 	 * draw
 	 */
 	void draw(umdraw::UMOpenGLDrawParameterPtr parameter) const;
+	
+	/**
+	 * update event
+	 */
+	virtual void update(umbase::UMEventType event_type, umbase::UMAny& parameter);
 
 private:
-	UMGUIBoardWeakPtr board_;
+	UMGUIObjectWeakPtr board_;
 	umdraw::UMOpenGLMeshPtr gl_mesh_;
+	umbase::UMMat44d pre_local_transform_;
 };
 
 } // umgui

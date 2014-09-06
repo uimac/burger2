@@ -15,6 +15,11 @@
 //#include "UMEvent.h"
 //#include "UMListenerConnector.h"
 
+namespace OSL
+{
+	class RendererServices;
+} // OSL
+
 namespace umrt
 {
 
@@ -39,13 +44,14 @@ public:
 	enum RendererType {
 		eSimpleRayTracer,
 		ePathTracer,
+		eToonRender,
 	};
 	
 	UMRenderer() : 
 		width_(0), 
 		height_(0) {}
 	
-	~UMRenderer() {}
+	virtual ~UMRenderer() {}
 
 	/**
 	 * create renderer
@@ -79,6 +85,11 @@ public:
 	 * @retval false render finished or failed
 	 */
 	virtual bool progress_render(UMSceneAccessPtr scene, UMRenderParameter& parameter){ return false; }
+
+	/**
+	 * OpenShadingLanguage render service
+	 */
+	virtual OSL::RendererServices* render_service() { return NULL; }
 
 	/** 
 	 * set client width

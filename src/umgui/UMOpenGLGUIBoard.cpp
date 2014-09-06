@@ -12,6 +12,7 @@
 #include "UMGUIBoard.h"
 #include "UMOpenGLIO.h"
 #include "UMOpenGLMesh.h"
+#include "UMGUIEventType.h"
 
 namespace umgui
 {
@@ -19,7 +20,7 @@ namespace umgui
 /**
  * constructor
  */
-UMOpenGLGUIBoard::UMOpenGLGUIBoard(UMGUIBoardPtr board)
+UMOpenGLGUIBoard::UMOpenGLGUIBoard(UMGUIObjectPtr board)
 	: board_(board)
 {
 
@@ -30,7 +31,7 @@ UMOpenGLGUIBoard::UMOpenGLGUIBoard(UMGUIBoardPtr board)
  */
 bool UMOpenGLGUIBoard::init()
 {
-	if (UMGUIBoardPtr board = board_.lock())
+	if (UMGUIObjectPtr board = board_.lock())
 	{
 		if (board->is_root()) return true;
 		gl_mesh_ = umdraw::UMOpenGLIO::convert_mesh_to_gl_mesh(board->mesh());
@@ -43,13 +44,55 @@ bool UMOpenGLGUIBoard::init()
 }
 
 /**
+ * update
+ */
+bool UMOpenGLGUIBoard::update()
+{
+	if (UMGUIObjectPtr board = board_.lock())
+	{
+		if (board->is_root()) return true;
+		umdraw::UMMeshPtr mesh = board->mesh();
+		if (board->local_transform() != pre_local_transform_)
+		{
+			mesh->mutable_local_transform() = board->local_transform();
+			mesh->mutable_global_transform() = board->global_transform();
+			mesh->update();
+			if (gl_mesh_)
+			{
+				umdraw::UMOpenGLIO::deformed_mesh_to_gl_mesh(gl_mesh_, mesh);
+			}
+			pre_local_transform_ = board->local_transform();
+		}
+		return true;
+	}
+	return false;
+}
+
+/**
  * draw
  */
 void UMOpenGLGUIBoard::draw(umdraw::UMOpenGLDrawParameterPtr parameter) const
 {
-	if (gl_mesh_)
+	if (UMGUIObjectPtr board = board_.lock())
 	{
-		gl_mesh_->draw(parameter);
+		if (board->is_visible())
+		{
+			if (gl_mesh_)
+			{
+				gl_mesh_->draw(parameter);
+			}
+		}
+	}
+}
+
+/**
+ * update event
+ */
+void UMOpenGLGUIBoard::update(umbase::UMEventType event_type, umbase::UMAny& parameter)
+{
+	if (event_type == eGUIEventObjectUpdated)
+	{
+		update();
 	}
 }
 

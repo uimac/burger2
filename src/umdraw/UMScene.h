@@ -13,6 +13,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <bitset>
 #include "UMVector.h"
 #include "UMCamera.h"
 #include "UMLight.h"
@@ -48,7 +49,17 @@ class UMScene : public UMNode
 	DISALLOW_COPY_AND_ASSIGN(UMScene);
 
 public:
-	UMScene() { init(1280, 720); }
+	enum VisibleType
+	{
+		eMesh,
+		eNode,
+		eLine,
+		ePoint,
+		eCamera,
+		eLight,
+	};
+
+	UMScene() { init(512, 512); }
 	UMScene(int width, int height) { init(width, height); }
 	~UMScene() {}
 
@@ -68,14 +79,29 @@ public:
 	int height() const { return height_; }
 
 	/**
+	 * clear all data
+	 */
+	void clear_geometry();
+
+	/**
 	 * get camera
 	 */
-	UMCameraPtr camera() const { return camera_; }
+	UMCameraPtr camera();
 
 	/**
 	 * set camera
 	 */
-	void set_camera(UMCameraPtr camera);
+	void set_current_camera(UMCameraPtr camera);
+
+	/**
+	 * get camera list
+	 */
+	const UMCameraList& camera_list() const { return camera_list_; }
+
+	/**
+	 * get camera list
+	 */
+	UMCameraList& mutable_camera_list() { return camera_list_; }
 
 	/**
 	 * get mesh group list
@@ -106,11 +132,21 @@ public:
 	 * get light list
 	 */
 	UMLightList& mutable_light_list() { return light_list_; }
+
+	/**
+	 * get node list
+	 */
+	const UMNodeList& node_list() const { return node_list_; }
+
+	/**
+	 * get node list
+	 */
+	UMNodeList& mutable_node_list() { return node_list_; }
 	
 	/**
 	 * get background color
 	 */
-	UMVec3d background_color() const { return UMVec3d(0.1, 0.1, 0.1); }
+	UMVec3d background_color() const { return UMVec3d(1.0, 1.0, 1.0); }
 	
 	/**
 	 * get background image
@@ -164,14 +200,36 @@ public:
 	 */
 	umbase::UMEventPtr foreground_change_event() { return foreground_change_event_; }
 
-private:
+	/** 
+	 * deformation setting
+	 */
+	void set_enable_deform(bool enable) { is_enable_deform_ = enable; }
+	
+	/** 
+	 * deformation is enable or not
+	 */
+	bool is_enable_deform() const { return is_enable_deform_; }
+	
+	/** 
+	 *  get visibility
+	 */
+	bool is_visible(VisibleType type) const { return visibility_.test(type); }
+		
+	/** 
+	 *  set visibility
+	 */
+	void set_visible(VisibleType type, bool visible);
 
+private:
+	std::bitset<32> visibility_;
 	int width_;
 	int height_;
+	bool is_enable_deform_;
 
-	UMCameraPtr camera_;
+	UMCameraList camera_list_;
 	UMLightList light_list_;
 
+	UMNodeList node_list_;
 	UMMeshGroupList mesh_group_list_;
 	UMLineList line_list_;
 	UMImagePtr background_image_;

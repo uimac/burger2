@@ -8,8 +8,19 @@
  *
  */
 #if !defined(WITH_EMSCRIPTEN)
-	#include <crtdbg.h>
+	#ifdef _DEBUG
+		#define _CRTDBG_MAP_ALLOC
+		#include <crtdbg.h>
+		#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+	#endif
 #endif
+
+//struct CrtBreakAllocSetter {
+//    CrtBreakAllocSetter() {
+//        _crtBreakAlloc=26434;
+//    }
+//};
+//CrtBreakAllocSetter g_crtBreakAllocSetter;
 
 #include "UMWindow.h"
 
@@ -17,7 +28,9 @@
 int main(int argc, char** argv)
 {
 #if !defined(WITH_EMSCRIPTEN)
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	_CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);
+	//_CrtSetBreakAlloc(27125);
+
 #endif
-	return test_viewer::UMWindow::instance().main(argc, argv);
+	return burger::UMWindow::instance().main(argc, argv);
 }

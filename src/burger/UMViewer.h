@@ -13,7 +13,13 @@
 #include "UMDraw.h"
 #include "UMAbc.h"
 #include "UMGUI.h"
+#include "UMWSIO.h"
 #include "UMScene.h"
+#include "UMAny.h"
+#include "UMListenerConnector.h"
+#include "UMListener.h"
+#include "UMBurgerGUI.h"
+#include "UM30min.h"
 
 struct GLFWwindow;
 
@@ -29,14 +35,24 @@ namespace umpaint
 	typedef std::shared_ptr<UMPaint> UMPaintPtr;
 } // umpaint
 
+namespace umabc
+{
+	class UMAbc;
+	typedef std::shared_ptr<UMAbc> UMAbcPtr;
+} // umabc
+
 /// test viewer(application)
-namespace test_viewer
+namespace burger
 {
 
 class UMViewer;
 typedef std::shared_ptr<UMViewer> UMViewerPtr;
+typedef std::weak_ptr<UMViewer> UMViewerWeakPtr;
 
-class UMViewer
+class UMViewer : 
+	public umbase::UMListenerConnector,
+	public umbase::UMListener,
+	public std::enable_shared_from_this<UMViewer>
 {
 	DISALLOW_COPY_AND_ASSIGN(UMViewer);
 public:
@@ -49,8 +65,8 @@ public:
 		GLFWwindow* window,
 		GLFWwindow* sub_window, 
 		umdraw::UMScenePtr scene, 
-		umgui::UMGUIScenePtr gui_scene,
-		//umabc::UMAbcSceneList& abc_scene_list, 
+		UMBurgerGUIPtr gui_scene,
+		umabc::UMAbcSceneList& abc_scene_list, 
 		umdraw::UMDraw::DrawType type, 
 		int width, 
 		int height);
@@ -58,32 +74,37 @@ public:
 	/**
 	 * call a paint method of the current draw type 
 	 */
-	static void call_paint();
+	static bool call_paint();
 
 	/**
 	 * key event callback
 	 */
-	static void key_callback(int key, int action);
+	static void key_callback(GLFWwindow *, int key, int scancode, int action, int mods);
 	
 	/**
 	 * mouse event callback
 	 */
-	static void mouse_button_callback(int button, int action);
+	static void mouse_button_callback(GLFWwindow *, int button, int action, int mods);
+	
+	/**
+	 * scroll event callback
+	 */
+	static void scroll_callback(GLFWwindow * window, double xoffset, double yoffset);
 	
 	/**
 	 * mouse position event callback
 	 */
-	static void cursor_pos_callback(int x, int y);
+	static void cursor_pos_callback(GLFWwindow *, double x, double y);
 	
 	/**
 	 * window size event callback
 	 */
-	static void window_size_callback(int width, int height);
+	static void window_size_callback(GLFWwindow *, int width, int height);
 	
 	/**
 	 * window close event callback
 	 */
-	static int window_close_callback();
+	static void window_close_callback(GLFWwindow * window);
 
 	/**
 	 * drop file callback
@@ -99,6 +120,23 @@ public:
 	 *
 	 */
 	void file_loaded_callback(GLFWwindow * window);
+	
+	/**
+	 * update event
+	 */
+	virtual void update(umbase::UMEventType event_type, umbase::UMAny& parameter);
+
+	/**
+	 * set a number of current frame
+	 */
+	void set_current_frame(int frame);
+
+	/**
+	 * render
+	 */
+	UMImagePtr render();
+
+	void change_to_abc_camera();
 
 protected:
 	
@@ -106,14 +144,14 @@ protected:
 		GLFWwindow* window,
 		GLFWwindow* sub_window, 
 		umdraw::UMScenePtr scene,
-		umgui::UMGUIScenePtr gui_scene,
-		//umabc::UMAbcSceneList& abc_scene_list, 
+		UMBurgerGUIPtr gui_scene,
+		umabc::UMAbcSceneList& abc_scene_list, 
 		umdraw::UMDraw::DrawType type);
 
 	/**
 	 * constructor
 	 */
-	explicit UMViewer(umdraw::UMDrawPtr drawer, umgui::UMGUIPtr gui);
+	explicit UMViewer(umdraw::UMDrawPtr drawer, umgui::UMGUIPtr gui, umabc::UMAbcPtr);
 
 	/**
 	 * refresh frame
@@ -129,6 +167,11 @@ protected:
 	 * mouse button up/down
 	 */
 	void on_mouse(GLFWwindow * window, int button, int action);
+	
+	/**
+	 * scroll
+	 */
+	void on_scroll(GLFWwindow *, double xoffset, double yoffset);
 	
 	/**
 	 * mouse move
@@ -157,10 +200,11 @@ private:
 	static bool is_gui_drawing_;
 	static umdraw::UMScenePtr scene_;
 	static umdraw::UMCameraPtr temporary_camera_;
-	static umgui::UMGUIScenePtr gui_scene_;
-	//static umabc::UMAbcSceneList abc_scene_list_;
+	static UMBurgerGUIPtr gui_scene_;
+	static umabc::UMAbcSceneList abc_scene_list_;
 	static UMViewerPtr viewer_;
 	static GLFWwindow* sub_window_;
+	static GLFWwindow* window_;
 
 	double pre_x_;
 	double pre_y_;
@@ -175,11 +219,15 @@ private:
 	bool is_right_button_down_;
 	bool is_middle_button_down_;
 	bool is_alt_down_;
+	bool is_shift_down_;
 	umdraw::UMDrawPtr drawer_;
-	//umabc::UMAbcPtr abc_;
+	umabc::UMAbcPtr abc_;
 	umgui::UMGUIPtr gui_;
 	umrt::UMRTPtr rays_;
+	int current_frame_;
+	bool is_realtime_animation_;
+	UM30minPtr um30min_;
 	//umpaint::UMPaintPtr paint_;
 };
 
-} // test_viewer
+} // burger

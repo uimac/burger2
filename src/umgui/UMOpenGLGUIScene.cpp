@@ -11,6 +11,7 @@
 #ifdef WITH_OPENGL
 
 #include <memory>
+#include <queue>
 #include "UMOpenGLGUIScene.h"
 #include "UMGUIScene.h"
 #include "UMOpenGLGUIBoard.h"
@@ -24,6 +25,8 @@
 #include "UMOpenGLIO.h"
 #include "UMCamera.h"
 #include "UMGUIBoard.h"
+#include "UMAny.h"
+#include "UMListenerConnector.h"
 
 #include <GL/glew.h>
 
@@ -31,7 +34,7 @@ namespace umgui
 {
 	using namespace umdraw;
 
-class UMOpenGLGUIScene::SceneImpl
+class UMOpenGLGUIScene::SceneImpl : public umbase::UMListenerConnector
 {
 	DISALLOW_COPY_AND_ASSIGN(SceneImpl);
 public:
@@ -40,18 +43,29 @@ public:
 
 	void init_object(UMGUIObjectPtr obj)
 	{
-		if (UMGUIBoardPtr board = std::dynamic_pointer_cast<UMGUIBoard>(obj))
+		if (!obj) return;
+		std::queue<UMGUIObjectPtr> queue;
+		queue.push(obj);
+		while (!queue.empty())
 		{
-			if (UMOpenGLGUIBoardPtr gl_board = std::make_shared<UMOpenGLGUIBoard>(board))
+			UMGUIObjectPtr target = queue.front();
+			queue.pop();
+			
+			if (UMOpenGLGUIBoardPtr gl_board = std::make_shared<UMOpenGLGUIBoard>(target))
 			{
-				gl_board->init();
-				gl_board_list_.push_back(gl_board);
+				if (gl_board->init())
+				{
+					gl_board_list_.push_back(gl_board);
+					mutable_event_list().push_back(target->update_event());
+					target->update_event()->add_listener(gl_board);
+				}
 			}
-		}
-		UMGUIObjectList::iterator it = obj->mutable_children().begin();
-		for (; it != obj->mutable_children().end(); ++it)
-		{
-			init_object(*it);
+
+			UMGUIObjectList::iterator it = target->mutable_children().begin();
+			for (; it != target->mutable_children().end(); ++it)
+			{
+				queue.push(*it);
+			}
 		}
 	}
 
@@ -117,6 +131,54 @@ public:
 	void resize(int width, int height)
 	{
 	}
+	
+	/**
+	 * keyboard
+	 */
+	bool on_keyboard(int key, int action)
+	{
+		if (gui_scene_)
+		{
+			return gui_scene_->on_keyboard(key, action);
+		}
+		return false;
+	}
+
+	/**
+	 * mouse button up/down
+	 */
+	bool on_mouse(int button, int action)
+	{
+		if (gui_scene_)
+		{
+			return gui_scene_->on_mouse(button, action);
+		}
+		return false;
+	}
+
+	/**
+	 * mouse move
+	 */
+	bool on_mouse_move(double x, double y)
+	{
+		if (gui_scene_)
+		{
+			return gui_scene_->on_mouse_move(x, y);
+		}
+		return false;
+	}
+	
+	/**
+	 * scroll
+	 */
+	bool on_scroll(double x, double y)
+	{
+		if (gui_scene_)
+		{
+			return gui_scene_->on_scroll(x, y);
+		}
+		return false;
+	}
 
 private:
 
@@ -179,6 +241,38 @@ bool UMOpenGLGUIScene::draw()
 void UMOpenGLGUIScene::resize(int width, int height)
 {
 	return impl_->resize(width, height);
+}
+
+/**
+ * keyboard
+ */
+bool UMOpenGLGUIScene::on_keyboard(int key, int action)
+{
+	return impl_->on_keyboard(key, action);
+}
+
+/**
+ * mouse button up/down
+ */
+bool UMOpenGLGUIScene::on_mouse(int button, int action)
+{
+	return impl_->on_mouse(button, action);
+}
+
+/**
+ * mouse move
+ */
+bool UMOpenGLGUIScene::on_mouse_move(double x, double y)
+{
+	return impl_->on_mouse_move(x, y);
+}
+
+/**
+ * scroll
+ */
+bool UMOpenGLGUIScene::on_scroll(double x, double y)
+{
+	return impl_->on_scroll(x, y);
 }
 
 } // umgui

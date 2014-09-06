@@ -7,6 +7,7 @@
  * Licensed  under the MIT license. 
  *
  */
+#include "UMDirectX11.h"
 #ifdef WITH_DIRECTX
 
 #include <dxgi.h>
@@ -16,7 +17,6 @@
 //#include <delayimp.h>
 
 #include "UMDirectX11Scene.h"
-#include "UMDirectX11.h"
 #include "UMPath.h"
 #include "UMStringUtil.h"
 #include "UMAny.h"
@@ -469,5 +469,12 @@ UMScenePtr UMDirectX11::scene() const
 
 
 } // umdraw
+
+#else
+
+namespace umdraw
+{
+	UMDirectXDevice UMDirectX11::dx_device_(NULL);
+}
 
 #endif // WITH_DIRECTX

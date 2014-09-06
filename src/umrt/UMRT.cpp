@@ -21,8 +21,8 @@
 #include "UMVertexParameter.h"
 #include "UMSceneAccess.h"
 #include "UMRenderParameter.h"
-#include "UMPathTracer.h"
-#include "UMRayTracer.h"
+#include "UMBvh.h"
+#include "UMRenderer.h"
 
 namespace umrt
 {
@@ -58,9 +58,6 @@ bool UMRT::add_scene(umdraw::UMScenePtr scene)
 	scene_access_->add_scene(scene);
 	if (scene_access_->update_bvh())
 	{
-		UMBvhPtr bvh = scene_access_->bvh();
-		scene_access_->mutable_render_primitive_list().clear();
-		scene_access_->mutable_render_primitive_list().push_back(bvh);
 		return true;
 	}
 	return false;
@@ -90,23 +87,13 @@ UMImagePtr UMRT::render()
 {
 	if (!scene_access_) return UMImagePtr();
 	
-	UMRenderParameter param(1024, 1024);
+	UMRenderParameter param(800, 600);
 	{
-		UMPathTracer path_tracer;
-		path_tracer.set_width(1024);
-		path_tracer.set_height(1024);
-		int total = param.super_sampling_count().x * param.super_sampling_count().y * param.sample_count();
-		for (int i = 0; i < total; ++i)
-		{
-			path_tracer.render(scene_access_, param);
-		}
+		UMRendererPtr renderer = UMRenderer::create(UMRenderer::eToonRender);
+		renderer->set_width(800);
+		renderer->set_height(600);
+		renderer->render(scene_access_, param);
 	}
-	//{
-	//	UMRayTracer rat_tracer;
-	//	rat_tracer.set_width(1024);
-	//	rat_tracer.set_height(1024);
-	//	rat_tracer.render(scene_access_, param);
-	//}
 	return param.output_image();
 }
 

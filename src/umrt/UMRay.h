@@ -23,8 +23,6 @@ namespace umrt
  */
 class UMRay
 {
-	DISALLOW_COPY_AND_ASSIGN(UMRay);
-
 public:
 	UMRay() :
 		origin_(0),

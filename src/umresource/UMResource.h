@@ -46,6 +46,11 @@ public:
 	 * get default resource path
 	 */
 	static umstring default_resource_path();
+	
+	/**
+	 * get default resource path
+	 */
+	static umstring default_model_resource_path();
 
 	/**
 	 * pack files to dst file

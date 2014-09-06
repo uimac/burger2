@@ -8,10 +8,13 @@
  * Licensed  under the MIT license. 
  *
  */
-#include <SOIL.h>
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+#include <stb_image_write.h>
 
 #ifdef WITH_OIIO
-#include <imageio.h>
+#include <OpenImageIO/imageio.h>
 #endif
 
 #include <memory>
@@ -91,7 +94,7 @@ namespace
 		int width = 0;
 		int height = 0;
 		int channels = 0;
-		unsigned char* buffer = SOIL_load_image(filename.c_str(), &width, &height, &channels, SOIL_LOAD_RGBA);
+		unsigned char* buffer = stbi_load(filename.c_str(), &width, &height, &channels, STBI_rgb_alpha);
 		if (!buffer) return UMImagePtr();
 
 		UMImagePtr image  = std::make_shared<UMImage>();
@@ -123,7 +126,7 @@ namespace
 				}
 			}
 		}
-		SOIL_free_image_data(buffer);
+		free(buffer);
 		return image;
 	}
 }
@@ -166,13 +169,13 @@ UMImagePtr UMImage::load_from_memory(const std::string& data)
 	int width = 0;
 	int height = 0;
 	int channels = 0;
-	unsigned char* buffer = SOIL_load_image_from_memory(
+	unsigned char* buffer = stbi_load_from_memory(
 		reinterpret_cast<const unsigned char*>(data.c_str()), 
 		static_cast<int>(data.size()),
 		&width, 
 		&height, 
 		&channels, 
-		SOIL_LOAD_RGBA);
+		STBI_rgb_alpha);
 	if (!buffer) return UMImagePtr();
 
 	UMImagePtr image  = std::make_shared<UMImage>();
@@ -204,7 +207,7 @@ UMImagePtr UMImage::load_from_memory(const std::string& data)
 			}
 		}
 	}
-	SOIL_free_image_data(buffer);
+	free(buffer);
 	return image;
 }
 
@@ -219,37 +222,47 @@ bool UMImage::save(const umstring& filepath, UMImagePtr src, ImageType type)
 	{
 		UMImage::R8G8B8Buffer img;
 		src->create_r8g8b8_buffer(img);
-		result = SOIL_save_image(
+		stbi_write_bmp(
 			filename.c_str(), 
-			SOIL_SAVE_TYPE_BMP, 
 			src->width(), 
 			src->height(), 
-			3, 
-			reinterpret_cast<const unsigned char*>(&(*img.begin())));
+			STBI_rgb,
+			&(*img.begin()));
 	}
 	else if (type == eImageTypeTGA_RGB)
 	{
 		UMImage::R8G8B8Buffer img;
 		src->create_r8g8b8_buffer(img);
-		result = SOIL_save_image(
+		stbi_write_tga(
 			filename.c_str(), 
-			SOIL_SAVE_TYPE_TGA, 
 			src->width(), 
 			src->height(), 
-			3, 
-			reinterpret_cast<const unsigned char*>(&(*img.begin())));
+			STBI_rgb,
+			&(*img.begin()));
 	}
 	else if (type == eImageTypeTGA_RGBA)
 	{
 		UMImage::R8G8B8A8Buffer img;
 		src->create_r8g8b8a8_buffer(img);
-		result = SOIL_save_image(
+		stbi_write_tga(
 			filename.c_str(), 
-			SOIL_SAVE_TYPE_TGA, 
 			src->width(), 
 			src->height(), 
-			4, 
-			reinterpret_cast<const unsigned char*>(&(*img.begin())));
+			STBI_rgb_alpha,
+			&(*img.begin()));
+	}
+	else if (type == eImageTypePNG_RGBA)
+	{
+		UMImage::R8G8B8A8Buffer img;
+		src->create_r8g8b8a8_buffer(img);
+		
+		stbi_write_png(
+			filename.c_str(), 
+			src->width(), 
+			src->height(), 
+			STBI_rgb_alpha, 
+			&(*img.begin()), 
+			0);
 	}
 	return (result == 1);
 }

@@ -10,6 +10,7 @@
 #include <string>
 #include <assert.h>
 
+#include "UMScene.h"
 #include "UMSoftwareIO.h"
 #include "UMStringUtil.h"
 #include "UMPath.h"
@@ -18,6 +19,7 @@
 #include "UMMaterial.h"
 #include "UMImage.h"
 #include "UMLight.h"
+#include "UMMatrix.h"
 
 namespace
 {
@@ -39,6 +41,8 @@ namespace
 
 	UMVec4i to_um(const umio::UMVec4i& v) { return UMVec4i(v.x, v.y, v.z, v.w); }
 	
+	UMMat44d to_um(const umio::UMMat44d& mat) { return UMMat44d(&mat.m[0][0]); }
+
 	//----------------------------------------------------------------------------
 
 	/**
@@ -111,6 +115,29 @@ namespace
 	}
 	
 	/**
+	 * load skin from umio to umdraw
+	 */
+	void load_skin(UMMeshPtr mesh, const umio::UMMesh& ummesh)
+	{
+		const int skin_size = static_cast<int>(ummesh.skin_list().size());
+		for (int i = 0; i < skin_size; ++i)
+		{
+			const umio::UMSkin& skin = ummesh.skin_list().at(i);
+			const int cluster_size = static_cast<int>(skin.cluster_list().size());
+			for (int k = 0; k < cluster_size; ++k)
+			{
+				const umio::UMCluster& cluster = skin.cluster_list().at(k);
+				UMSkin skin;
+				skin.mutable_index_list() = cluster.index_list();
+				skin.mutable_weight_list() = cluster.weight_list();
+				skin.set_link_node_id(cluster.link_node_id());
+				mesh->mutable_skin_list().push_back(skin);
+			}
+		}
+	}
+
+	
+	/**
 	 * load material from umio to umdraw
 	 */
 	void load_material(const umstring& absolute_file_path, UMMeshPtr mesh, const umio::UMMesh& ummesh)
@@ -123,7 +150,7 @@ namespace
 		{
 			const umio::UMMaterial& material = ummesh.material_list().at(i);
 			UMMaterialPtr ummaterial = std::make_shared<UMMaterial>();
-			ummaterial->set_ambient(to_um_material_value(material.ambient()));
+			//ummaterial->set_ambient(to_um_material_value(material.ambient()));
 			ummaterial->set_diffuse(to_um_material_value(material.diffuse()));
 			ummaterial->set_specular(to_um_material_value(material.specular()));
 			ummaterial->set_emissive(to_um_material_value(material.emissive()));
@@ -175,7 +202,17 @@ namespace
 			mesh->mutable_material_list().at(0) = ummaterial;
 		}
 	}
-
+	
+	/**
+	 * load camera from umio to umdraw
+	 */
+	void load_camera(UMCameraPtr camera, const umio::UMCamera& umcamera)
+	{
+		camera->mutable_global_transform() = to_um(umcamera.global_transform());
+		camera->mutable_local_transform() = to_um(umcamera.local_transform());
+		camera->update_from_node();
+	}
+	
 	//----------------------------------------------------------------------------
 	
 	typedef std::pair<int,int> IndexPair;
@@ -316,7 +353,7 @@ bool UMSoftwareIO::import_mesh_list(UMMeshList& dst, const umio::UMObjectPtr src
 	umio::UMMesh::IDToMeshMap::iterator it = src->mutable_mesh_map().begin();
 	for (; it != src->mutable_mesh_map().end(); ++it)
 	{
-		umio::UMMesh& ummesh = (*it).second;
+		umio::UMMesh& ummesh = it->second;
 
 		UMMeshPtr mesh(std::make_shared<UMMesh>());
 		dst.push_back(mesh);
@@ -328,9 +365,126 @@ bool UMSoftwareIO::import_mesh_list(UMMeshList& dst, const umio::UMObjectPtr src
 		load_vertex(mesh, ummesh);
 		load_normal(mesh, ummesh);
 		load_uv(mesh, ummesh);
+		load_skin(mesh, ummesh);
 		mesh->update_box();
 	}
 	return result;
+}
+
+/** 
+ * import umdraw node list
+ * @param [out] dst distination mesh list
+ * @param [in] src source object
+ */
+bool UMSoftwareIO::import_node_list(
+	UMNodeList& dst,
+	UMMeshList& mesh_list, 
+	const umio::UMObjectPtr src)
+{
+	if (!src) return false;
+
+	typedef std::map<int, UMNodePtr> IDNodeMap;
+	IDNodeMap id_node_map;
+	bool result = false;
+	{
+		umio::UMSkeleton::IDToSkeletonMap::iterator it = src->mutable_skeleton_map().begin();
+		for (; it != src->mutable_skeleton_map().end(); ++it)
+		{
+			int id = it->first;
+			umio::UMSkeleton& skeleton = it->second;
+		
+			UMNodePtr node = std::make_shared<UMNode>();
+			node->set_name(umbase::UMStringUtil::utf8_to_utf16(skeleton.name()));
+			node->mutable_local_transform() = to_um(skeleton.local_transform());
+			node->mutable_global_transform() = to_um(skeleton.global_transform());
+			node->mutable_initial_global_transform() = node->global_transform();
+			node->mutable_initial_local_transform() = node->local_transform();
+			id_node_map[id] = node;
+		}
+	}
+	{
+		umio::UMSkeleton::IDToNodeMap::iterator it = src->mutable_other_node_map().begin();
+		for (; it != src->mutable_other_node_map().end(); ++it)
+		{
+			int id = it->first;
+			umio::UMNode& umnode = it->second;
+			UMNodePtr node = std::make_shared<UMNode>();
+			node->set_name(umbase::UMStringUtil::utf8_to_utf16(umnode.name()));
+			node->mutable_local_transform() = to_um(umnode.local_transform());
+			node->mutable_global_transform() = to_um(umnode.global_transform());
+			node->mutable_initial_global_transform() = node->global_transform();
+			node->mutable_initial_local_transform() = node->local_transform();
+			id_node_map[id] = node;
+		}
+	}
+	
+	// connect parent - children
+	{
+		umio::UMSkeleton::IDToSkeletonMap::iterator it = src->mutable_skeleton_map().begin();
+		for (int i = 0; it != src->mutable_skeleton_map().end(); ++it, ++i)
+		{
+			int id = it->first;
+			umio::UMSkeleton& skeleton = it->second;
+			if (skeleton.parent())
+			{
+				UMNodePtr node = id_node_map[id];
+				UMNodePtr parent = id_node_map[skeleton.parent()->id()];
+				parent->mutable_children().push_back(node);
+				node->set_parent(parent);
+			}
+		}
+	}
+
+	// result node list
+	{
+		IDNodeMap::iterator it = id_node_map.begin();
+		for (; it != id_node_map.end(); ++it)
+		{
+			dst.push_back(it->second);
+		}
+	}
+
+	// assign skin node
+	{
+		UMMeshList::iterator it = mesh_list.begin();
+		for (; it != mesh_list.end(); ++it)
+		{
+			UMMeshPtr mesh = *it;
+			UMSkinList::iterator st = mesh->mutable_skin_list().begin();
+			for (; st != mesh->mutable_skin_list().end(); ++st)
+			{
+				if (id_node_map.find(st->link_node_id()) != id_node_map.end())
+				{
+					st->set_link_node(id_node_map[st->link_node_id()]);
+				}
+			}
+		}
+	}
+	return true;
+}
+
+/** 
+ * import umdraw camera list
+ * @param [out] dst distination mesh list
+ * @param [in] src source object
+ */
+bool UMSoftwareIO::import_camera_list(
+	UMCameraList& dst,
+	const umio::UMObjectPtr src,
+	int initial_width,
+	int initial_height)
+{
+	if (!src) return false;
+
+	umio::UMCamera::IDToCameraMap::iterator it = src->mutable_camera_map().begin();
+	for (; it != src->mutable_camera_map().end(); ++it)
+	{
+		umio::UMCamera& umcamera = it->second;
+		UMCameraPtr camera(std::make_shared<UMCamera>(false, initial_width, initial_height));
+		dst.push_back(camera);
+		load_camera(camera, umcamera);
+	}
+	return true;
 }
 
 } // umdraw

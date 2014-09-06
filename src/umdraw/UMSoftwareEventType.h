@@ -1,6 +1,5 @@
 /**
  * @file UMSoftwareEventType.h
- * 3D scene including many objects.
  *
  * @author tori31001 at gmail.com
  *

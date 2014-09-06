@@ -60,6 +60,7 @@ UMTime::~UMTime()
 	printf("%s\n", message.c_str());
 #else
 	::OutputDebugStringA(message.c_str());
+	std::cout << message << std::endl;
 
 	if (show_message_box_) {
 		::MessageBoxA(NULL, message.c_str(), "hoge", MB_OK);

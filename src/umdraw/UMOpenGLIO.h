@@ -31,6 +31,9 @@ typedef std::shared_ptr<UMLine> UMLinePtr;
 class UMOpenGLLine;
 typedef std::shared_ptr<UMOpenGLLine> UMOpenGLLinePtr;
 
+class UMOpenGLNode;
+typedef std::shared_ptr<UMOpenGLNode> UMOpenGLNodePtr;
+
 /**
  * model in/out
  */
@@ -60,6 +63,13 @@ public:
 		UMMeshPtr src);
 	
 	/**
+	 * convert umdraw mesh to OpenGL mesh
+	 */
+	static bool UMOpenGLIO::deformed_mesh_to_gl_mesh(
+		UMOpenGLMeshPtr deform_mesh,
+		UMMeshPtr src);
+
+	/**
 	 * convert umdraw mesh group to OpenGL mesh
 	 * @param [in] src source umdraw mesh group
 	 * @retval UMMeshGroupPtr converted gl mesh group or none
@@ -67,6 +77,19 @@ public:
 	static UMOpenGLMeshGroupPtr convert_mesh_group_to_gl_mesh_group(
 		UMMeshGroupPtr src);
 	
+	/**
+	 * convert umdraw node to OpenGL node
+	 */
+	static UMOpenGLNodePtr UMOpenGLIO::convert_node_to_gl_node(
+		UMNodePtr src);
+
+	/**
+	 * convert umdraw node to OpenGL node
+	 */
+	static bool UMOpenGLIO::deformed_node_to_gl_node(
+		UMOpenGLNodePtr deform_node,
+		UMNodePtr src);
+
 	/**
 	 * convert umdraw line to OpenGL line
 	 * @param [in] src source umdraw line

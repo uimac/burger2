@@ -16,6 +16,8 @@
 #include <memory>
 #include "UMMacro.h"
 #include "UMMesh.h"
+#include "UMListener.h"
+#include "UMGUIObject.h"
 
 namespace umdraw
 {
@@ -28,10 +30,6 @@ namespace umdraw
 
 namespace umgui
 {
-	
-class UMGUIBoard;
-typedef std::shared_ptr<UMGUIBoard> UMGUIBoardPtr;
-typedef std::weak_ptr<UMGUIBoard> UMGUIBoardWeakPtr;
 
 class UMDirectX11GUIBoard;
 typedef std::shared_ptr<UMDirectX11GUIBoard> UMDirectX11GUIBoardPtr;
@@ -40,12 +38,12 @@ typedef std::vector<UMDirectX11GUIBoardPtr> UMDirectX11GUIBoardList;
 /**
  * a node
  */
-class UMDirectX11GUIBoard
+class UMDirectX11GUIBoard : public umbase::UMListener
 {
 	DISALLOW_COPY_AND_ASSIGN(UMDirectX11GUIBoard);
 public:
 	UMDirectX11GUIBoard() {}
-	UMDirectX11GUIBoard(UMGUIBoardPtr board);
+	UMDirectX11GUIBoard(UMGUIObjectPtr board);
 
 	~UMDirectX11GUIBoard() {}
 
@@ -55,13 +53,24 @@ public:
 	bool init(ID3D11Device* device_pointer);
 	
 	/**
+	 * update
+	 */
+	bool update(ID3D11Device* device_pointer);
+
+	/**
 	 * draw
 	 */
 	void draw(ID3D11Device* device_pointer, umdraw::UMDirectX11DrawParameterPtr parameter) const;
+	
+	/**
+	 * update event
+	 */
+	virtual void update(umbase::UMEventType event_type, umbase::UMAny& parameter);
 
 private:
-	UMGUIBoardWeakPtr board_;
+	UMGUIObjectWeakPtr board_;
 	umdraw::UMDirectX11MeshPtr dx_mesh_;
+	umbase::UMMat44d pre_local_transform_;
 };
 
 } // umgui

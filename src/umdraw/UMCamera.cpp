@@ -37,8 +37,8 @@ void UMCamera::init(bool is_ortho, int width, int height)
 	fov_y_ = 45.0;
 	near_ = 1.0;
 	far_ = 1000.0;
-	position_ = UMVec3d(0,  15, 50);
-	target_ = UMVec3d(0, 15, 0);
+	position_ = UMVec3d(-10,  10, 25);
+	target_ = UMVec3d(0, 10, 0);
 	up_ = UMVec3d(0, 1, 0);
 	theta_ = 0.0;
 	phi_ = 0.0;

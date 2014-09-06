@@ -46,6 +46,7 @@ public:
 		eImageTypeBMP_RGB,
 		eImageTypeTGA_RGB,
 		eImageTypeTGA_RGBA,
+		eImageTypePNG_RGBA,
 	};
 	
 	UMImage();

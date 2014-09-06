@@ -22,7 +22,13 @@ namespace umrt
 class UMShaderParameter
 {
 public:
-	UMShaderParameter() : emissive(5), bounce(1), depth(16), max_depth(32) {}
+	UMShaderParameter()
+		: emissive(5)
+		, bounce(1)
+		, depth(16)
+		, max_depth(32)
+		, outline_size(1.0)
+	{}
 	~UMShaderParameter() {}
 	
 	/**
@@ -49,6 +55,11 @@ public:
 	 * normal
 	 */
 	UMVec3d normal;
+
+	/**
+	 * face normal
+	 */
+	UMVec3d face_normal;
 
 	/**
 	 * intersect point
@@ -84,6 +95,11 @@ public:
 	 * face index
 	 */
 	int face_index;
+
+	/**
+	 * outline size
+	 */
+	double outline_size;
 };
 
 } // umrt
